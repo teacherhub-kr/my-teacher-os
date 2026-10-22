@@ -5,7 +5,7 @@
 html{scroll-behavior:smooth}
 body{background:#f0f5f8!important;color:#142536!important;font-size:20px!important;line-height:1.58}
 header{background:#102c44!important;border-bottom:5px solid #3dd4bc!important;padding:20px max(28px,calc((100% - 1540px)/2))!important}
-header b{font-size:29px!important;letter-spacing:-.02em}header small{font-size:17px!important;color:#efffff!important}
+header b{font-size:29px!important;letter-spacing:-.02em;color:#fff!important}header small{font-size:17px!important;color:#efffff!important}
 header #status{color:#a3ffe9!important;font-size:16px!important}
 .layout{max-width:1580px!important;grid-template-columns:265px minmax(0,1fr)!important;gap:25px!important;margin:24px auto!important;padding:0 24px!important}
 nav{background:#fff!important;border:2px solid #d7e2eb!important;border-radius:18px!important;padding:13px!important;top:16px!important;box-shadow:0 6px 20px #102c4412}
@@ -54,8 +54,9 @@ const $=x=>document.getElementById(x);
 function enc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function stopVideo(){$('videoFrame').innerHTML='';$('videobox').style.display='none'}
 function openVideo(name,id,start=0){if(!id)return;$('videobox').style.display='block';$('origVideoLink').href='https://www.youtube.com/watch?v='+encodeURIComponent(id)+(start?'&t='+start+'s':'');$('videoTitle').textContent=name;$('videoFrame').innerHTML='<iframe referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer;autoplay;encrypted-media;gyroscope;picture-in-picture;web-share" allowfullscreen title="'+enc(name)+'" src="https://www.youtube.com/embed/'+encodeURIComponent(id)+'?rel=0&playsinline=1&start='+start+'"></iframe>';$('videobox').scrollIntoView({block:'center',behavior:'smooth'})}
+function imageFallback(el){if(el.dataset.fallbackDone)return;el.dataset.fallbackDone='1';el.src='https://commons.wikimedia.org/wiki/Special:FilePath/Snare_Drum.jpg?width=1280';el.alt='악기 사진을 대체 이미지로 표시합니다.'}
 function audiobox(s){return '<div class="audio"><b>🔉 '+enc(s[0])+'</b><audio controls preload="none" src="'+s[1]+'" onerror="this.nextElementSibling.style.display=\'block\'"></audio><span class="err">녹음 서버 연결을 확인하지 못했습니다. 같은 카드의 실제 연주 영상을 이용하세요.</span><div class="muted">실제 악기 녹음 · '+enc(s[2])+'</div></div>'}
-function card(i){const a=I[i];let clip=a.sound>=0&&S[a.sound]?audiobox(S[a.sound]):'<p class="muted">아래 실제 연주 영상에서 악기 소리를 들을 수 있습니다.</p>';return '<div class="card"><img loading="lazy" src="'+a.img+'" alt="'+enc(a.name)+' 실제 악기 사진" onerror="this.onerror=null;this.src='https://commons.wikimedia.org/wiki/Special:FilePath/Side%20%28Snare%29%20Drum%20MET%20DP58.82.jpg';this.alt='대체 악기 이미지'"><div class="inside"><span class="chip">'+enc(a.family)+'</span><h3>'+enc(a.name)+'</h3><p>'+enc(a.desc)+'</p>'+clip+(a.yt?'<button onclick="openVideo(I['+i+'].name,I['+i+'].yt)">▶ 연주 영상 이 화면에서 재생</button>':'')+'</div></div>'}
+function card(i){const a=I[i];let clip=a.sound>=0&&S[a.sound]?audiobox(S[a.sound]):'<p class="muted">아래 실제 연주 영상에서 악기 소리를 들을 수 있습니다.</p>';return '<div class="card"><img loading="lazy" src="'+a.img+'" alt="'+enc(a.name)+' 실제 악기 사진" onerror="imageFallback(this)"><div class="inside"><span class="chip">'+enc(a.family)+'</span><h3>'+enc(a.name)+'</h3><p>'+enc(a.desc)+'</p>'+clip+(a.yt?'<button onclick="openVideo(I['+i+'].name,I['+i+'].yt)">▶ 연주 영상 이 화면에서 재생</button>':'')+'</div></div>'}
 function timeTitle(s,title,desc){return '<div class="topline">'+enc(steps[s][0])+' · '+steps[s][1]+'분</div><h1>'+enc(title)+'</h1><p>'+enc(desc)+'</p>'}
 function familyPage(name,desc){return timeTitle(scene,name,desc)+'<div class="cards">'+I.map((a,i)=>a.family===name?card(i):'').join('')+'</div>'}
 function quizPage(){let q=Q[qindex];return timeTitle(scene,'귀로 듣고, 눈으로 구별하기','8문항 형성평가 · 정답은 그 자리에서 확인됩니다.')+'<div class="section"><div class="muted">문항 '+(qindex+1)+'/8</div><p class="ask">'+enc(q[0])+'</p><div class="questions">'+q[1].map((v,j)=>'<button class="qbtn '+(answers[qindex]!==undefined?(j===q[2]?'correct':j===answers[qindex]?'wrong':''):'')+'" onclick="choose('+j+')">'+(j+1)+'. '+enc(v)+'</button>').join('')+'</div>'+(answers[qindex]!==undefined?'<div class="note">'+(answers[qindex]===q[2]?'✓ 정답':'✕ 다시 확인')+' · '+enc(q[3])+'</div>':'')+'</div><div class="ins"><button class="alt" onclick="qindex=Math.max(0,qindex-1);draw()">이전 문항</button><button onclick="qindex=Math.min(7,qindex+1);draw()">다음 문항</button></div><p class="muted">실제 연주 녹음을 다시 듣고 싶다면 이전 악기군 장면으로 이동하세요.</p>'}
@@ -76,4 +77,4 @@ $('lesson').innerHTML=h;}
 function toggleFamily(f){selected=selected.includes(f)?selected.filter(x=>x!==f):selected.concat([f]);draw()}
 function gotoScene(n){if(n<0||n>=steps.length)return;document.querySelectorAll('audio').forEach(x=>x.pause());scene=n;draw();window.scrollTo({top:0,behavior:'smooth'})}
 draw();
-</script></body></html>
+</script><script>window.addEventListener('load',function(){var x=document.getElementById('lesson');if(x&&!x.children.length){x.innerHTML='<div class="section"><h2>수업 화면을 불러오지 못했습니다</h2><p>수업 프로그램의 오류가 감지되었습니다. 페이지를 새로고침하거나 담당자에게 알려주세요.</p></div>';}});</script></body></html>
