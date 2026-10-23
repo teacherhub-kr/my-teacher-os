@@ -6,3 +6,17 @@ dialog{border:0;border-radius:20px;padding:0;max-width:650px;width:calc(100% - 2
 @media(max-width:1200px){.shell{grid-template-columns:92px 1fr}.brand>div:last-child,.nav span,.side-foot{display:none}.brand{justify-content:center}.nav button{text-align:center}.summary{grid-template-columns:repeat(3,1fr)}.grid2{grid-template-columns:1fr}.project-grid{grid-template-columns:repeat(2,1fr)}.health-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.shell{display:block}.side{position:fixed;z-index:20;bottom:0;top:auto;height:auto;width:100%;padding:7px;overflow:hidden}.brand,.side-foot{display:none}.nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}.nav::-webkit-scrollbar{display:none}.nav button{flex:0 0 52px;min-width:52px;font-size:18px;padding:8px 3px;text-align:center}.nav span{display:none}.main{padding:17px 13px 88px}.top{flex-direction:column;align-items:start}.top-actions{width:100%}.top-actions select{flex:1}.summary,.grid3,.project-grid,.policy-grid,.health-grid{grid-template-columns:1fr 1fr}.suggestion{grid-template-columns:28px 82px 100px 1fr}.suggestion .confidence{grid-column:2/5}.quick,.section-intro{flex-direction:column;align-items:stretch}}
 @media(max-width:500px){.summary,.grid3,.project-grid,.policy-grid,.health-grid{grid-template-columns:1fr}.suggestion{grid-template-columns:28px 82px 1fr}.suggestion .sg-date{grid-column:2/4}.suggestion .sg-title{grid-column:2/4}.suggestion .confidence{grid-column:2/4}.calendar-date{width:92px}.row{align-items:flex-start}}
+
+
+/* v49: Music lesson library entry, independent of Teacher OS functions. */
+.nav .musicLibraryLink{display:block;text-align:left;padding:12px 13px;border-radius:11px;text-decoration:none;color:#edfffa;background:#31584d;border:1px solid #527e6c;font-size:14px;font-weight:850}
+.nav .musicLibraryLink:hover,.nav .musicLibraryLink:focus-visible{background:#477b68;color:#fff;outline:2px solid #b7e3d5;outline-offset:2px}
+.musicLibraryFeatured{display:grid;grid-template-columns:minmax(0,1fr) 138px;align-items:center;gap:20px;border:1px solid #c3e9da;border-radius:20px;background:linear-gradient(115deg,#effcf6,#eaf5ff);padding:21px 24px;box-shadow:0 8px 25px #22654e0d;margin-bottom:17px}
+.musicLibraryFeaturedText h2{font-size:24px;margin:4px 0 8px;color:#183d47}
+.musicLibraryFeaturedText p{font-size:15px;line-height:1.65;color:#426575;margin:0 0 14px}
+.musicLibraryEyebrow{letter-spacing:.15em;color:#208b79;font-weight:900;font-size:12px}
+.musicLibraryFeaturedCTA{display:inline-flex;align-items:center;min-height:45px;border-radius:11px;text-decoration:none;padding:11px 16px;background:#2363ac;color:white;font-weight:850}
+.musicLibraryFeaturedCTA:hover,.musicLibraryFeaturedCTA:focus-visible{background:#174d91;color:white}
+.musicLibraryFeatured img{width:138px;height:132px;object-fit:contain;background:#fff;border-radius:17px;border:1px solid #d6e7ed}
+@media(max-width:800px){.musicLibraryFeatured{grid-template-columns:1fr 85px;padding:17px;gap:10px}.musicLibraryFeatured img{width:85px;height:100px}.musicLibraryFeaturedText h2{font-size:20px}}
+@media(max-width:600px){.nav .musicLibraryLink{flex:0 0 52px;min-width:52px;font-size:18px;padding:8px 3px;text-align:center}.nav .musicLibraryLink span{display:none}.musicLibraryFeatured{grid-template-columns:1fr}.musicLibraryFeatured img{display:none}}
