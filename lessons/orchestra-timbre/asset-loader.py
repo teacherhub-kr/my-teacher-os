@@ -104,6 +104,7 @@ def wiki_image(key):
 
 def save_audio(key,content,fmt,source):
   if fmt=="ogg" and content[:4]!=b"OggS": raise RuntimeError("not OGG "+key)
+  if fmt=="wav" and content[:4]!=b"RIFF": raise RuntimeError("not WAV "+key)
   if fmt=="mp3" and not (content[:3]==b"ID3" or content[:1]==b"\xff"):
     raise RuntimeError("not MP3 "+key)
   if len(content)<2000: raise RuntimeError("audio too short "+key)
@@ -137,17 +138,8 @@ def get_audio(key):
     if data[:4]!=b"\x1a\x45\xdf\xa3": raise RuntimeError("invalid WEBM tuba")
     return save_audio(key,data,"webm",CREDIT_BASE+urllib.parse.quote(TUBA))
   if key=="timpani":
-    # Only the actual timpani recordings within Philharmonia's percussion library.
-    archive=retrieve(PERCUSSION,limit=350_000_000)
-    with zipfile.ZipFile(BytesIO(archive)) as z:
-      choices=[x for x in z.infolist() if not x.is_dir() and x.filename.lower().endswith(".mp3") and
-        ("timpani" in x.filename.lower() or "kettle" in x.filename.lower()) and x.file_size>3000]
-      if not choices: raise RuntimeError("No timpani recordings inside official Percussion.zip")
-      choices.sort(key=lambda x:(("roll" in x.filename.lower()),x.file_size),reverse=True)
-      info=choices[0]
-      b=z.read(info)
-      print("TIMPANI_SOURCE",info.filename,len(b))
-      return save_audio(key,b,"mp3","https://philharmonia.co.uk/resources/sound-samples/")
+    filename="Timpani 64-c-p5.wav"
+    return save_audio(key,retrieve(commons_url(filename),limit=9_000_000),"wav",CREDIT_BASE+urllib.parse.quote(filename))
   raise RuntimeError("Unknown "+key)
 
 def patch_page(images,audios):
