@@ -1,5 +1,5 @@
 import { chromium } from "playwright";
-const origin="http://127.0.0.1:8765";
+const origin=process.env.MUSIC_LIB_BASE_URL || "http://127.0.0.1:8765";
 const browser=await chromium.launch({headless:true,args:["--autoplay-policy=no-user-gesture-required"]});
 const page=await browser.newPage({viewport:{width:1440,height:900}});
 const errors=[];
