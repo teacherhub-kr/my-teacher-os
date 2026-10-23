@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f3faff">
+<meta name="description" content="Teacher OS 음악수업 자료실. 학년별·주제별 음악수업을 찾아 교실에서 바로 실행합니다.">
+<title>MY MUSIC CLASS · 나의 음악수업 자료실</title>
+<style>
+:root{--bg:#f4faff;--ink:#19374f;--muted:#49677e;--blue:#2578ce;--mint:#24baa5;--line:#cfe4f2;--shadow:0 11px 31px #24679616}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(180deg,#eaf6ff,#f8fcff 360px,#f4faff);color:var(--ink);font-family:'Pretendard','Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;line-height:1.6}
+a{color:inherit}button,input,select{font:inherit}button{cursor:pointer}
+.wrap{max-width:1350px;margin:auto;padding:0 24px 60px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding:25px 0}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:58px;height:58px;display:grid;place-items:center;border-radius:18px;background:linear-gradient(125deg,#277de2,#2fd2b2);color:#fff;font-size:29px}
+.brand b{display:block;font-size:26px;letter-spacing:-.04em}.brand small{color:var(--muted)}
+.back{display:inline-flex;min-height:47px;align-items:center;text-decoration:none;border:2px solid var(--line);background:#fff;border-radius:13px;padding:10px 15px;font-size:16px;font-weight:800}
+.back:hover,.back:focus-visible{background:#eaf5ff;outline:2px solid #93c8ed}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:30px;align-items:center;padding:clamp(22px,4vw,45px);border:1px solid #c5e4ec;border-radius:30px;box-shadow:var(--shadow);background:linear-gradient(125deg,#fff 35%,#e8faf6)}
+.eyebrow{font-size:14px;font-weight:900;color:#108b7a;letter-spacing:.13em}
+h1{font-size:clamp(34px,4vw,57px);line-height:1.14;letter-spacing:-.055em;margin:12px 0 17px}
+.hero p{font-size:21px;color:var(--muted);margin:0 0 22px}
+.primary{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;background:linear-gradient(110deg,#267ce3,#29a4dc);color:white;border-radius:15px;padding:13px 21px;font-size:19px;font-weight:900;min-height:54px}
+.primary:hover,.primary:focus-visible{background:#175a9f;outline:3px solid #8bceef}
+.mosaic{height:308px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:10px}
+.mosaic img{width:100%;height:100%;min-height:0;object-fit:contain;background:#fff;border:1px solid #d7eaf2;border-radius:19px;padding:9px}
+.mosaic img:first-child{grid-row:span 2}
+.stats{display:flex;flex-wrap:wrap;gap:9px;margin-top:21px}
+.stat{padding:8px 13px;background:#fff;border:1px solid #cbe4ed;border-radius:99px;font-size:14px;font-weight:850;color:#28617d}
+.heading{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:10px;margin:35px 0 14px}
+.heading h2{font-size:31px;letter-spacing:-.04em;margin:0}.heading p{color:var(--muted);margin:4px 0 0}
+.controls{display:grid;grid-template-columns:minmax(230px,1fr) auto auto;gap:16px;align-items:end;padding:18px;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 7px 23px #215a8110}
+.label{display:block;font-size:14px;color:#3d6480;font-weight:850;margin-bottom:7px}
+.search,.select{height:50px;border:2px solid #d3e5f3;background:#fff;border-radius:12px;padding:9px 13px;color:#254762;font-size:17px}
+.search{width:100%}.search:focus,.select:focus{outline:3px solid #9bdbf1}
+.grade{display:flex;gap:6px;background:#edf7fc;padding:5px;border-radius:13px}
+.grade button{border:0;border-radius:10px;padding:10px 14px;min-height:42px;font-weight:850;color:#3c6680;background:transparent}
+.grade button[aria-pressed="true"]{background:#2873bf;color:white}
+.resultbar{display:flex;justify-content:space-between;flex-wrap:wrap;gap:9px;padding:17px 2px;color:#52728a}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,330px),1fr));gap:20px}
+.card{max-width:540px;display:flex;flex-direction:column;overflow:hidden;background:#fff;border-radius:26px;border:1px solid #cfe3ef;box-shadow:var(--shadow)}
+.cover{height:260px;background:#edf8ff;display:block}.cover img{width:100%;height:100%;object-fit:contain;padding:16px}
+.cardBody{padding:22px;flex:1;display:flex;flex-direction:column}
+.tags{display:flex;flex-wrap:wrap;gap:7px}
+.tag{padding:5px 10px;border-radius:99px;background:#e6f9f2;color:#08786a;font-size:14px;font-weight:900}
+.tag.blue{background:#eaf4ff;color:#2668a6}.tag.yellow{background:#fff3dc;color:#986500}
+.card h3{font-size:28px;letter-spacing:-.035em;margin:14px 0 8px}
+.card p{font-size:18px;color:var(--muted);margin:0 0 18px}
+.features{font-size:15px;color:#426b81;line-height:1.85;margin-top:auto}
+.launch{display:flex;justify-content:center;align-items:center;text-decoration:none;background:linear-gradient(105deg,#2a78d5,#29bba7);color:white;border-radius:14px;padding:13px 16px;font-size:19px;font-weight:900;margin-top:16px;min-height:53px}
+.launch:hover,.launch:focus-visible{background:#1b5fa6;outline:3px solid #8bd9cd}
+.empty{margin-top:10px;background:#fff;border:2px dashed #bdd9e8;border-radius:20px;padding:35px;text-align:center;color:var(--muted);font-size:19px}
+.empty b{display:block;font-size:23px;color:var(--ink)}
+.guide{margin-top:28px;background:#fff7e8;border:1px solid #f1dfb9;border-radius:22px;padding:22px 25px;color:#65522d}
+.guide h2{font-size:21px;margin:0 0 5px;color:#614718}.guide p{margin:0;font-size:16px}
+.foot{margin-top:27px;font-size:14px;color:#6a8497}
+@media(max-width:950px){.hero{grid-template-columns:1fr}.mosaic{height:220px;max-width:600px}.controls{grid-template-columns:1fr 1fr}.controls label:first-child{grid-column:span 2}}
+@media(max-width:610px){.wrap{padding:0 14px 40px}.brand b{font-size:21px}.back{font-size:14px}.hero{padding:23px;border-radius:23px}.hero p{font-size:18px}.mosaic{height:160px}.controls{grid-template-columns:1fr}.controls label:first-child{grid-column:auto}.heading h2{font-size:26px}.card{max-width:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand"><span class="logo" aria-hidden="true">♫</span><div><b>MY MUSIC CLASS</b><small>Teacher OS · 나의 음악수업 자료실</small></div></div><a class="back" href="../">← Teacher OS로 돌아가기</a></header>
+<section class="hero"><div><div class="eyebrow">MY TEACHING LIBRARY</div><h1>수업을 만들고,<br>한곳에 모으고,<br>바로 시작합니다.</h1><p>내 음악수업을 학년과 주제별로 모았습니다. 필요한 수업을 찾아 클릭하면 교실에서 바로 실행할 수 있습니다.</p><a class="primary" href="orchestra-timbre/">🎻 오케스트라 수업 바로 시작 →</a><div class="stats"><span class="stat">🎵 음악수업 라이브러리</span><span class="stat">📖 45분 수업</span><span class="stat">👩‍🏫 교사 설명 보기·숨기기</span></div></div><div class="mosaic" aria-hidden="true"><img src="orchestra-timbre/assets/violin.jpg" alt=""><img src="orchestra-timbre/assets/flute.jpg" alt=""><img src="orchestra-timbre/assets/timpani.jpg" alt=""></div></section>
+<section aria-label="등록된 음악수업">
+<div class="heading"><div><h2>나의 수업 목록</h2><p>실제로 완성·등록한 수업만 표시합니다.</p></div></div>
+<div class="controls">
+<label><span class="label">수업 검색</span><input class="search" id="lessonSearch" type="search" placeholder="오케스트라, 음색, 청음..." autocomplete="off"></label>
+<div><span class="label">학년 선택</span><div class="grade" id="gradeFilters" role="group" aria-label="학년 필터"><button type="button" data-grade="all" aria-pressed="true">전체</button><button type="button" data-grade="2" aria-pressed="false">중2</button><button type="button" data-grade="3" aria-pressed="false">중3</button></div></div>
+<label><span class="label">영역 선택</span><select class="select" id="categoryFilter"><option value="all">전체 영역</option><option value="감상">감상</option><option value="표현">표현</option><option value="창작">창작</option><option value="생활화">생활화</option><option value="평가">평가</option></select></label>
+</div>
+<div class="resultbar"><span id="resultCount" role="status" aria-live="polite">목록을 불러오는 중입니다.</span><span>추가한 수업은 이 자료실에 계속 쌓입니다.</span></div>
+<div id="lessonCards" class="cards"></div><div class="empty" id="emptyState" hidden><b>검색 결과가 없습니다</b>다른 학년이나 검색어를 선택해 주세요.</div>
+</section>
+<aside class="guide"><h2>다음 수업도 같은 방식으로 추가합니다</h2><p>수업 주제·학년·수업 시간을 알려주시면 개별 수업을 만들고, 실제 사진·음원·교사 설명 기능을 검증한 후 이 자료실에 등록합니다. 학생 개인정보나 학교 내부문서는 공개 사이트에 올리지 않습니다.</p></aside>
+<footer class="foot">MY TEACHER OS · 음악수업 자료실 · 외부 영상 및 저작물의 이용조건은 각 수업에서 확인하세요.</footer>
+</div>
+<script>
+(function(){
+"use strict";
+var all=[],grade="all",category="all",search="";
+var q=function(s){return document.querySelector(s)};
+function el(tag,cls,content){var x=document.createElement(tag);if(cls)x.className=cls;if(content!==undefined)x.textContent=String(content);return x}
+function valid(x){return x&&x.status==="published"&&typeof x.title==="string"&&/^[a-z0-9-]+\/$/.test(x.path)&&typeof x.image==="string"&&/^[a-z0-9-]+\/assets\/[a-z0-9-]+\.(?:jpg|png|webp)$/.test(x.image)&&Number.isInteger(x.grade)&&x.grade>=1&&x.grade<=3}
+function card(x){
+ var a=el("article","card"),cover=el("a","cover");cover.href=x.path;cover.setAttribute("aria-label",x.title+" 열기");var im=el("img");im.src=x.image;im.alt=x.title+" 대표 악기";im.loading="lazy";cover.appendChild(im);a.appendChild(cover);
+ var body=el("div","cardBody"),tags=el("div","tags");
+ [[x.gradeLabel,"blue"],[x.category,""],[x.durationMinutes+"분","yellow"]].forEach(function(v){tags.appendChild(el("span","tag "+v[1],v[0]))});
+ body.appendChild(tags);body.appendChild(el("h3","",x.title));body.appendChild(el("p","",x.summary));
+ var feat=el("div","features");feat.textContent=["총 "+x.steps+"장면",x.teacherGuide?"교사 설명 토글":"",(x.media&&x.media.photos)?"실제 사진 "+x.media.photos+"장":"",(x.media&&x.media.audios)?"음원 "+x.media.audios+"종":""].filter(Boolean).join(" · ");body.appendChild(feat);
+ var play=el("a","launch","▶ 수업 실행");play.href=x.path;body.appendChild(play);a.appendChild(body);return a;
+}
+function render(){
+ var term=search.trim().toLowerCase();var list=all.filter(function(x){var txt=[x.title,x.summary,x.curriculum,x.gradeLabel,x.category].concat(x.tags||[]).join(" ").toLowerCase();return (grade==="all"||String(x.grade)===grade)&&(category==="all"||x.category===category)&&(!term||txt.includes(term))});
+ q("#lessonCards").replaceChildren.apply(q("#lessonCards"),list.map(card));q("#emptyState").hidden=list.length>0;q("#resultCount").textContent="검색 결과 "+list.length+"개 / 등록된 수업 "+all.length+"개";
+}
+q("#lessonSearch").addEventListener("input",function(e){search=e.target.value;render()});
+q("#categoryFilter").addEventListener("change",function(e){category=e.target.value;render()});
+q("#gradeFilters").addEventListener("click",function(e){var b=e.target.closest("button[data-grade]");if(!b)return;grade=b.dataset.grade;q("#gradeFilters").querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",String(x===b))});render()});
+fetch("catalog.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw Error("Cannot load catalog");return r.json()}).then(function(d){if(d.schemaVersion!==1||!Array.isArray(d.lessons))throw Error("Catalog invalid");all=d.lessons.filter(valid);render()}).catch(function(){q("#resultCount").textContent="자료 목록을 불러오지 못했습니다.";q("#lessonCards").replaceChildren();q("#emptyState").hidden=false;q("#emptyState").replaceChildren(el("b","","목록 서버 연결을 확인해 주세요"),el("p","","화면 위쪽 오케스트라 수업 바로 시작 버튼은 사용할 수 있습니다."))});
+})();
+</script>
+</body>
+</html>
