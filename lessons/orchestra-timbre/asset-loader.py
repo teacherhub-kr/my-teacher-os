@@ -68,6 +68,25 @@ def wiki_image(key):
       if url: links.append(url)
     except Exception as e:print("WARN image API",title,str(e)[:150])
   # Existing source photos are considered only to diagnose broken URLs, not republished.
+  # A Wikipedia infobox may contain a tiny illustration (for example 300x246 timpani).
+  # Prefer a substantial Creative Commons photograph from Commons instead.
+  if key in ("timpani","snare") or not links:
+    try:
+      query=urllib.parse.urlencode({"action":"query","generator":"search","gsrsearch":TITLES[key]+" instrument photo",
+        "gsrnamespace":"6","gsrlimit":"25","prop":"imageinfo","iiprop":"url|size","iiurlwidth":"1200","format":"json"})
+      dat=json.loads(retrieve("https://commons.wikimedia.org/w/api.php?"+query,limit=2_000_000).decode())
+      candidates=[]
+      for p in dat.get("query",{}).get("pages",{}).values():
+        inf=p.get("imageinfo",[{}])[0]
+        name=p.get("title","")
+        if not name.lower().endswith((".jpg",".jpeg",".png")): continue
+        if min(inf.get("width",0),inf.get("height",0))<650: continue
+        img=inf.get("thumburl") or inf.get("url")
+        if img: candidates.append((inf.get("width",0)*inf.get("height",0),img,name))
+      candidates.sort(reverse=True)
+      for _,img,name in candidates[:8]:links.insert(0,img)
+      print("COMMONS_IMAGE_CANDIDATES",key,len(candidates),flush=True)
+    except Exception as e: print("WARN Commons image lookup",key,str(e),flush=True)
   if not links: raise RuntimeError("No licensed Wikipedia photograph for "+key)
   for u in links:
     try:
