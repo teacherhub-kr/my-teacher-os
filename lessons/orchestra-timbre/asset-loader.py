@@ -42,7 +42,7 @@ def retrieve(url,limit=30_000_000,tries=3):
         if size>limit: raise RuntimeError("size exceeds max: "+str(size)+" url="+url)
         b=resp.read(limit+1)
         if len(b)>limit: raise RuntimeError("download too large: "+url)
-        if len(b)<500: raise RuntimeError("too small: "+url)
+        if len(b)<80: raise RuntimeError("too small: "+url)
         return b
     except Exception as e:
       last=e
@@ -115,13 +115,8 @@ def get_audio(key):
   if key=="tuba":
     source=commons_url(TUBA)
     data=retrieve(source,limit=25_000_000)
-    tmp=MEDIA/"tuba.webm"
-    tmp.write_bytes(data)
-    out=MEDIA/"tuba.mp3"
-    subprocess.run(["ffmpeg","-y","-loglevel","error","-i",str(tmp),"-vn","-t","24","-codec:a","libmp3lame","-qscale:a","4",str(out)],check=True)
-    tmp.unlink()
-    b=out.read_bytes()
-    return save_audio(key,b,"mp3",CREDIT_BASE+urllib.parse.quote(TUBA))
+    if data[:4]!=b"\x1a\x45\xdf\xa3": raise RuntimeError("invalid WEBM tuba")
+    return save_audio(key,data,"webm",CREDIT_BASE+urllib.parse.quote(TUBA))
   if key=="timpani":
     # Only the actual timpani recordings within Philharmonia's percussion library.
     archive=retrieve(PERCUSSION,limit=350_000_000)
