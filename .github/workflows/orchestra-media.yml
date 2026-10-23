@@ -19,12 +19,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install image checks and FFmpeg
-        run: |
-          python -m pip install Pillow
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq ffmpeg
-          ffmpeg -version
+      - name: Install image checks
+        run: python -m pip install Pillow
       - name: Fetch and verify 14 photos plus 14 real performances
         run: python lessons/orchestra-timbre/asset-loader.py
       - name: Verify JS parses and all local audio images are present
@@ -34,7 +30,7 @@ jobs:
           from PIL import Image
           p=Path('lessons/orchestra-timbre/assets')
           jpg=list(p.glob('*.jpg'))
-          media=list(p.glob('*.ogg'))+list(p.glob('*.mp3'))
+          media=list(p.glob('*.ogg'))+list(p.glob('*.mp3'))+list(p.glob('*.webm'))
           assert len(jpg)==14, len(jpg)
           assert len(media)==14, len(media)
           for j in jpg:
