@@ -1,0 +1,32 @@
+name: Music Library Integration Smoke
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lessons/index.html'
+      - 'lessons/catalog.json'
+      - 'lessons/orchestra-timbre/index.html'
+      - 'app-v05.html'
+      - 'app-v05.css'
+      - 'tests/music-library-smoke.mjs'
+      - '.github/workflows/music-library-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser
+        run: |
+          npm install --no-save playwright
+          npx playwright install chromium --only-shell
+      - name: Start temporary site server and test OS, catalog, lesson
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/music-library-http.log 2>&1 &
+          node tests/music-library-smoke.mjs
