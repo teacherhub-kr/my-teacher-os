@@ -30,7 +30,7 @@ jobs:
           from PIL import Image
           p=Path('lessons/orchestra-timbre/assets')
           jpg=list(p.glob('*.jpg'))
-          media=list(p.glob('*.ogg'))+list(p.glob('*.mp3'))+list(p.glob('*.webm'))
+          media=list(p.glob('*.ogg'))+list(p.glob('*.mp3'))+list(p.glob('*.webm'))+list(p.glob('*.wav'))
           assert len(jpg)==14, len(jpg)
           assert len(media)==14, len(media)
           for j in jpg:
