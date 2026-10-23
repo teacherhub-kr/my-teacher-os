@@ -1,0 +1,25 @@
+name: Orchestra Live Browser Smoke Test
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'lessons/orchestra-timbre/browser-smoke.mjs'
+      - '.github/workflows/orchestra-live-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser testing tools
+        run: |
+          npm install --no-save playwright
+          npx playwright install chromium --only-shell
+      - name: Verify published HTTPS site by loading and playing all media
+        run: node lessons/orchestra-timbre/browser-smoke.mjs
