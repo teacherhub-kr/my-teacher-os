@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-10-23",
+  "title": "MY MUSIC CLASS · 음악 수업자료실",
+  "lessons": [
+    {
+      "id": "orchestra-timbre",
+      "status": "published",
+      "title": "오케스트라 악기의 음색",
+      "summary": "현악기·목관악기·금관악기·타악기의 실제 연주를 듣고 구별하는 45분 참여형 음악 수업.",
+      "grade": 2,
+      "gradeLabel": "중학교 2학년",
+      "curriculum": "2022 개정 교육과정",
+      "category": "감상",
+      "durationMinutes": 45,
+      "steps": 9,
+      "path": "orchestra-timbre/",
+      "image": "orchestra-timbre/assets/violin.jpg",
+      "teacherGuide": true,
+      "media": {
+        "photos": 14,
+        "audios": 14,
+        "videoEmbed": true
+      },
+      "tags": [
+        "오케스트라",
+        "악기",
+        "음색",
+        "청음",
+        "퀴즈",
+        "교사 설명"
+      ],
+      "verifiedAt": "2026-10-23",
+      "note": "실제 사진 14장, 실제 음원 14종, 9개 장면, 교사용 해설 토글 검증. 영상은 플랫폼·학교망에 따라 재생 제한 가능."
+    }
+  ]
+}
