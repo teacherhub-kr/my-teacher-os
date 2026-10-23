@@ -1,0 +1,132 @@
+{
+  "images": {
+    "violin": {
+      "url": "assets/violin.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Violin"
+    },
+    "viola": {
+      "url": "assets/viola.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Viola"
+    },
+    "cello": {
+      "url": "assets/cello.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Cello"
+    },
+    "bass": {
+      "url": "assets/bass.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Double_bass"
+    },
+    "flute": {
+      "url": "assets/flute.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Flute"
+    },
+    "oboe": {
+      "url": "assets/oboe.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Oboe"
+    },
+    "clarinet": {
+      "url": "assets/clarinet.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Clarinet"
+    },
+    "bassoon": {
+      "url": "assets/bassoon.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Bassoon"
+    },
+    "horn": {
+      "url": "assets/horn.jpg",
+      "credit": "https://en.wikipedia.org/wiki/French_horn"
+    },
+    "trumpet": {
+      "url": "assets/trumpet.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Trumpet"
+    },
+    "trombone": {
+      "url": "assets/trombone.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Trombone"
+    },
+    "tuba": {
+      "url": "assets/tuba.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Tuba"
+    },
+    "timpani": {
+      "url": "assets/timpani.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Timpani"
+    },
+    "snare": {
+      "url": "assets/snare.jpg",
+      "credit": "https://en.wikipedia.org/wiki/Snare_drum"
+    }
+  },
+  "sounds": {
+    "violin": {
+      "url": "assets/violin.ogg",
+      "source": "https://commons.wikimedia.org/wiki/File:Violin%20open%20string.ogg",
+      "format": "ogg"
+    },
+    "viola": {
+      "url": "assets/viola.ogg",
+      "source": "https://commons.wikimedia.org/wiki/File:Viola%20CGDA.ogg",
+      "format": "ogg"
+    },
+    "cello": {
+      "url": "assets/cello.mp3",
+      "source": "https://philharmonia.co.uk/resources/sound-samples/",
+      "format": "mp3"
+    },
+    "bass": {
+      "url": "assets/bass.mp3",
+      "source": "https://philharmonia.co.uk/resources/sound-samples/",
+      "format": "mp3"
+    },
+    "flute": {
+      "url": "assets/flute.mp3",
+      "source": "https://philharmonia.co.uk/resources/sound-samples/",
+      "format": "mp3"
+    },
+    "oboe": {
+      "url": "assets/oboe.mp3",
+      "source": "https://philharmonia.co.uk/resources/sound-samples/",
+      "format": "mp3"
+    },
+    "clarinet": {
+      "url": "assets/clarinet.mp3",
+      "source": "https://philharmonia.co.uk/resources/sound-samples/",
+      "format": "mp3"
+    },
+    "bassoon": {
+      "url": "assets/bassoon.mp3",
+      "source": "https://philharmonia.co.uk/resources/sound-samples/",
+      "format": "mp3"
+    },
+    "horn": {
+      "url": "assets/horn.mp3",
+      "source": "https://philharmonia.co.uk/resources/sound-samples/",
+      "format": "mp3"
+    },
+    "trumpet": {
+      "url": "assets/trumpet.ogg",
+      "source": "https://commons.wikimedia.org/wiki/File:Flaggenparade%20der%20deutschen%20Bundeswehr%2C%20Trompetensignal%20%28Studio%29.ogg",
+      "format": "ogg"
+    },
+    "trombone": {
+      "url": "assets/trombone.mp3",
+      "source": "https://philharmonia.co.uk/resources/sound-samples/",
+      "format": "mp3"
+    },
+    "tuba": {
+      "url": "assets/tuba.webm",
+      "source": "https://commons.wikimedia.org/wiki/File:8%20Days%20of%20Day-%20Tuba%20solo%20featuring%20Chief%20Musician%20James%20Hicks.webm",
+      "format": "webm"
+    },
+    "timpani": {
+      "url": "assets/timpani.wav",
+      "source": "https://commons.wikimedia.org/wiki/File:Timpani%2064-c-p5.wav",
+      "format": "wav"
+    },
+    "snare": {
+      "url": "assets/snare.ogg",
+      "source": "https://commons.wikimedia.org/wiki/File:Snare%20drum%20unmuffled.ogg",
+      "format": "ogg"
+    }
+  }
+}
