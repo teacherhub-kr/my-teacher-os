@@ -65,6 +65,28 @@ try{
  await page.locator("#lesson button.qbtn").first().click();
  if(!await page.locator("#lesson .note").count())throw Error("Quiz didn't respond");
 
+ // Teacher explanation is intentionally hidden from students by default.
+ await page.evaluate(()=>gotoScene(0));
+ const guide=page.locator("#teacherPanel");
+ const toggle=page.locator("#teacherToggle");
+ if(!await toggle.isVisible())throw Error("Teacher guide toggle missing");
+ if(await guide.isVisible())throw Error("Teacher guide must start hidden");
+ await toggle.click();
+ if(!await guide.isVisible())throw Error("Teacher guide failed to open");
+ if(!await guide.getByText("교사 발문").count())throw Error("Teacher prompting guidance missing");
+ for(let i=0;i<9;i++){
+   await page.evaluate(n=>gotoScene(n),i);
+   if(!await guide.isVisible())throw Error("Teacher guide hidden unexpectedly on scene "+i);
+   const text=(await guide.textContent())||"";
+   if(!text.includes("교사 발문")||!text.includes("예상 답변")||!text.includes("지도 유의사항")){
+     throw Error("Teacher guide content missing on scene "+i);
+   }
+ }
+ await toggle.click();
+ if(await guide.isVisible())throw Error("Teacher guide did not hide on second click");
+ if(await toggle.getAttribute("aria-expanded")!=="false")throw Error("Teacher toggle aria-expanded not false");
+ console.log("TEACHER_GUIDE: PASS (9 scenes, open/close, default hidden)");
+
  await page.evaluate(()=>{gotoScene(0);openVideo("Instrument test","zgaQFLUdUL0")});
  const embedded=await page.locator("#videoFrame iframe").getAttribute("src");
  if(!embedded?.includes("youtube.com/embed/"))throw Error("No embedded player");
