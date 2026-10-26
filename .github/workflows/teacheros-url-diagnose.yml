@@ -1,0 +1,37 @@
+name: Teacher OS Public URL Diagnostics
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/teacheros-url-diagnose.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check-urls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check DNS, HTTPS status and content of both Pages hosts
+        shell: bash
+        run: |
+          set -u
+          for host in teacherhub-kr.github.io puzzlex5.github.io; do
+            echo "::group::DNS for $host"
+            getent ahostsv4 "$host" | head -n 3 || true
+            echo "::endgroup::"
+          done
+          n=0
+          for target in \
+            'https://teacherhub-kr.github.io/my-teacher-os/' \
+            'https://teacherhub-kr.github.io/my-teacher-os/lessons/' \
+            'https://teacherhub-kr.github.io/my-teacher-os/lessons/orchestra-timbre/' \
+            'https://puzzlex5.github.io/my-teacher-os/' \
+            'https://puzzlex5.github.io/my-teacher-os/lessons/' \
+            'https://github.com/teacherhub-kr/my-teacher-os'; do
+            n=$((n+1))
+            echo "::group::PROBE $n $target"
+            curl --silent --show-error --location --max-time 20 --output "/tmp/teacheros-probe-$n.html" --write-out 'HTTP_CODE=%{http_code} FINAL_URL=%{url_effective} REMOTE_IP=%{remote_ip} SSL_VERIFY=%{ssl_verify_result} BYTES=%{size_download}\n' "$target" || echo "PROBE_CURL_ERROR=1"
+            grep -io -m 1 '<title>[^<]*</title>' "/tmp/teacheros-probe-$n.html" 2>/dev/null | head -n 1 || true
+            echo "::endgroup::"
+          done
