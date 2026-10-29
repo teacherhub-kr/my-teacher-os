@@ -52,17 +52,10 @@ jobs:
           assert re.search(r'id="dashboardBody"[^>]*style="[^"]*display:\s*block',doc), 'No-year dashboard still hidden!'
           print('Chromium smoke OK: new dashboard and onboarding visible before year selection.')
           PY
-      - name: Capture 1440px first-visit reference
-        if: always()
-        run: |
-          chrome="$(command -v google-chrome || command -v chromium || true)"
-          if [ -n "$chrome" ]; then
-            "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
-              --no-first-run --disable-extensions --window-size=1460,950 \
-              --virtual-time-budget=8000 --screenshot=/tmp/teacheros-v50.png \
-              http://127.0.0.1:8432/ >/dev/null 2>&1 || true
-          fi
-          if [ -f /tmp/teacheros-v50.png ]; then cp /tmp/teacheros-v50.png ./teacheros-v50-ci-preview.png; fi
+          "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --no-first-run --disable-extensions --window-size=1460,950 \
+            --virtual-time-budget=8000 --screenshot=teacheros-v50-ci-preview.png \
+            http://127.0.0.1:8432/ >/dev/null 2>/tmp/teacheros-screenshot-chrome.log
       - uses: actions/upload-artifact@v4
         if: always()
         with:
