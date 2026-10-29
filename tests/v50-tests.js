@@ -16,6 +16,8 @@ assert(css.includes('white-space:nowrap!important;word-break:keep-all!important'
 assert(css.includes('#t49Screen{display:grid!important'), 'premium screen must not be suppressed by legacy hidden styles');
 assert(css.includes('@media(max-width:820px)'),'responsive layout required');
 assert(css.includes('teacher-hero-v50.svg'),'reference-style artwork must be wired');
+assert(css.includes('#nav button:not(:is([data-view="dashboard"]'), 'legacy menus must not crowd the primary nav');
+assert(app.includes("nav.appendChild(button)"), 'approved navigation order must be applied');
 assert(art.includes('<svg') && art.includes('좋은 음악수업') && art.includes('>수업</text>'),'music-focused artwork missing');
 assert(index.includes('teacher-dashboard-v49.js?v=50.0-layout-fix')&&index.includes('teacher-dashboard-v49.css?v=50.0-layout-fix'),'cache busting required');
 for(const text of [app,css,art])assert(!/최윤우|이우주/.test(text),'student names must not enter public assets');
