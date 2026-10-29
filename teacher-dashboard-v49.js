@@ -214,7 +214,7 @@
   function apply(){
     if(!q('.shell')||!q('#dashboardBody'))return;
     document.body.classList.add('teacher49-mode');
-    addNav();addSearch();addViews();addDashboard();keepHomeVisible();fillSavedSheet();
+    addNav();addViews();addDashboard();keepHomeVisible();fillSavedSheet();
     var y=current();
     renderKpis(y);renderProgress();renderToday(y);renderAssessments(y);renderAlerts(y);
     var active=q('#nav button.active[data-view]');
