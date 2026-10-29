@@ -66,6 +66,12 @@
     var tagline=q('.brand small');if(tagline)tagline.textContent='음악 교사의 스마트 업무 공간';
     var link=nav.querySelector('a.musicLibraryLink');if(link){link.style.display='flex';link.setAttribute('aria-label','MY MUSIC CLASS 음악 수업자료실 열기')}
     var foot=q('.side-foot');if(foot)foot.textContent='수업 · 평가 · 기록을 한곳에서';
+    // Reorder the primary navigation to match the approved seven-section design.
+    // Non-primary legacy views stay in the DOM for existing feature buttons.
+    ['dashboard','calendar','assessment','t49-classes','t49-exceptions','t49-records','documents','settings'].forEach(function(view){
+      var button=nav.querySelector('button[data-view="'+view+'"]');
+      if(button)nav.appendChild(button);
+    });
   }
   function addSearch(){
     var top=q('.top');if(!top||q('#t49Search'))return;
