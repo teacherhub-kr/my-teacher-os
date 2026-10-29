@@ -108,7 +108,7 @@
       '<div class="t49-portal-box"><div class="t49-portal-icon">'+icon+'</div><h3>원본 Google Sheets</h3><p>성적과 교사 관찰 기록은 접근 권한을 가진 계정으로만 열어 확인합니다.</p><button type="button" class="t49-action" data-t49-sheet>원본 열기 ↗</button></div>'+
       '<div class="t49-portal-box"><div class="t49-portal-icon">▤</div><h3>교사만 확인할 정보</h3><p>학생 이름, 성적, 예외사항, 세특 초안은 공개 GitHub Pages에 저장하거나 노출하지 않습니다.</p></div>'+
       '<div class="t49-portal-box"><div class="t49-portal-icon">✓</div><h3>현재 관리 원칙</h3><p>기존 채점표가 원본입니다. 점수만으로 실제 응시나 생활기록부 내용을 자동 확정하지 않습니다.</p></div></div>'+
-      '<div class="t49-settings"><input class="t49SheetUrl" aria-label="개인 Google Sheets URL" type="url" placeholder="교사용 통합 스케줄표 Google Sheets 주소" autocomplete="off"><button type="button" class="t49-action" id="t49SaveSheet">이 브라우저에 연결 저장</button><button type="button" class="t49-action alt" id="t49ClearSheet">연결 주소 지우기</button></div>'+
+      '<div class="t49-settings"><input class="t49SheetUrl" aria-label="개인 Google Sheets URL" type="url" placeholder="교사용 통합 스케줄표 Google Sheets 주소" autocomplete="off"><button type="button" class="t49-action" data-t49-save>이 브라우저에 연결 저장</button><button type="button" class="t49-action alt" data-t49-clear>연결 주소 지우기</button></div>'+
       '<p class="t49-settings-note">주소만 이 브라우저에 저장합니다. 계정 비밀번호·API 키·학생정보는 입력하지 마세요. 다른 사람에게 이 사이트가 공개되어도 본인의 Google Sheets 열람 권한이 자동으로 부여되지는 않습니다. 공유 설정은 비공개로 유지하세요.</p></div>';
   }
   function addViews(){
@@ -204,14 +204,14 @@
     var b=e.target.closest('[data-t49-to]');if(b){switchTo(b.dataset.t49To);return}
     var grade=e.target.closest('[data-t49-grade]');if(grade){state.grade=Number(grade.dataset.t49Grade);renderProgress();return}
     var sheet=e.target.closest('[data-t49-sheet]');if(sheet){openSheet();return}
-    var save=e.target.closest('#t49SaveSheet');if(save){
+    var save=e.target.closest('[data-t49-save]');if(save){
       var input=save.closest('.t49-panel').querySelector('.t49SheetUrl');
       var url=safeSheetUrl(input&&input.value);
       if(!url){input.setCustomValidity('Google Sheets의 올바른 URL을 입력하세요.');input.reportValidity();setTimeout(function(){input.setCustomValidity('')},1600);return}
       try{localStorage.setItem(KEY,url);save.textContent='연결 주소 저장됨 ✓';setTimeout(function(){save.textContent='이 브라우저에 연결 저장'},1700)}catch(err){alert('이 브라우저에서 연결 주소를 저장할 수 없습니다.')}
       fillSavedSheet();return;
     }
-    var clear=e.target.closest('#t49ClearSheet');if(clear){try{localStorage.removeItem(KEY)}catch(err){}fillSavedSheet();document.querySelectorAll('.t49SheetUrl').forEach(function(i){i.value=''})}
+    var clear=e.target.closest('[data-t49-clear]');if(clear){try{localStorage.removeItem(KEY)}catch(err){}fillSavedSheet();document.querySelectorAll('.t49SheetUrl').forEach(function(i){i.value=''})}
   });
   var old=globalThis.render;
   if(typeof old==='function'){globalThis.render=function(){var result=old.apply(this,arguments);setTimeout(apply,0);return result}}
