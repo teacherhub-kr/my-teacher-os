@@ -185,3 +185,13 @@ body.teacher49-mode #dashboard>.view:not(.active){display:none!important}
 @media(max-width:1180px){body.teacher49-mode .t49-art{flex-basis:34%!important;min-width:170px!important}}
 @media(max-width:960px){body.teacher49-mode .t49-art{display:none!important}body.teacher49-mode .t49-hero{padding:25px!important;min-height:230px}}
 @media(max-width:650px){body.teacher49-mode .t49-hero{padding:22px 18px!important;min-height:240px}body.teacher49-mode .t49-hero h2{font-size:clamp(26px,7vw,34px)}}
+
+
+/* Screenshot iteration #2: show only the approved primary navigation. */
+body.teacher49-mode.premium-ui #nav button:not(:is([data-view="dashboard"],[data-view="calendar"],[data-view="assessment"],[data-view="t49-classes"],[data-view="t49-exceptions"],[data-view="t49-records"],[data-view="documents"],[data-view="settings"])){display:none!important}
+body.teacher49-mode.premium-ui #nav a.musicLibraryLink{display:none!important}
+body.teacher49-mode.premium-ui #nav button[data-view="settings"]{margin-top:13px!important;border-top:1px solid #e6edf7!important;border-radius:0!important;padding-top:16px!important}
+body.teacher49-mode.premium-ui #nav button:not(.active):focus-visible{outline:3px solid #9bbfff!important;outline-offset:2px!important}
+body.teacher49-mode.premium-ui .side-foot{font-size:0!important}
+body.teacher49-mode.premium-ui .side-foot::after{content:'수업 · 평가 · 기록을 한곳에서';font-size:11px;color:#8c9ab1}
+@media(max-width:820px){body.teacher49-mode.premium-ui #nav button[data-view="settings"]{margin-top:0!important;border-top:0!important;border-radius:12px!important;padding-top:8px!important}}
