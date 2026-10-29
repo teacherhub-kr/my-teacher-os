@@ -55,7 +55,7 @@
       if(!el.dataset.t49Clean){Array.from(el.childNodes).filter(function(n){return n.nodeType===3}).forEach(function(n){n.remove()});el.dataset.t49Clean='1'}
       var t=el.querySelector('span:not(.t49-nav-glyph):not(.t49-nav-number)');if(t)t.textContent=item.title;
       var glyph=el.querySelector('.t49-nav-glyph');
-      if(!glyph){glyph=document.createElement('span');glyph.className='t49-nav-glyph';glyph.setAttribute('aria-hidden','true');el.insertBefore(glyph,el.firstChild)}
+      if(!glyph){glyph=document.createElement('i');glyph.className='t49-nav-glyph';glyph.style.fontStyle='normal';glyph.setAttribute('aria-hidden','true');el.insertBefore(glyph,el.firstChild)}
       glyph.textContent=item.icon;
       var count=el.querySelector('.t49-nav-number');
       if(!count){count=document.createElement('span');count.className='t49-nav-number';count.setAttribute('aria-hidden','true');el.appendChild(count)}
@@ -243,7 +243,7 @@
   });
   var old=globalThis.render;
   if(typeof old==='function'){globalThis.render=function(){var result=old.apply(this,arguments);setTimeout(apply,0);return result}}
-  setTimeout(apply,200);setTimeout(apply,1400);setTimeout(apply,3500);
+  setTimeout(apply,200);setTimeout(apply,1400);setTimeout(apply,3500);setTimeout(apply,4400);
   setInterval(apply,30000);
   document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')apply()});
   globalThis.TeacherOSPremiumDashboard49={apply:apply,openSheet:openSheet,safeSheetUrl:safeSheetUrl};
