@@ -190,10 +190,31 @@
   function fillSavedSheet(){
     document.querySelectorAll('.t49SheetUrl').forEach(function(input){if(document.activeElement!==input)input.value=sheetUrl()});
   }
+  function keepHomeVisible(){
+    var body=q('#dashboardBody'),first=q('#firstHero'),y=current();
+    // The legacy v05 renderer intentionally hides the entire dashboard until a year exists.
+    // Our welcome dashboard must be visible before setup, with setup offered as a safe action.
+    if(body)body.style.display='block';
+    if(first)first.hidden=true;
+    var screen=q('#t49Screen');if(!screen)return;
+    var banner=q('#t49SetupBanner');
+    if(!y){
+      if(!banner){
+        banner=document.createElement('div');
+        banner.id='t49SetupBanner';
+        banner.className='t49-onboarding';
+        banner.setAttribute('role','status');
+        banner.innerHTML='<span class="t49-onboarding-icon" aria-hidden="true">✦</span>'+
+          '<span class="t49-onboarding-copy"><b>2026학년도 수업·평가를 연결해 주세요.</b><small>학년도를 설정하면 이 브라우저에 저장된 시간표와 평가정보가 대시보드에 표시됩니다. 성적은 교사용 Google Sheets에서만 확인합니다.</small></span>'+
+          '<button type="button" class="t49-action" data-t49-start>학년도 시작 →</button>';
+        var anchor=q('#t49Kpis');if(anchor)screen.insertBefore(banner,anchor);else screen.appendChild(banner);
+      }
+    }else if(banner)banner.remove();
+  }
   function apply(){
     if(!q('.shell')||!q('#dashboardBody'))return;
     document.body.classList.add('teacher49-mode');
-    addNav();addSearch();addViews();addDashboard();fillSavedSheet();
+    addNav();addSearch();addViews();addDashboard();keepHomeVisible();fillSavedSheet();
     var y=current();
     renderKpis(y);renderProgress();renderToday(y);renderAssessments(y);renderAlerts(y);
     var active=q('#nav button.active[data-view]');
@@ -203,6 +224,7 @@
   document.addEventListener('click',function(e){
     var b=e.target.closest('[data-t49-to]');if(b){switchTo(b.dataset.t49To);return}
     var grade=e.target.closest('[data-t49-grade]');if(grade){state.grade=Number(grade.dataset.t49Grade);renderProgress();return}
+    var start=e.target.closest('[data-t49-start]');if(start){q('#firstYear')?.click();return}
     var sheet=e.target.closest('[data-t49-sheet]');if(sheet){openSheet();return}
     var save=e.target.closest('[data-t49-save]');if(save){
       var input=save.closest('.t49-panel').querySelector('.t49SheetUrl');
