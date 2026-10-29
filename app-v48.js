@@ -8,6 +8,9 @@
   function ensureCss(){if(q('#simpleUiCss48'))return;const l=document.createElement('link');l.id='simpleUiCss48';l.rel='stylesheet';l.href='app-v48.css?v=48.0-simple';document.head.appendChild(l)}
   function openView(view){const b=q(`#nav button[data-view="${view}"]`);if(b)b.click()}
   function simplifyNav(){
+    // v50 owns the premium navigation icon/label pairing. Avoid overwriting
+    // the first span (icon) with old short labels after the new UI renders.
+    if(document.body.classList.contains('teacher49-mode'))return;
     const nav=q('#nav');if(!nav)return;
     U.SECONDARY_NAV.forEach(x=>{const b=nav.querySelector(`button[data-view="${x.view}"]`);if(b)b.dataset.simple48Secondary='1'});
     U.PRIMARY_NAV.forEach(x=>{const b=nav.querySelector(`button[data-view="${x.view}"]`);if(!b)return;const s=b.querySelector('span');if(s)s.textContent=x.label});
