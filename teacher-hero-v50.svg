@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="780" height="320" viewBox="0 0 780 320" role="img" aria-label="음악교사의 노트북, 평가 자료와 악보가 놓인 책상">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fffefb"/><stop offset=".65" stop-color="#f3f8ff"/><stop offset="1" stop-color="#eaf4ff"/></linearGradient>
+  <linearGradient id="book" x1="0" x2="1"><stop stop-color="#dce7ff"/><stop offset="1" stop-color="#b6cef6"/></linearGradient>
+  <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f8fcff"/><stop offset="1" stop-color="#dfedff"/></linearGradient>
+  <filter id="shadow" x="-30%" y="-30%" width="170%" height="170%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#5279a1" flood-opacity=".23"/></filter>
+</defs>
+<rect width="780" height="320" rx="20" fill="url(#bg)"/>
+<path d="M0 250 Q290 210 780 253 V320 H0" fill="#f5ede5" opacity=".72"/>
+<g fill="none" stroke="#b6cae5" stroke-width="3" opacity=".4">
+  <path d="M535 6 V65M614 0 V46M686 17 V58"/>
+  <path d="M472 0 V38"/>
+</g>
+<g font-family="Arial,sans-serif" fill="#2e67c5" font-weight="700">
+ <text x="54" y="99" font-size="24" transform="rotate(-7 54 99)">오늘도,</text>
+ <text x="72" y="132" font-size="27" transform="rotate(-7 72 132)">좋은 음악수업!</text>
+ <text x="186" y="165" font-size="37">♪</text>
+ <text x="654" y="37" font-size="44" opacity=".46">♫</text>
+</g>
+<g stroke="#ffbc3e" stroke-width="5" stroke-linecap="round"><path d="M28 40 L18 22M56 28 L55 10M77 41 L93 27"/></g>
+<g filter="url(#shadow)">
+  <g transform="translate(160 230) rotate(-8)">
+    <rect width="250" height="87" rx="9" fill="#fff" stroke="#c6d5e8" stroke-width="2"/>
+    <path d="M126 0 V87" stroke="#c1cfe1" stroke-width="2"/>
+    <path d="M11 21 H116 M11 36 H111 M11 53 H105 M140 23 H235 M140 39 H229 M140 56 H238" stroke="#dbe5f1" stroke-width="3"/>
+    <text x="22" y="70" font-size="25" fill="#517cc9">♬</text><text x="173" y="70" font-size="22" fill="#517cc9">♪</text>
+  </g>
+  <g transform="translate(295 117)">
+    <rect x="-5" y="95" width="137" height="18" rx="6" fill="#dce8f7"/>
+    <rect x="0" y="64" width="131" height="31" rx="4" fill="#b7cffe" stroke="#85ade7"/>
+    <rect x="5" y="31" width="129" height="31" rx="4" fill="#f2d39d" stroke="#cca871"/>
+    <rect x="1" y="0" width="135" height="31" rx="4" fill="#e6ecf5" stroke="#a6b7d1"/>
+    <text x="27" y="22" font-size="18" font-family="sans-serif" fill="#40537a" font-weight="700">수업</text>
+    <text x="28" y="55" font-size="18" font-family="sans-serif" fill="#5b677f" font-weight="700">평가</text>
+    <text x="28" y="87" font-size="18" font-family="sans-serif" fill="#365b95" font-weight="700">기록</text>
+  </g>
+  <g transform="translate(419 77) rotate(6 154 108)">
+    <rect x="0" y="0" width="302" height="194" rx="16" fill="#193864"/>
+    <rect x="12" y="12" width="278" height="168" rx="8" fill="url(#screen)"/>
+    <rect x="23" y="25" width="255" height="21" rx="6" fill="#fefefe"/>
+    <circle cx="37" cy="35" r="4" fill="#9ec4ff"/>
+    <rect x="57" y="32" width="86" height="6" rx="3" fill="#b5cffa"/>
+    <rect x="30" y="60" width="73" height="84" rx="14" fill="#cae0ff"/>
+    <text x="39" y="125" font-size="60" fill="#2762c0">♫</text>
+    <rect x="118" y="65" width="132" height="10" rx="5" fill="#a8c5eb"/>
+    <rect x="118" y="85" width="115" height="9" rx="5" fill="#c5d9f6"/>
+    <rect x="118" y="108" width="123" height="9" rx="5" fill="#d8e4f5"/>
+    <circle cx="145" cy="142" r="13" fill="#94bffa"/>
+    <path d="M141 134 L152 141 L141 148Z" fill="#fff"/>
+    <path d="M-11 194 L308 194 L329 218 L-35 218Z" fill="#7796c0"/>
+    <path d="M5 197 H289 L305 213 H-14Z" fill="#bdd0e6"/>
+    <path d="M134 209 H177" stroke="#8aaccf" stroke-width="6" stroke-linecap="round"/>
+  </g>
+</g>
+<g transform="translate(227 113)">
+ <path d="M22 92 Q-28 48 -8 1 M27 92 Q12 22 38 -1 M30 92 Q65 41 85 25" fill="none" stroke="#507f6a" stroke-width="6"/>
+ <ellipse cx="-8" cy="16" rx="28" ry="11" transform="rotate(-36 -8 16)" fill="#71937c"/>
+ <ellipse cx="38" cy="19" rx="24" ry="12" transform="rotate(32 38 19)" fill="#557d67"/>
+ <ellipse cx="75" cy="33" rx="30" ry="12" transform="rotate(-35 75 33)" fill="#88a88a"/>
+ <path d="M3 79 H53 L46 127 H10Z" fill="#dfbc86" stroke="#c6a36c" stroke-width="3"/>
+</g>
+</svg>
