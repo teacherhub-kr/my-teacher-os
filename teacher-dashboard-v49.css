@@ -172,3 +172,16 @@ body.teacher49-mode.premium-ui .musicLibraryFeatured{background:linear-gradient(
  body.teacher49-mode.premium-ui .top{padding:9px!important}
  .t49-onboarding .t49-action{width:100%}
 }
+
+
+/* Layout parity with the approved music dashboard reference */
+body.teacher49-mode .t49-hero{min-height:255px;background:linear-gradient(105deg,#fffdfa 0%,#fffdf9 38%,#f4f8ff 78%,#f1f8ff 100%)!important;padding:30px 28px 30px 38px!important}
+body.teacher49-mode .t49-art{flex:0 0 clamp(240px,38%,560px)!important;width:auto!important;max-width:560px;height:250px!important;min-width:0!important;align-self:center!important;background:url("./teacher-hero-v50.svg") center / contain no-repeat}
+body.teacher49-mode .t49-art>*{display:none!important}
+body.teacher49-mode .t49-hero-copy{max-width:660px}
+body.teacher49-mode .t49-hero h2{font-size:clamp(28px,2.9vw,46px);letter-spacing:-.045em;line-height:1.19;margin:16px 0 14px}
+body.teacher49-mode .t49-kpi{min-height:126px}
+body.teacher49-mode #dashboard>.view:not(.active){display:none!important}
+@media(max-width:1180px){body.teacher49-mode .t49-art{flex-basis:34%!important;min-width:170px!important}}
+@media(max-width:960px){body.teacher49-mode .t49-art{display:none!important}body.teacher49-mode .t49-hero{padding:25px!important;min-height:230px}}
+@media(max-width:650px){body.teacher49-mode .t49-hero{padding:22px 18px!important;min-height:240px}body.teacher49-mode .t49-hero h2{font-size:clamp(26px,7vw,34px)}}
