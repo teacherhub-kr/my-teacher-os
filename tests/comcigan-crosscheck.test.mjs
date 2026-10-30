@@ -5,7 +5,9 @@ const slots=[
   {target:'2-1',day:'월',period:1,subject:'음악',date:'2026-10-26'},
   {target:'2-2',day:'화',period:2,subject:'음악',date:'2026-10-27'}
 ];
-const classRaw={2:{1:{1:{1:{teacher:'가나*',subject:'음악',grd:2,cls:1}}},2:{2:{2:{teacher:'가나*',subject:'음악',grd:2,cls:2}}}}}};
+const classRaw={2:{}};
+classRaw[2][1]={1:{1:{teacher:'가나*',subject:'음악',grd:2,cls:1}}};
+classRaw[2][2]={2:{2:{teacher:'가나*',subject:'음악',grd:2,cls:2}}};
 test('two consistent views match even when class count is less than 15',()=>{
   assert.equal(compareTimetableViews(slots,classRaw,'가나*'),'match');
 });
