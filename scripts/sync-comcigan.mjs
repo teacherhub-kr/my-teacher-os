@@ -3,6 +3,7 @@ import path from 'node:path';
 import { failureKind } from './comcigan-diagnostics.mjs';
 import { upstreamFailureFingerprint } from './comcigan-runtime-diag.mjs';
 import {resolveTeacherIndex,selectTeacherDays,makePublicTimetable,scheduleFailureReason} from './comcigan-teacher-contract.mjs';
+import {withCollectorDeadline} from './comcigan-deadline.mjs';
 import { probeClassReader } from './comcigan-class-probe.mjs';
 
 function normName(v){return String(v||'').replace(/\s+/g,'').replace(/\*/g,'').trim()}
@@ -19,7 +20,7 @@ async function retryCollector(code,fn){
   const delays=[0,1500,4000],causes=[],safeOrigins=[];
   for(let attempt=0;attempt<delays.length;attempt++){
     if(delays[attempt])await sleep(delays[attempt]);
-    try{return await fn(attempt)}
+    try{return await withCollectorDeadline(()=>fn(attempt),12000)}
     catch(error){causes.push(failureKind(error));safeOrigins.push(upstreamFailureFingerprint(error))}
   }
   console.error('TEACHER_OS_FAILURE_KINDS='+[...new Set(causes)].join(','));

@@ -7,6 +7,8 @@ on:
       - 'scripts/sync-comcigan.mjs'
       - 'scripts/comcigan-diagnostics.mjs'
       - 'scripts/comcigan-runtime-diag.mjs'
+      - 'scripts/comcigan-deadline.mjs'
+      - 'tests/comcigan-deadline.test.mjs'
       - 'scripts/comcigan-teacher-contract.mjs'
       - 'tests/comcigan-teacher-contract.test.mjs'
       - 'tests/comcigan-runtime-diag.test.mjs'
@@ -32,8 +34,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: comcigan-sync
-  cancel-in-progress: true
+  group: comcigan-sync-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   verify:
@@ -54,10 +56,12 @@ jobs:
           node --check scripts/comcigan-diagnostics.mjs
           node --check scripts/comcigan-runtime-diag.mjs
           node --check scripts/comcigan-teacher-contract.mjs
+          node --check scripts/comcigan-deadline.mjs
           node --check scripts/comcigan-class-probe.mjs
           node --test tests/comcigan-failure.test.mjs
           node --test tests/comcigan-runtime-diag.test.mjs
           node --test tests/comcigan-teacher-contract.test.mjs
+          node --test tests/comcigan-deadline.test.mjs
           node --test tests/comcigan-class-probe.test.mjs
 
   sync:
