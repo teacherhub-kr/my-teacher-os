@@ -94,9 +94,10 @@ if(typeof ClassroomReader==='function'){
   }
 }
 console.error('TEACHER_OS_CROSSCHECK='+crosscheck);
+if(crosscheck!=='match')fail('timetable-crosscheck');
 const reason=scheduleFailureReason(slots);
 if(reason!=='ok')fail('timetable-'+reason);
-const payload=makePublicTimetable(weekStart,new Date().toISOString(),slots);
+const payload=makePublicTimetable(weekStart,new Date().toISOString(),slots,crosscheck);
 if(!payload)fail('timetable-validation');
 const out=path.join(process.cwd(),'live','comcigan.json');
 await fs.mkdir(path.dirname(out),{recursive:true});
