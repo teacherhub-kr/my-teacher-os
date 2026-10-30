@@ -1,7 +1,8 @@
 {
   "version": 2,
   "weekStart": "2026-10-26",
-  "fetchedAt": "2026-10-30T11:03:28.164Z",
+  "fetchedAt": "2026-10-30T11:09:29.660Z",
+  "configFingerprint": "f0b6a383a481f03e54aee73a5c6190a60082f6e4ceda197a2a2c3c3576e6ac1b",
   "slots": [
     {
       "date": "2026-10-26",
