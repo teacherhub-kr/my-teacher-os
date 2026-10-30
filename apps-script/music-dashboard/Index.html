@@ -36,6 +36,18 @@
     .pill.missing{background:#fff0ed;color:#a95a3c}.pill.notice{background:#fff3d9;color:#a77a1e}
     .warn{border-radius:12px;padding:13px 16px;background:#fff9eb;border:1px solid #f2e6ca;font-size:12px;color:#826b3a;margin-top:13px}
     .meta{color:#788ba5;font-size:11px;margin-top:16px}
+    .student-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-top:15px}
+    .student-controls label{font-size:12px;font-weight:800;color:#435f86;display:flex;flex-direction:column;gap:5px}
+    .student-controls select{border:1px solid #dce4f1;background:white;border-radius:10px;padding:10px 12px;min-height:44px;min-width:145px;font:inherit}
+    .student-controls button{border:1px solid #2567eb;background:#2567eb;color:#fff;border-radius:10px;padding:11px 15px;min-height:44px;cursor:pointer;font-weight:850}
+    .student-controls button:disabled{opacity:.6;cursor:wait}
+    .student-controls select:focus-visible,.student-controls button:focus-visible{outline:3px solid #98b9fb;outline-offset:2px}
+    .student-status{font-size:12px;color:#2d6bc0;margin-top:11px}
+    .student-status.error{color:#b53e55}
+    .student-note{font-size:12px;color:#778bab;line-height:1.6;margin-top:10px}
+    .grade-score{font-weight:850;color:#225fbd}
+    .grade-empty{color:#98a7be}
+    .grade-state{color:#788daa;font-size:10px;display:block;white-space:nowrap}
     .status{margin-top:16px;padding:13px 16px;border-radius:12px;background:#eaf2ff;color:#2b5fa9;font-size:12px}
     .status.error{background:#fff0f1;color:#ae415a}
     footer{margin-top:22px;color:#788ba4;font-size:11px}
@@ -72,27 +84,98 @@
   <div id="caution" class="warn">미채점 0명은 실제 수업 실시·결시 처리·보충평가 완료를 뜻하지 않습니다.</div>
   <div id="readAt" class="meta">조회 시각: —</div>
  </section>
+ <section class="panel" aria-labelledby="studentsHeading">
+  <h2 id="studentsHeading">학생별 수행평가 성적 · 본인 전용</h2>
+  <p class="subtitle">이름·번호·점수·평가상태는 Google 로그인으로 보호된 이 화면에서만 표시합니다. 반을 선택하고 조회하세요.</p>
+  <div class="student-controls">
+   <label for="studentClass">조회 학급<select id="studentClass" aria-label="학급 선택"></select></label>
+   <button id="loadStudents" type="button">해당 반 학생 조회</button>
+  </div>
+  <p id="studentStatus" class="student-status" role="status" aria-live="polite">학생 명렬과 점수는 요청할 때만 원본에서 조회하며 따로 저장하지 않습니다.</p>
+  <div class="scroll"><table aria-label="선택한 반 학생별 수행평가">
+   <thead><tr id="studentHeader"></tr></thead>
+   <tbody id="studentRows"><tr><td colspan="6">조회할 반을 선택하세요.</td></tr></tbody>
+  </table></div>
+  <p class="student-note">3학년 1·2차는 1학기 참고 성적입니다. 점수 공란은 0점이 아닙니다. 이름이 서로 다른 원본은 잘못된 학생에게 합산되지 않도록 조회를 중단합니다.</p>
+ </section>
  <div class="status" id="status" role="status" aria-live="polite">본인 Google 계정으로 원본의 학급별 집계를 조회하고 있습니다.</div>
  <footer>학생 이름·개인 점수·결시 사유는 이 화면으로 전송하지 않습니다. 공유·배포 설정은 반드시 ‘나만’으로 유지하세요.</footer>
 </main>
 <script>
 (function(){
   "use strict";
-  var activeGrade=2,latest=null,loading=false;
+  var activeGrade=2,latest=null,loading=false,studentSeq=0;
   var $=function(id){return document.getElementById(id)};
   function node(tag,value,cls){var e=document.createElement(tag);if(value!==undefined)e.textContent=String(value);if(cls)e.className=cls;return e}
   function info(message,isError){var e=$("status");e.textContent=message;e.className="status"+(isError?" error":"")}
   function refresh(){
     if(loading)return;
     if(!window.google||!google.script||!google.script.run){info("Apps Script 웹앱 환경에서만 실행할 수 있습니다.",true);return}
+    clearStudentView();
     loading=true;$("refresh").disabled=true;info("원본 수행평가 집계를 읽는 중입니다.",false);
     google.script.run
       .withSuccessHandler(function(result){loading=false;$("refresh").disabled=false;latest=result;render();info("원본 집계 15개 반을 정상적으로 읽었습니다.",false)})
       .withFailureHandler(function(err){loading=false;$("refresh").disabled=false;info("집계를 읽지 못했습니다. 원본 권한과 초기 설정을 확인하세요: "+String(err&&err.message||"연결 실패").slice(0,120),true)})
       .getDashboardData();
   }
+  function clearStudentView(){
+    studentSeq++;
+    $("studentRows").replaceChildren();
+    var row=node("tr"),cell=node("td","조회할 반을 선택하세요.");
+    cell.colSpan=6;row.appendChild(cell);$("studentRows").appendChild(row);
+    $("studentStatus").textContent="선택한 반을 조회하면 학생별 점수가 나타납니다.";
+    $("studentStatus").className="student-status";
+  }
+  function chooseClasses(){
+    var picker=$("studentClass"),old=picker.value;picker.replaceChildren();
+    if(!latest)return;
+    latest.classes.filter(function(c){return c.grade===activeGrade}).forEach(function(c){
+      var option=node("option",c.grade+"학년 "+c.room+"반");option.value=String(c.room);
+      picker.appendChild(option);
+    });
+    if(Array.from(picker.options).some(function(o){return o.value===old}))picker.value=old;
+  }
+  function loadStudents(){
+    var room=Number($("studentClass").value),grade=activeGrade;
+    if(!room||!latest){$("studentStatus").textContent="먼저 원본 집계를 읽어주세요.";return}
+    var seq=++studentSeq;
+    var button=$("loadStudents");button.disabled=true;
+    $("studentStatus").textContent=grade+"학년 "+room+"반 학생별 점수를 읽는 중입니다.";
+    google.script.run
+      .withSuccessHandler(function(result){
+        if(seq!==studentSeq)return;
+        button.disabled=false;
+        if(result.grade!==grade||result.room!==room){$("studentStatus").textContent="조회 학급이 일치하지 않습니다.";return}
+        var headings=grade===2?["번호","이름","1차","2차","3차","4차"]:
+          ["번호","이름","1차(1학기)","2차(1학기)","3차(2학기)","4차(2학기)"];
+        $("studentHeader").replaceChildren();
+        headings.forEach(function(h){$("studentHeader").appendChild(node("th",h))});
+        var body=$("studentRows");body.replaceChildren();
+        result.students.forEach(function(student){
+          var tr=node("tr");tr.appendChild(node("td",student.number));
+          tr.appendChild(node("td",student.name));
+          student.scores.forEach(function(score,i){
+            var td=node("td"),value=node("span",score===null?"미기록":score+"점",score===null?"grade-empty":"grade-score");
+            td.appendChild(value);
+            if(student.statuses[i]&&student.statuses[i]!=="원본 없음")
+              td.appendChild(node("span",student.statuses[i],"grade-state"));
+            tr.appendChild(td);
+          });
+          body.appendChild(tr);
+        });
+        $("studentStatus").textContent=result.classId+" · "+result.studentCount+"명 · 원본 조회 "+result.readAt;
+        $("studentStatus").className="student-status";
+      })
+      .withFailureHandler(function(err){
+        if(seq!==studentSeq)return;
+        button.disabled=false;
+        $("studentStatus").textContent="학생별 조회 실패: "+String(err&&err.message||"원본 확인 필요").slice(0,140);
+        $("studentStatus").className="student-status error";
+      }).getStudentDetail(grade,room);
+  }
   function render(){
     if(!latest)return;
+    chooseClasses();
     var data=latest.classes.filter(function(c){return c.grade===activeGrade});
     $("classes").textContent=data.length+"개 반";
     $("missing").textContent=data.reduce(function(a,c){return a+c.missing.reduce(function(x,y){return x+y},0)},0)+"건";
@@ -114,10 +197,12 @@
   }
   document.querySelectorAll("[data-grade]").forEach(function(el){el.addEventListener("click",function(){
     activeGrade=Number(el.dataset.grade);
+    clearStudentView();
     document.querySelectorAll("[data-grade]").forEach(function(b){b.setAttribute("aria-selected",String(Number(b.dataset.grade)===activeGrade))});
     render();
   })});
   $("refresh").addEventListener("click",refresh);
+  $("loadStudents").addEventListener("click",loadStudents);
   refresh();
 })();
 </script>
