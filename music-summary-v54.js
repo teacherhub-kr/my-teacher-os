@@ -16,7 +16,7 @@ function mount(){
  const host=$("#t49Screen");if(!host||$("#music54Panel"))return;
  const d=document.createElement("details");d.id="music54Panel";d.className="music54-panel";
  d.innerHTML='<summary><span class="music54-symbol" aria-hidden="true">♫</span><span><b>음악 수행평가 원본 연결</b><small>2학년 9개 반·3학년 6개 반의 1~4차 미채점 현황</small></span><span class="music54-badge" id="music54Badge">연결 대기</span></summary>'+
- '<div class="music54-body"><p class="music54-note">원본 채점표는 변경하지 않습니다. 학생 이름·학생 번호·개별 점수는 읽지 않고, 집계표에서 학급별 현황만 가져옵니다. Google 계정 권한은 직접 승인해야 합니다.</p>'+
+ '<div class="music54-body"><p class="music54-note">원본 채점표는 변경하지 않습니다. Google 연결은 학급별 집계 범위만 조회합니다. 엑셀 조회는 선택한 파일을 이 브라우저에서만 처리하며 학생별 정보를 화면에 표시하거나 서버로 전송하지 않습니다. Google 권한은 직접 승인해야 합니다.</p>'+
  '<div class="music54-fields"><label>Google 웹 OAuth 클라이언트 ID<input type="text" id="music54ClientId" autocomplete="off" spellcheck="false" placeholder="123456789-xxxx.apps.googleusercontent.com"></label>'+
  '<button type="button" data-music54="save-client">ID 저장</button><button type="button" class="music54-blue" data-music54="google">Google 읽기 전용 연결</button>'+
  '<button type="button" data-music54="refresh">원본 새로고침</button><button type="button" data-music54="clear">표시 중지</button></div>'+
