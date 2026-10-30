@@ -6,6 +6,8 @@ on:
     paths:
       - 'scripts/sync-comcigan.mjs'
       - 'scripts/comcigan-diagnostics.mjs'
+      - 'scripts/comcigan-runtime-diag.mjs'
+      - 'tests/comcigan-runtime-diag.test.mjs'
       - 'scripts/comcigan-class-probe.mjs'
       - 'tests/comcigan-class-probe.test.mjs'
       - 'tests/comcigan-failure.test.mjs'
@@ -48,8 +50,10 @@ jobs:
         run: |
           node --check scripts/sync-comcigan.mjs
           node --check scripts/comcigan-diagnostics.mjs
+          node --check scripts/comcigan-runtime-diag.mjs
           node --check scripts/comcigan-class-probe.mjs
           node --test tests/comcigan-failure.test.mjs
+          node --test tests/comcigan-runtime-diag.test.mjs
           node --test tests/comcigan-class-probe.test.mjs
 
   sync:
@@ -129,12 +133,16 @@ jobs:
           class_probe=$(sed -n 's/^TEACHER_OS_CLASS_PROBE=\([a-z,-]*\)$/\1/p' /tmp/comcigan-fetch.log | tail -n 1)
           case "$class_probe" in ''|*[!a-z,-]*) class_probe=not-run ;; esac
           echo "class_probe=$class_probe" >> "$GITHUB_OUTPUT"
+          error_origin=$(sed -n 's/^TEACHER_OS_FAILURE_ORIGINS=\([a-z0-9,-]*\)$/\1/p' /tmp/comcigan-fetch.log | tail -n 1)
+          case "$error_origin" in ''|*[!a-z0-9,-]*) error_origin=unknown ;; esac
+          echo "error_origin=$error_origin" >> "$GITHUB_OUTPUT"
           echo "category=$category" >> "$GITHUB_OUTPUT"
           echo "detail=$detail" >> "$GITHUB_OUTPUT"
           echo "failure_kinds=$failure_kinds" >> "$GITHUB_OUTPUT"
           if [ "$code" -ne 0 ]; then
             echo "Sanitized collector failure kinds: $failure_kinds"
             echo "Sanitized independent class probe: $class_probe"
+            echo "Sanitized upstream error site: $error_origin"
           fi
           exit "$code"
 
