@@ -1,1 +1,1 @@
-{"status":"error","category":"validation","detail":"timetable-validation","failureKinds":"unclassified"}
+{"status":"error","category":"validation","detail":"timetable-too-few","failureKinds":"unclassified"}
