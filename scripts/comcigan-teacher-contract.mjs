@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 /**
  * Safe adapter for comcigan@3.0.4:
  * ComciganTeacher.init() exposes teacherIndices; getTimetable(index)
@@ -36,11 +37,11 @@ export function validateMusicSchedule(slots) {
   return scheduleFailureReason(slots)==='ok';
 }
 
-export function makePublicTimetable(weekStart,fetchedAt,slots,crosscheck) {
-  if (crosscheck!=='match' || !/^\d{4}-\d{2}-\d{2}$/.test(weekStart) || !Number.isFinite(Date.parse(fetchedAt)) ||
+export function makePublicTimetable(weekStart,fetchedAt,slots,crosscheck,configFingerprint) {
+  if (crosscheck!=='match' || !/^[0-9a-f]{64}$/.test(String(configFingerprint||'')) || !/^\d{4}-\d{2}-\d{2}$/.test(weekStart) || !Number.isFinite(Date.parse(fetchedAt)) ||
       !validateMusicSchedule(slots)) return null;
   // Deliberately do not return teacher name, index, school code or raw data.
-  return {version:2,weekStart,fetchedAt,slots};
+  return {version:2,weekStart,fetchedAt,configFingerprint,slots};
 }
 
 /** Returns only a fixed failure category, never classes, subjects or times. */
@@ -67,4 +68,12 @@ export function scheduleFailureReason(slots) {
     periods.add(when);records.add(record);
   }
   return 'ok';
+}
+
+/** Stable matching token only; NOT authentication or a cryptographic secret. */
+export function publicConfigFingerprint(schoolCode,index,maskedName){
+  const code=Number(schoolCode),teacherIndex=Number(index);
+  const teacher=String(maskedName||'').replace(/\s+/g,'').replace(/\*+$/g,'').slice(0,2);
+  if(!Number.isSafeInteger(code)||code<=0||!Number.isSafeInteger(teacherIndex)||teacherIndex<=0||teacher.length!==2)return null;
+  return createHash('sha256').update('teacher-os-config-v1|'+code+'|'+teacherIndex+'|'+teacher,'utf8').digest('hex');
 }
