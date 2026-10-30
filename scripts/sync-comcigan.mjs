@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { failureKind } from './comcigan-diagnostics.mjs';
+import { probeClassReader } from './comcigan-class-probe.mjs';
 
 function normName(v){return String(v||'').replace(/\s+/g,'').replace(/\*/g,'').trim()}
 function nameMatches(a,b){const x=normName(a),y=normName(b);if(!x||!y)return false;return x===y||x.startsWith(y)||y.startsWith(x)}
@@ -20,6 +21,11 @@ async function retryCollector(code,fn){
     catch(error){causes.push(failureKind(error))}
   }
   console.error('TEACHER_OS_FAILURE_KINDS='+[...new Set(causes)].join(','));
+  if (code === 'collector-fetch') {
+    const Reader = mod?.Comcigan || mod?.default?.Comcigan;
+    const result = await probeClassReader(Reader, SCHOOL_CODE);
+    console.error('TEACHER_OS_CLASS_PROBE=' + result);
+  }
   fail(code);
 }
 function normalizeTeacherData(raw,weekStart){
