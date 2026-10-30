@@ -11,6 +11,7 @@ on:
       - 'teacher-design-v51.js'
       - 'teacher-connections-v53.js'
       - 'tests/v54-*.js'
+      - 'tests/v55-csv.test.js'
       - '.github/workflows/v54-music-summary.yml'
   push:
     branches: [main]
@@ -49,6 +50,7 @@ jobs:
           set -euo pipefail
           node tests/v54-core.test.js
           node tests/v54-runtime.test.js
+          node tests/v55-csv.test.js
       - name: Chromium on first visit
         run: |
           set -euo pipefail
@@ -67,6 +69,8 @@ jobs:
                          'id="t53Connections"','id="t49Progress"','teacher51-mode']:
               assert marker in s, f"v54 UI not visible: {marker}"
           assert '아직 실제 평가 집계가 표시되지 않았습니다' in s, 'Missing no-auth honesty disclosure'
+          assert '.csv' in s and 'music54Excel' in s, 'CSV-only import unavailable in actual Chromium DOM'
+          assert 'Google 읽기 전용 연결' in s, 'OAuth consent entry missing'
           print('v54 Chromium first visit: PASS')
           PY
           "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \
