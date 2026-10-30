@@ -7,7 +7,8 @@ on:
       - 'scripts/sync-comcigan.mjs'
       - 'scripts/comcigan-diagnostics.mjs'
       - 'scripts/comcigan-runtime-diag.mjs'
-      - 'scripts/comcigan-static-inspect.mjs'
+      - 'scripts/comcigan-teacher-contract.mjs'
+      - 'tests/comcigan-teacher-contract.test.mjs'
       - 'tests/comcigan-runtime-diag.test.mjs'
       - 'scripts/comcigan-class-probe.mjs'
       - 'tests/comcigan-class-probe.test.mjs'
@@ -47,18 +48,16 @@ jobs:
         run: |
           result=$(printf '%s\n' 'TEACHER_OS_CLASS_PROBE=ok' | sed -n 's/^TEACHER_OS_CLASS_PROBE=\([a-z,-]*\)$/\1/p')
           test "$result" = "ok"
-      - name: Inspect installed public parser source (no timetable access)
-        run: |
-          npm install --no-save --ignore-scripts comcigan@3.0.4
-          node scripts/comcigan-static-inspect.mjs
       - name: Offline syntax and safe-error regression
         run: |
           node --check scripts/sync-comcigan.mjs
           node --check scripts/comcigan-diagnostics.mjs
           node --check scripts/comcigan-runtime-diag.mjs
+          node --check scripts/comcigan-teacher-contract.mjs
           node --check scripts/comcigan-class-probe.mjs
           node --test tests/comcigan-failure.test.mjs
           node --test tests/comcigan-runtime-diag.test.mjs
+          node --test tests/comcigan-teacher-contract.test.mjs
           node --test tests/comcigan-class-probe.test.mjs
 
   sync:
@@ -81,6 +80,11 @@ jobs:
 
       - name: Validate collector syntax
         run: node --check scripts/sync-comcigan.mjs
+
+      - name: Validate teacher API adapter and publication gate
+        run: |
+          node --check scripts/comcigan-teacher-contract.mjs
+          node --test tests/comcigan-teacher-contract.test.mjs
 
       - name: Validate sanitized collector diagnostics
         run: node --test tests/comcigan-failure.test.mjs
