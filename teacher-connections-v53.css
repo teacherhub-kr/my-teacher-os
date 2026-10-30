@@ -1,0 +1,41 @@
+/* Teacher OS v53: truthful connection readiness UX, isolated from score data. */
+.t53-header-button{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #d8e6fc;background:#f3f8ff;border-radius:10px;color:#2356aa;font-weight:800;font-size:11px;cursor:pointer;white-space:nowrap;margin-right:8px}
+.t53-header-button:hover{background:#e6f1ff}
+.t53-header-button:focus-visible,.t53-connections button:focus-visible,.t53-connections input:focus-visible{outline:3px solid #87b7ff;outline-offset:2px}
+.t53-header-dot{display:inline-block;width:8px;height:8px;background:#a8b6c8;border-radius:50%}
+.t53-header-dot.attention{background:#e6a142}
+.t53-header-dot.good{background:#19a273}
+.t53-connections{background:#f9fbff;border:1px solid #dee8f8;border-radius:17px;overflow:hidden;box-shadow:0 5px 20px #1d44800a;margin-top:13px}
+.t53-summary{display:flex;align-items:center;gap:12px;padding:14px 17px;cursor:pointer;list-style:none}
+.t53-summary::-webkit-details-marker{display:none}
+.t53-marker{display:grid;place-items:center;flex:0 0 35px;width:35px;height:35px;border-radius:11px;background:#e4efff;color:#1d69e5;font-weight:850;font-size:18px}
+.t53-summary>span:nth-child(2){display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}
+.t53-summary b{font-size:13px;color:#173869}
+.t53-summary small{font-size:11px;color:#6f85a6;line-height:1.5}
+.t53-main-status{font-size:11px;font-weight:800;color:#bf7a11;background:#fff5df;border-radius:8px;padding:7px 10px;text-align:center;max-width:250px}
+.t53-content{padding:0 17px 17px}
+.t53-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.t53-connection-row{border:1px solid #e0e9f7;background:white;border-radius:12px;padding:14px;min-height:168px;display:flex;flex-direction:column;gap:5px;min-width:0}
+.t53-row-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.t53-row-top strong{font-size:12px;color:#244575;line-height:1.5}
+.t53-badge{flex:0 0 auto;border-radius:7px;font-size:10px;font-weight:850;padding:5px 7px;white-space:nowrap}
+.t53-badge.ok{background:#e4f7f0;color:#167b50}
+.t53-badge.partial{background:#fff3d9;color:#a77413}
+.t53-badge.missing{background:#f3f5f9;color:#8292a8}
+.t53-row-status{font-size:11px;color:#2462bf;font-weight:850;line-height:1.5;margin:3px 0 0}
+.t53-row-desc{font-size:10px;color:#7586a1;line-height:1.6;margin:0 0 10px;overflow-wrap:anywhere}
+.t53-row-button{margin:auto 0 0;align-self:flex-start;font-size:10px;font-weight:850;color:#205fd2;background:#edf4ff;border:1px solid #dfeafb;border-radius:8px;padding:8px 10px;cursor:pointer}
+.t53-row-button:hover{background:#e0edff}
+.t53-sheet{margin-top:12px;padding:13px;background:#fff;border:1px solid #e1e9f6;border-radius:12px;display:grid;gap:10px}
+.t53-sheet label{display:flex;flex-direction:column;gap:5px}
+.t53-sheet b{font-size:12px;color:#224373}
+.t53-sheet small{font-size:10px;color:#7d90a9}
+.t53-sheet-actions{display:flex;flex-wrap:wrap;gap:7px}
+.t53-sheet-actions input{flex:1 1 300px;min-width:0;padding:10px 11px;background:#f9fbff;border-radius:9px;border:1px solid #d6e3f4;font-size:12px;color:#263f67}
+.t53-sheet-actions button{padding:9px 12px;border:1px solid #256bea;border-radius:9px;background:#2468ef;color:#fff;font-size:11px;font-weight:800;cursor:pointer}
+.t53-sheet-actions button.t53-ghost{background:#fff;border-color:#d2e0f6;color:#2461bb}
+.t53-security{font-size:10px;color:#7587a2;line-height:1.7;margin:12px 0 0}
+#t53Feedback{min-height:14px;font-size:11px;margin:0;color:#1b8b5c}
+#t53Feedback[data-t53-error="true"]{color:#bc4a4a}
+@media(max-width:1200px){.t53-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:800px){.t53-grid{grid-template-columns:1fr}.t53-summary{flex-wrap:wrap}.t53-main-status{max-width:none;margin-left:46px}.t53-header-button{margin-right:2px;font-size:10px;padding:7px}.t53-connection-row{min-height:0}}
