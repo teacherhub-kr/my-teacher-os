@@ -46,6 +46,21 @@ vm.runInNewContext(script,box,{filename:'app-v14.js'});
   assert.equal(typeof live,'function','v61 live accessor unavailable');
   assert.equal(live(year)?.length,1,'valid fresh live timetable must render');
   assert.equal(live(year)?.[0]?.label,'2-3 음악');
+  const coverage=box.TeacherOSComcigan14?.classCoverage;
+  assert.equal(typeof coverage,'function','advisory class coverage must exist');
+  const expectedClasses=[
+    ...Array.from({length:9},(_,i)=>'2-'+(i+1)),
+    ...Array.from({length:6},(_,i)=>'3-'+(i+4))
+  ];
+  const partialTargets=expectedClasses.filter(x=>!['2-2','2-3','2-7'].includes(x));
+  const partial=coverage(partialTargets.map(target=>({target})));
+  assert.equal(partial.expected,15);
+  assert.equal(partial.present,12);
+  assert.deepEqual(Array.from(partial.absent),['2-2','2-3','2-7']);
+  assert.equal(coverage(expectedClasses.map(target=>({target}))).absent.length,0);
+  assert.equal(coverage(null),null,'unverified feed must never be interpreted as zero coverage');
+  assert.equal(coverage([{target:'2-1'},{target:'2-1'}]).present,1,'repeat lessons count as one class');
+  assert(script.includes('미표시가 곧 수집 오류라는 뜻은 아닙니다'), 'coverage is only advisory');
   assert.equal(JSON.stringify(year.timetable),initialTimetable,'never overwrite old saved timetable');
   year.comciganSync.status='error';
   assert.equal(live(year),null,'collector error must hide live schedule');
