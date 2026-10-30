@@ -1,0 +1,127 @@
+{
+  "version": 2,
+  "weekStart": "2026-10-26",
+  "fetchedAt": "2026-10-30T11:00:30.693Z",
+  "slots": [
+    {
+      "date": "2026-10-26",
+      "day": "월",
+      "period": 1,
+      "target": "3-7",
+      "subject": "음악",
+      "label": "3-7 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-10-26",
+      "day": "월",
+      "period": 2,
+      "target": "3-5",
+      "subject": "음악",
+      "label": "3-5 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-10-26",
+      "day": "월",
+      "period": 4,
+      "target": "3-8",
+      "subject": "음악",
+      "label": "3-8 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-10-27",
+      "day": "화",
+      "period": 1,
+      "target": "3-4",
+      "subject": "음악",
+      "label": "3-4 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-10-27",
+      "day": "화",
+      "period": 4,
+      "target": "3-6",
+      "subject": "음악",
+      "label": "3-6 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-10-27",
+      "day": "화",
+      "period": 7,
+      "target": "3-9",
+      "subject": "음악",
+      "label": "3-9 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-10-28",
+      "day": "수",
+      "period": 2,
+      "target": "2-8",
+      "subject": "음악",
+      "label": "2-8 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-10-28",
+      "day": "수",
+      "period": 3,
+      "target": "2-1",
+      "subject": "음악",
+      "label": "2-1 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-10-29",
+      "day": "목",
+      "period": 3,
+      "target": "2-5",
+      "subject": "음악",
+      "label": "2-5 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-10-29",
+      "day": "목",
+      "period": 6,
+      "target": "2-4",
+      "subject": "음악",
+      "label": "2-4 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-10-29",
+      "day": "목",
+      "period": 7,
+      "target": "2-9",
+      "subject": "음악",
+      "label": "2-9 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-10-30",
+      "day": "금",
+      "period": 2,
+      "target": "2-6",
+      "subject": "음악",
+      "label": "2-6 음악",
+      "changed": false,
+      "source": "컴시간 자동동기화"
+    }
+  ]
+}
