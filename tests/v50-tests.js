@@ -19,6 +19,6 @@ assert(css.includes('teacher-hero-v50.svg'),'reference-style artwork must be wir
 assert(css.includes('#nav button:not(:is([data-view="dashboard"]'), 'legacy menus must not crowd the primary nav');
 assert(app.includes("nav.appendChild(button)"), 'approved navigation order must be applied');
 assert(art.includes('<svg') && art.includes('좋은 음악수업') && art.includes('>수업</text>'),'music-focused artwork missing');
-assert(index.includes('teacher-dashboard-v49.js?v=50.0-layout-fix')&&index.includes('teacher-dashboard-v49.css?v=50.0-layout-fix'),'cache busting required');
+assert(index.includes('teacher-dashboard-v49.js?v=52.0-icons')&&index.includes('teacher-dashboard-v49.css?v=50.0-layout-fix'),'cache busting required');
 for(const text of [app,css,art])assert(!/최윤우|이우주/.test(text),'student names must not enter public assets');
 console.log('v50 no-year dashboard, responsive navigation, hero and privacy guards passed');
