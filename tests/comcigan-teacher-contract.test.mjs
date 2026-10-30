@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {resolveTeacherIndex,selectTeacherDays,validateMusicSchedule,makePublicTimetable} from '../scripts/comcigan-teacher-contract.mjs';
+import {resolveTeacherIndex,selectTeacherDays,validateMusicSchedule,makePublicTimetable,scheduleFailureReason} from '../scripts/comcigan-teacher-contract.mjs';
 test('requires an unambiguous teacher name; uses current index, not stale config',()=>{
   assert.deepEqual(resolveTeacherIndex(['*','가나*','김다*'],1,'가나*'),{ok:true,index:1});
   assert.deepEqual(resolveTeacherIndex(['*','김다*','가나*'],1,'가나*'),{ok:true,index:2});
@@ -42,4 +42,15 @@ test('public payload is strict and contains no identifying metadata',()=>{
   assert.equal('teacherIndex' in published,false);
   assert.equal('schoolCode' in published,false);
   assert.equal(makePublicTimetable('2026-10-26','2026-10-30T10:45:00Z',slots.slice(1)),null);
+});
+
+test('reports only fixed reason codes, not timetable contents',()=>{
+  const slots=validSlots();
+  assert.equal(scheduleFailureReason(slots),'ok');
+  assert.equal(scheduleFailureReason(slots.slice(1)),'too-few');
+  assert.equal(scheduleFailureReason([...slots,slots[0]]),'too-many');
+  const duplicate=structuredClone(slots);duplicate[1].target=duplicate[0].target;
+  assert.equal(scheduleFailureReason(duplicate),'duplicate-class');
+  const nonmusic=structuredClone(slots);nonmusic[0].subject='PRIVATE SCIENCE';
+  assert.equal(scheduleFailureReason(nonmusic),'nonmusic');
 });
