@@ -58,6 +58,12 @@ function getStudentDetail(gradeValue, roomValue) {
       if (String(row[0] || "").trim() !== prefix) return;
       var number = parseStudentNumber57_(row[1]);
       if (number === null) throw new Error("3학년 성적근거표 번호 누락: " + prefix);
+      // The master roster may contain reserved numbered seats with no student.
+      // Skip only entirely unassigned rows; a score without a name must fail closed.
+      var basisName = String(row[2] == null ? "" : row[2]).trim();
+      var basisFirst = String(row[3] == null ? "" : row[3]).trim();
+      var basisSecond = String(row[4] == null ? "" : row[4]).trim();
+      if (!basisName && !basisFirst && !basisSecond) return;
       if (basisNumbers[number]) throw new Error("3학년 성적근거표 학생 번호 중복: " + prefix);
       basisNumbers[number] = true;
       var name = parseStudentName57_(row[2], prefix);

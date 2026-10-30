@@ -21,6 +21,12 @@ for(let i=0;i<6;i++){
   }};
 }
 const expressions=sourceIds.map((id,i)=>'=IMPORTRANGE("https://docs.google.com/spreadsheets/d/'+id+'/edit","평가안내!A4:K'+(i<4?"12":"9")+'")');
+const grade3BasisRows=[
+  ["3-4","1","가상학생하나","23","24"],
+  ["3-4","2","가상학생둘","22","25"],
+  ["3-4","3","","",""], // reserved seat: not a student record
+  ["3-5","1","다른학급학생","25","25"]
+];
 const master={
  getId:()=> "private-owner-file",
  getSheetByName:tab=>{
@@ -31,11 +37,7 @@ const master={
   }};
   if(tab==="3학년_2학기_성적근거")return {getRange:range=>{
     if(range!=="A6:E270")throw Error("unsafe range "+range);
-    return {getDisplayValues:()=>[
-      ["3-4","1","가상학생하나","23","24"],
-      ["3-4","2","가상학생둘","22","25"],
-      ["3-5","1","다른학급학생","25","25"]
-    ]};
+    return {getDisplayValues:()=>grade3BasisRows.map(row=>row.slice())};
   }};
   return {getRange:()=>({getDisplayValues:()=>[
     ["학년/반","학년","1차 미채점","2차 미채점","3차 미채점","4차 미채점"],
@@ -65,6 +67,9 @@ assert.deepStrictEqual(grade3.students[0].scores,[23,24,24,25]);
 assert.deepStrictEqual(grade3.students[1].scores,[22,25,23,24]);
 assert.deepStrictEqual(reads.map(x=>x.source),[4,5],"grade 3 MUST use last two source sheets");
 assert.equal(noteReads,0,"free-text note column must not be read");
+grade3BasisRows.push(["3-4","4","","22",""]); // incomplete, score-bearing row must still block the class
+assert.throws(()=>ctx.getStudentDetail(3,4),/학생 이름 누락/);
+grade3BasisRows.pop();
 assert(!("studentNumber" in grade3));
 assert(!JSON.stringify(grade3).includes("다른학급학생"));
 assert(!JSON.stringify(grade3).includes("private-owner-file"));
