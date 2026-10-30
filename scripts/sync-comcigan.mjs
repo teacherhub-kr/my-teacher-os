@@ -4,6 +4,7 @@ import { failureKind } from './comcigan-diagnostics.mjs';
 import { upstreamFailureFingerprint } from './comcigan-runtime-diag.mjs';
 import {resolveTeacherIndex,selectTeacherDays,makePublicTimetable,scheduleFailureReason} from './comcigan-teacher-contract.mjs';
 import {withCollectorDeadline} from './comcigan-deadline.mjs';
+import {compareTimetableViews} from './comcigan-crosscheck.mjs';
 import { probeClassReader } from './comcigan-class-probe.mjs';
 
 function normName(v){return String(v||'').replace(/\s+/g,'').replace(/\*/g,'').trim()}
@@ -78,6 +79,21 @@ const teacherRaw=selectTeacherDays(result,selectedIndex);
 if(!teacherRaw)fail('teacher-data-missing');
 const weekStart=mondayKST(),slots=normalizeTeacherData(teacherRaw,weekStart);
 if(!slots.length)fail('timetable-empty');
+// Shadow verification only: do not publish on the basis of a single source.
+let crosscheck='unavailable';
+const ClassroomReader=mod?.Comcigan||mod?.default?.Comcigan;
+if(typeof ClassroomReader==='function'){
+  try{
+    const reader=new ClassroomReader();
+    await withCollectorDeadline(()=>reader.init(),12000);
+    reader.setSchoolCode(SCHOOL_CODE);
+    const classRaw=await withCollectorDeadline(()=>reader.getTimetable(),12000);
+    crosscheck=compareTimetableViews(slots,classRaw,TEACHER_NAME);
+  }catch(error){
+    crosscheck='error-'+failureKind(error);
+  }
+}
+console.error('TEACHER_OS_CROSSCHECK='+crosscheck);
 const reason=scheduleFailureReason(slots);
 if(reason!=='ok')fail('timetable-'+reason);
 const payload=makePublicTimetable(weekStart,new Date().toISOString(),slots);

@@ -7,6 +7,8 @@ on:
       - 'scripts/sync-comcigan.mjs'
       - 'scripts/comcigan-diagnostics.mjs'
       - 'scripts/comcigan-runtime-diag.mjs'
+      - 'scripts/comcigan-crosscheck.mjs'
+      - 'tests/comcigan-crosscheck.test.mjs'
       - 'scripts/comcigan-deadline.mjs'
       - 'tests/comcigan-deadline.test.mjs'
       - 'scripts/comcigan-teacher-contract.mjs'
@@ -57,11 +59,14 @@ jobs:
           node --check scripts/comcigan-runtime-diag.mjs
           node --check scripts/comcigan-teacher-contract.mjs
           node --check scripts/comcigan-deadline.mjs
+          node --check scripts/comcigan-crosscheck.mjs
           node --check scripts/comcigan-class-probe.mjs
           node --test tests/comcigan-failure.test.mjs
           node --test tests/comcigan-runtime-diag.test.mjs
           node --test tests/comcigan-teacher-contract.test.mjs
+          node --test tests/comcigan-crosscheck.test.mjs
           node --test tests/comcigan-deadline.test.mjs
+          node --test tests/comcigan-crosscheck.test.mjs
           node --test tests/comcigan-class-probe.test.mjs
 
   sync:
@@ -161,6 +166,9 @@ jobs:
             echo "Sanitized collector failure kinds: $failure_kinds"
             echo "Sanitized independent class probe: $class_probe"
             echo "Sanitized upstream error site: $error_origin"
+            crosscheck=$(sed -n 's/^TEACHER_OS_CROSSCHECK=\([a-z-]*\)$/\1/p' /tmp/comcigan-fetch.log | tail -n 1)
+            case "$crosscheck" in ''|*[!a-z-]*) crosscheck=unknown ;; esac
+            echo "Sanitized cross-view check: $crosscheck"
           fi
           exit "$code"
 
