@@ -1,1 +1,1 @@
-{"status":"error","category":"network","detail":"collector-fetch","failureKinds":"unclassified"}
+{"status":"error","category":"collector","detail":"collector-fetch","failureKinds":"exception-typeerror"}
