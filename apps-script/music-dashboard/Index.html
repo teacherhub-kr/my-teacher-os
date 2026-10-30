@@ -120,6 +120,7 @@
   }
   function clearStudentView(){
     studentSeq++;
+    $("loadStudents").disabled=false;
     $("studentRows").replaceChildren();
     var row=node("tr"),cell=node("td","조회할 반을 선택하세요.");
     cell.colSpan=6;row.appendChild(cell);$("studentRows").appendChild(row);
