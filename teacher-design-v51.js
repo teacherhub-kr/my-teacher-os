@@ -45,7 +45,7 @@ function dashboard(){
   const icons=['▣','▤','△','✎'];
   cards.forEach((el,i)=>{
     const label=el.querySelector('.t49-kpi-label');
-    if(label)label.textContent=labels[i];
+    if(label&&(!(i===1||i===2)||!globalThis.TeacherOSMusic54?.status()?.loaded))label.textContent=labels[i];
     const icon=el.querySelector('.t49-kpi-icon');if(icon)icon.textContent=icons[i];
     el.classList.add('t51-kpi');
   });
