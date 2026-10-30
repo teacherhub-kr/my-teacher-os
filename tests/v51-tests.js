@@ -1,7 +1,7 @@
 const assert=require('assert');const fs=require('fs');const path=require('path');
 const root=path.join(__dirname,'..');const read=x=>fs.readFileSync(path.join(root,x),'utf8');
 const html=read('index.html'),ui=read('teacher-design-v51.js'),css=read('teacher-design-v51.css');
-assert(html.includes('teacher-design-v51.css?v=51.0-reference-parity'));
+assert(html.includes('teacher-design-v51.css?v=52.0-crisp'));
 assert(html.includes('teacher-design-v51.js?v=51.0-reference-parity'));
 assert(ui.includes('t51-sidebar-note')&&ui.includes('t51-profile'));
 assert(ui.includes('t51-evidence-table')&&ui.includes('t51-alert-row'));
