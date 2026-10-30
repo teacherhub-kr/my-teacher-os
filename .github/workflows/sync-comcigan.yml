@@ -47,6 +47,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Verify Pages deploy dispatch is wired
+        run: |
+          grep -q 'gh workflow run deploy.yml --ref main' .github/workflows/sync-comcigan.yml
+          grep -q 'changed=true' .github/workflows/sync-comcigan.yml
+
       - name: Check sanitized diagnostic extraction
         shell: bash
         run: |
@@ -73,6 +78,7 @@ jobs:
     if: github.event_name != 'pull_request'
     permissions:
       contents: write
+      actions: write
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -187,6 +193,7 @@ jobs:
           fi
 
       - name: Commit live state only when changed
+        id: commit
         run: |
           git config user.name "teacher-os-bot"
           git config user.email "actions@users.noreply.github.com"
@@ -194,10 +201,18 @@ jobs:
           if [ -f live/comcigan.json ]; then git add live/comcigan.json; fi
           if git diff --cached --quiet; then
             echo "No Comcigan state change."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "Update live Comcigan state"
             git push
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Deploy updated timetable to GitHub Pages
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yml --ref main
 
       - name: Fail workflow when collection failed
         if: steps.fetch.outcome != 'success'
