@@ -1,0 +1,52 @@
+name: Teacher OS v51 Reference Visual Guard
+on:
+  pull_request:
+    branches: [main]
+    paths: ['index.html','teacher-design-v51.js','teacher-design-v51.css','tests/v51-tests.js','.github/workflows/v51-visual-guard.yml']
+  push:
+    branches: [main]
+    paths: ['index.html','teacher-design-v51.js','teacher-design-v51.css','tests/v51-tests.js','.github/workflows/v51-visual-guard.yml']
+permissions:
+  contents: read
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JavaScript and regression tests
+        run: |
+          node --check teacher-design-v51.js
+          node --check teacher-dashboard-v49.js
+          node tests/v49-tests.js
+          node tests/v50-tests.js
+          node tests/v51-tests.js
+      - name: Install Korean fonts
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk
+      - name: Chrome DOM and reference screenshot
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium)"
+          python3 -m http.server 8471 --bind 127.0.0.1 >/tmp/teacher-serve.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          sleep 2
+          "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \
+            --no-first-run --disable-extensions --window-size=1672,941 --virtual-time-budget=14000 \
+            --dump-dom http://127.0.0.1:8471/ > /tmp/teacher-v51-dom.html 2>/tmp/teacher-v51.log
+          python3 - <<'PY'
+          doc=open('/tmp/teacher-v51-dom.html',encoding='utf8').read()
+          for marker in ['teacher51-mode','id="t49Screen"','id="t49Kpis"','id="t51Profile"','class="t51-sidebar-note"','t51-evidence-table','t51-alert-preview']:
+              assert marker in doc, f'Actual rendered UI missing {marker}'
+          assert 'id="t49SetupBanner"' in doc, 'Onboarding unavailable on first visit'
+          print('Chrome DOM: reference composition mounted in first-visit state')
+          PY
+          "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \
+            --no-first-run --disable-extensions --window-size=1672,941 --virtual-time-budget=14000 \
+            --screenshot=teacheros-v51-1672.png http://127.0.0.1:8471/ >/tmp/teacher-v51-screenshot.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: teacheros-v51-reference-1672
+          path: teacheros-v51-1672.png
+          if-no-files-found: ignore
+          retention-days: 7
