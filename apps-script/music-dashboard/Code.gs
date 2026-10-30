@@ -4,8 +4,9 @@
  * Publish as: Execute as Me / Who has access: Only myself.
  *
  * Required first-run: initializeDashboard() from the spreadsheet's script editor.
- * This script ONLY reads the aggregate tab and writes a private Script Property.
- * It NEVER edits scores, student rosters, permissions or the spreadsheet.
+ * This file reads the aggregate tab. StudentDetails.gs optionally reads original
+ * gradebooks after the teacher selects a class in the owner-only UI.
+ * Neither file edits scores, student rosters, permissions or the spreadsheet.
  */
 var MUSIC_DASHBOARD_TAB = "평가통합현황";
 var MUSIC_DASHBOARD_RANGE = "A3:K18";
