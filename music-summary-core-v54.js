@@ -32,10 +32,38 @@ function parseBatchGet(data){
  if(!Array.isArray(v))throw Error("Google Sheets에서 집계표를 읽지 못했습니다.");
  return parseSummary(v);
 }
+/* CSV/TSV is parsed locally; there are no external file-reading dependencies.
+   Support Excel quoting, embedded newline, commas and BOM, without evaluating cells. */
+function parseDelimited(input){
+ const text=String(input??"").replace(/^\uFEFF/,"");
+ if(text.length>1024*1024)throw Error("CSV 파일이 너무 큽니다.");
+ const first=text.split(/\r?\n/,1)[0]||"";
+ const delimiter=first.includes("\t")?"\t":",";
+ const rows=[];let row=[],cell="",quoted=false;
+ for(let i=0;i<text.length;i++){
+  const c=text[i];
+  if(quoted){
+   if(c==='"'&&text[i+1]==='"'){cell+='"';i++}
+   else if(c==='"'){quoted=false}
+   else cell+=c;
+  }else if(c==='"'&&cell===""){quoted=true}
+  else if(c===delimiter){row.push(cell);cell=""}
+  else if(c==="\n"||c==="\r"){
+   row.push(cell);rows.push(row);row=[];cell="";
+   if(c==="\r"&&text[i+1]==="\n")i++;
+   if(rows.length>1000)throw Error("예상보다 많은 데이터 행입니다.");
+  }else cell+=c;
+ }
+ if(quoted)throw Error("CSV 따옴표가 닫히지 않았습니다.");
+ if(row.length||cell){row.push(cell);rows.push(row)}
+ const idx=rows.findIndex(r=>HEADERS.every((h,i)=>str(r[i])===h));
+ if(idx<0||idx>5)throw Error("평가통합현황 제목 행을 찾지 못했습니다.");
+ return parseSummary(rows.slice(idx));
+}
 function parseWorkbook(book,XLSX){
  if(!book||!XLSX||!book.Sheets?.["평가통합현황"])throw Error("평가통합현황 탭이 없는 파일입니다.");
  const rows=XLSX.utils.sheet_to_json(book.Sheets["평가통합현황"],{header:1,raw:false,defval:""});
  return parseSummary(rows.slice(2,18));
 }
-return {parseSummary,parseBatchGet,parseWorkbook,count};
+return {parseSummary,parseBatchGet,parseWorkbook,parseDelimited,count};
 });
