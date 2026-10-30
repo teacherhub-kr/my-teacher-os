@@ -33,9 +33,12 @@ function getStudentDetail(gradeValue, roomValue) {
     // A = student number, B = student name, F = total, G = assessment status.
     // H free-text observations/exception notes are deliberately not read.
     var rows = tab.getRange("A5:G50").getDisplayValues();
+    var numbersInThisSource = {};
     rows.forEach(function (row) {
       var number = parseStudentNumber57_(row[0]);
       if (number === null) return;
+      if (numbersInThisSource[number]) throw new Error("채점원본에 동일 학생 번호가 중복됩니다: " + prefix + " " + assessment + "차");
+      numbersInThisSource[number] = true;
       var name = parseStudentName57_(row[1], prefix);
       var item = findOrAddStudent57_(merged, number, name, prefix);
       var score = parseStudentScore57_(row[5], prefix, assessment, number);
@@ -50,10 +53,13 @@ function getStudentDetail(gradeValue, roomValue) {
     // A: class, B: number, C: name, D/E: first and second score.
     // Do not request free-text exception data from columns H:M.
     var entries = basis.getRange("A6:E270").getDisplayValues();
+    var basisNumbers = {};
     entries.forEach(function (row) {
       if (String(row[0] || "").trim() !== prefix) return;
       var number = parseStudentNumber57_(row[1]);
       if (number === null) throw new Error("3학년 성적근거표 번호 누락: " + prefix);
+      if (basisNumbers[number]) throw new Error("3학년 성적근거표 학생 번호 중복: " + prefix);
+      basisNumbers[number] = true;
       var name = parseStudentName57_(row[2], prefix);
       var item = findOrAddStudent57_(merged, number, name, prefix);
       item.scores[0] = parseStudentScore57_(row[3], prefix, 1, number);
