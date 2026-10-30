@@ -9,7 +9,16 @@
   function blankConfig(){return{enabled:false,schoolCode:'',teacherIndex:'',teacherName:'',syncHourKST:9}}
   function saveLocalConfig(next){localStorage.setItem(LOCAL_CFG_KEY,JSON.stringify(next));config={...next};return config}
   async function loadConfig(){if(config)return config;config=readLocalConfig()||blankConfig();return config}
-  function sameConfig(p,c){if(!p||!completeConfig(c))return false;return Number(p.schoolCode)===Number(c.schoolCode)&&Number(p.teacherIndex)===Number(c.teacherIndex)}
+  async function sameConfig(p,c){
+    if(!p||!completeConfig(c)||!/^[0-9a-f]{64}$/.test(String(p.configFingerprint||'')))return false;
+    if(!globalThis.crypto?.subtle||typeof TextEncoder==='undefined')return false;
+    const name=String(c.teacherName||'').replace(/\s+/g,'').replace(/\*+$/g,'').slice(0,2);
+    if(name.length!==2)return false;
+    const source='teacher-os-config-v1|'+Number(c.schoolCode)+'|'+Number(c.teacherIndex)+'|'+name;
+    const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(source));
+    const expected=Array.from(new Uint8Array(digest),x=>x.toString(16).padStart(2,'0')).join('');
+    return expected===p.configFingerprint;
+  }
   function currentWeekStartKST(){
     const d=new Date(Date.now()+9*60*60*1000),offset=(d.getUTCDay()+6)%7;
     d.setUTCDate(d.getUTCDate()-offset);
@@ -44,12 +53,12 @@
       const healthResponse=await fetch('./live/comcigan-status.json?v='+Date.now(),{cache:'no-store'});
       if(!healthResponse.ok)throw Object.assign(new Error('컴시간 수집 상태를 확인할 수 없습니다.'),{code:'COLLECTOR_UNAVAILABLE'});
       const health=await healthResponse.json();
-      if(health?.status!=='ok')throw Object.assign(new Error('최신 컴시간 자동수집이 실패한 상태입니다.'),{code:'COLLECTOR_UNAVAILABLE'});
+      if(health?.status!=='ok'||health?.verification!=='teacher-class-match')throw Object.assign(new Error('최신 컴시간 자동수집이 실패한 상태입니다.'),{code:'COLLECTOR_UNAVAILABLE'});
       const r=await fetch('./live/comcigan.json?v='+Date.now(),{cache:'no-store'});if(!r.ok)throw new Error('아직 자동동기화 결과가 없습니다.');
       const p=await r.json();if(!p||!p.weekStart||!Array.isArray(p.slots))throw new Error('컴시간 파일 형식이 올바르지 않습니다.');
       if(!currentTimetableFeed(p))throw Object.assign(new Error('컴시간 자동수집 파일이 이번 주의 최신 자료가 아닙니다.'),{code:'STALE_FEED'});
       lastPayload=p;
-      if(!sameConfig(p,config)){const e=new Error('저장한 학교·교사 설정과 현재 자동수집 결과가 다릅니다. 잘못된 시간표 적용을 막았습니다.');e.code='CONFIG_MISMATCH';throw e}
+      if(!(await sameConfig(p,config))){const e=new Error('저장한 학교·교사 설정과 현재 자동수집 결과가 다릅니다. 잘못된 시간표 적용을 막았습니다.');e.code='CONFIG_MISMATCH';throw e}
       y.liveTimetableWeeks[p.weekStart]={weekStart:p.weekStart,source:'컴시간 자동동기화',updatedAt:p.fetchedAt||new Date().toISOString(),slots:p.slots};
       y.comciganSync.lastChecked=new Date().toISOString();y.comciganSync.lastApplied=p.fetchedAt||new Date().toISOString();y.comciganSync.status='ok';
       localStorage.setItem(KEY,JSON.stringify(state));
