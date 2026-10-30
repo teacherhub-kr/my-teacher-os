@@ -29,5 +29,12 @@ export function failureKind(error) {
   if (/\b(?:timeout|timed out|network error|fetch failed|socket hang up|ECONNRESET|ECONNREFUSED)\b/i.test(message)) return 'connection';
   if (/\b(?:captcha|cloudflare|access denied|forbidden|blocked by)\b/i.test(message)) return 'upstream-denied';
   if (/\b(?:invalid json|unexpected token|not valid json|json parse|parse error)\b/i.test(message)) return 'parse';
+  // Only fixed literals; never export upstream exception messages or responses.
+  if (typeof error === 'string') return 'throw-string';
+  if (error instanceof TypeError) return 'exception-typeerror';
+  if (error instanceof ReferenceError) return 'exception-referenceerror';
+  if (error instanceof RangeError) return 'exception-rangeerror';
+  if (error instanceof Error) return 'exception-error';
+  if (error && typeof error === 'object') return 'throw-object';
   return 'unclassified';
 }
