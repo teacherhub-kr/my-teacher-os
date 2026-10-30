@@ -7,6 +7,8 @@ if(!wf.includes("cron: '10 23 * * 0-4'")||!wf.includes("cron: '20 3 * * 1-5'"))t
 if(wf.includes("cron: '*/30 * * * *'"))throw new Error('Excessive 30-minute Comcigan polling must not be enabled');
 if(!wf.includes('node --check scripts/sync-comcigan.mjs'))throw new Error('Comcigan script syntax guard missing');
 if(!sync.includes('TEACHER_OS_FAILURE_KINDS='))throw new Error('Sanitized failure-kind logging missing');
+if(!wf.includes("failure_kinds=$failure_kinds"))throw new Error('Safe collector failure kinds must reach Actions outputs');
+if(!wf.includes("failureKinds"))throw new Error('Safe failure cause must appear in health JSON');
 for(const token of ['teacher-name-multiple','teacher-index-name-mismatch','teacher-not-resolved','teacher-data-missing','collector-init','collector-fetch','parser-import','parser-export','timetable-empty','config-invalid','FETCH_DETAIL']){
   if(!wf.includes(token)&&!sync.includes(token))throw new Error('Sanitized Comcigan machine diagnostic missing: '+token);
 }
@@ -29,6 +31,12 @@ if(!app.includes('readLocalConfig()||blankConfig()'))throw new Error('New browse
 if(app.includes("fetch('./comcigan-config.json"))throw new Error('Browser must not inherit shared collector config');
 if(!app.includes('if(!completeConfig(config))'))throw new Error('Unconfigured browser must block Comcigan feed application');
 if(!app.includes('sameConfig'))throw new Error('Comcigan payload/config mismatch guard missing');
+if(!app.includes("fetch('./live/comcigan-status.json"))throw new Error('Collector health must gate automatic time table ingestion');
+if(!app.includes("health?.status!=='ok'"))throw new Error('Failed collector status must not be treated as healthy timetable');
+if(!app.includes('currentTimetableFeed(p)'))throw new Error('Current week and freshness must be enforced');
+if(!app.includes('시간표 최신성 만료')||!app.includes('컴시간 수집 실패'))throw new Error('UI must distinguish stale from failed timetable');
+const index=fs.readFileSync('index.html','utf8');
+if(!index.includes('app-v14.js?v=59.0-timetable-health'))throw new Error('Latest timetable freshness client must bypass old browser cache');
 if(!app.includes('개인 설정 필요'))throw new Error('Personal config onboarding copy missing');
 if(app.includes("c.teacherName||p?.teacherName"))throw new Error('Shared payload teacher name must not leak into unconfigured UI');
 console.log('v0.14 per-browser Comcigan isolation, bounded retry and sanitized collector diagnostics tests passed');
