@@ -6,6 +6,8 @@ const script=fs.readFileSync('app-v14.js','utf8');
 const home=fs.readFileSync('teacher-dashboard-v49.js','utf8');
 assert(home.includes('TeacherOSComcigan14?.verifiedSlots'), 'home must consume the authenticated live view');
 assert(!home.includes('y.timetable.filter'), 'home cannot render stale legacy timetable');
+assert(home.includes('검증된 컴시간 시간표에서 오늘 배정된 음악수업이 없습니다'), 'valid zero lessons should say verified zero, not imply a missing connection');
+assert(!home.includes('시간표 원본을 연결하거나 현재 학년도를 확인하세요.'), 'verified zero lessons must not imply disconnected timetable');
 assert(script.includes('renderVerifiedTimetable()'), 'timetable table must use verified live view');
 
 function weekKST(){
