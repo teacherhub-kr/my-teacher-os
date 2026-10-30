@@ -19,7 +19,7 @@ for(const file of files){
   console.log('PACKAGE_FILE='+path.relative(root,file)+';LINES='+lines.length);
   if(lines.length<137)continue;
   console.log('PACKAGE_STATIC_SNIPPET_BEGIN');
-  for(let n=129;n<=145;n++){
+  for(let n=(file.endsWith('comcigan-teacher.js')?1:129);n<=(file.endsWith('comcigan-teacher.js')?176:145);n++){
     const line=lines[n-1]||'';
     // Static file is published code; trim long minified lines.
     console.log(String(n).padStart(3,'0')+': '+line.slice(0,220));
