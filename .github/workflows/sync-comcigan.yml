@@ -131,7 +131,7 @@ jobs:
                 category=parser
                 detail="$machine_code"
                 ;;
-              timetable-empty|timetable-validation|timetable-too-few|timetable-too-many|timetable-scope|timetable-duplicate-class|timetable-invalid-time|timetable-period-conflict|timetable-nonmusic|timetable-invalid-label|timetable-coverage)
+              timetable-empty|timetable-crosscheck|timetable-validation|timetable-too-few|timetable-too-many|timetable-scope|timetable-duplicate-class|timetable-invalid-time|timetable-period-conflict|timetable-nonmusic|timetable-invalid-label|timetable-coverage)
                 category=validation
                 detail="$machine_code"
                 ;;
@@ -159,7 +159,7 @@ jobs:
           echo "failure_kinds=$failure_kinds" >> "$GITHUB_OUTPUT"
           if [ "$code" -ne 0 ]; then
             case "$machine_code" in
-              config-invalid|teacher-indices-missing|teacher-name-not-found|teacher-name-multiple|teacher-index-name-mismatch|teacher-not-resolved|teacher-data-missing|timetable-empty|timetable-validation|timetable-too-few|timetable-too-many|timetable-scope|timetable-duplicate-class|timetable-invalid-time|timetable-period-conflict|timetable-nonmusic|timetable-invalid-label|timetable-coverage|collector-init|collector-fetch|parser-import|parser-export)
+              config-invalid|teacher-indices-missing|teacher-name-not-found|teacher-name-multiple|teacher-index-name-mismatch|teacher-not-resolved|teacher-data-missing|timetable-empty|timetable-crosscheck|timetable-validation|timetable-too-few|timetable-too-many|timetable-scope|timetable-duplicate-class|timetable-invalid-time|timetable-period-conflict|timetable-nonmusic|timetable-invalid-label|timetable-coverage|collector-init|collector-fetch|parser-import|parser-export)
                 echo "Sanitized collector stage: $machine_code" ;;
               *) echo "Sanitized collector stage: unknown" ;;
             esac
@@ -181,7 +181,7 @@ jobs:
         run: |
           mkdir -p live
           if [ "$FETCH_OUTCOME" = "success" ] && [ -f live/comcigan.json ]; then
-            printf '%s\n' '{"status":"ok","category":"ok","detail":"ok"}' > live/comcigan-status.json
+            printf '%s\n' '{"status":"ok","category":"ok","detail":"ok","verification":"teacher-class-match"}' > live/comcigan-status.json
           else
             printf '%s\n' "{\"status\":\"error\",\"category\":\"${FETCH_CATEGORY:-runtime}\",\"detail\":\"${FETCH_DETAIL:-runtime}\",\"failureKinds\":\"${FETCH_FAILURE_KINDS:-unclassified}\"}" > live/comcigan-status.json
           fi
