@@ -88,6 +88,37 @@ originals[sourceIds[0]].getSheetByName=function(){
 };
 assert.throws(()=>ctx.getStudentDetail(2,3),/중복/,"Duplicated ID within one gradebook must fail closed");
 originals[sourceIds[0]].getSheetByName=savedGetTab;
+// Actual source sheets include an '응시완료' aggregate row and a status-only
+// row. Neither is a student; both must remain safely skippable.
+originals[sourceIds[0]].getSheetByName=function(){
+  return {getRange:()=>({getDisplayValues:()=>[
+    ["1","가상학생하나",null,null,null,"20","응시"],
+    ["2","가상학생둘",null,null,null,"19","미응시"],
+    ["응시완료","요약",null,null,null,"2","확인"],
+    ["",null,null,null,null,null,"통계"]
+  ]})};
+};
+assert.equal(ctx.getStudentDetail(2,3).studentCount,2,
+  "known aggregate/status-only rows must not be misclassified as students");
+originals[sourceIds[0]].getSheetByName=function(){
+  return {getRange:()=>({getDisplayValues:()=>[
+    ["1","가상학생하나",null,null,null,"20","응시"],
+    ["2","가상학생둘",null,null,null,"19","미응시"],
+    ["","번호없는학생",null,null,null,"18","응시"]
+  ]})};
+};
+assert.throws(()=>ctx.getStudentDetail(2,3),/학생 번호 누락/,
+  "a real student without a number must not silently disappear");
+originals[sourceIds[0]].getSheetByName=function(){
+  return {getRange:()=>({getDisplayValues:()=>[
+    ["1","가상학생하나",null,null,null,"20","응시"],
+    ["2","가상학생둘",null,null,null,"19","미응시"],
+    ["학생A","번호오류학생",null,null,null,"18","응시"]
+  ]})};
+};
+assert.throws(()=>ctx.getStudentDetail(2,3),/형식 오류/,
+  "non-numeric student IDs must fail closed");
+originals[sourceIds[0]].getSheetByName=savedGetTab;
 assert(ui.includes('if(student.statuses[i])'),"Display lack of source score instead of hiding it");
 
 assert(ui.includes("getStudentDetail(grade,room)"));
