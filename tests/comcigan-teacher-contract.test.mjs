@@ -27,11 +27,11 @@ test('validates current-week slots without assuming 15 fixed lessons',()=>{
   const slots=validSlots();
   assert.equal(validateMusicSchedule(slots),true);
   assert.equal(validateMusicSchedule(slots.slice(1)),true);
-  const duplicate=structuredClone(slots);duplicate[1].target=duplicate[0].target;
+  const duplicate=structuredClone(slots);duplicate[1].target=duplicate[0].target;duplicate[1].label=duplicate[1].target+' '+duplicate[1].subject;
   assert.equal(validateMusicSchedule(duplicate),true); // a teacher may meet the same class twice at different periods
   const conflict=structuredClone(slots);conflict[1].period=conflict[0].period;
   assert.equal(validateMusicSchedule(conflict),false);
-  const wrong=structuredClone(slots);wrong[0].subject='수학';
+  const wrong=structuredClone(slots);wrong[0].subject='수학';wrong[0].label=wrong[0].target+' '+wrong[0].subject;
   assert.equal(validateMusicSchedule(wrong),true); // homeroom / non-music duties may be legitimate
 });
 test('public payload is strict and contains no identifying metadata',()=>{
@@ -50,8 +50,8 @@ test('reports only fixed reason codes, not timetable contents',()=>{
   assert.equal(scheduleFailureReason(slots),'ok');
   assert.equal(scheduleFailureReason(slots.slice(1)),'ok');
   assert.equal(scheduleFailureReason([...slots,slots[0]]),'period-conflict');
-  const duplicate=structuredClone(slots);duplicate[1].target=duplicate[0].target;
+  const duplicate=structuredClone(slots);duplicate[1].target=duplicate[0].target;duplicate[1].label=duplicate[1].target+' '+duplicate[1].subject;
   assert.equal(scheduleFailureReason(duplicate),'ok');
-  const nonmusic=structuredClone(slots);nonmusic[0].subject='PRIVATE SCIENCE';
+  const nonmusic=structuredClone(slots);nonmusic[0].subject='PRIVATE SCIENCE';nonmusic[0].label=nonmusic[0].target+' '+nonmusic[0].subject;
   assert.equal(scheduleFailureReason(nonmusic),'ok');
 });
