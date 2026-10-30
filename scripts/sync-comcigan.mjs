@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { failureKind } from './comcigan-diagnostics.mjs';
 import { upstreamFailureFingerprint } from './comcigan-runtime-diag.mjs';
-import {resolveTeacherIndex,selectTeacherDays,makePublicTimetable} from './comcigan-teacher-contract.mjs';
+import {resolveTeacherIndex,selectTeacherDays,makePublicTimetable,scheduleFailureReason} from './comcigan-teacher-contract.mjs';
 import { probeClassReader } from './comcigan-class-probe.mjs';
 
 function normName(v){return String(v||'').replace(/\s+/g,'').replace(/\*/g,'').trim()}
@@ -77,6 +77,8 @@ const teacherRaw=selectTeacherDays(result,selectedIndex);
 if(!teacherRaw)fail('teacher-data-missing');
 const weekStart=mondayKST(),slots=normalizeTeacherData(teacherRaw,weekStart);
 if(!slots.length)fail('timetable-empty');
+const reason=scheduleFailureReason(slots);
+if(reason!=='ok')fail('timetable-'+reason);
 const payload=makePublicTimetable(weekStart,new Date().toISOString(),slots);
 if(!payload)fail('timetable-validation');
 const out=path.join(process.cwd(),'live','comcigan.json');
