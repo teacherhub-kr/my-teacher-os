@@ -71,11 +71,11 @@ document.addEventListener("click",function(e){
   if(action==="save"){
     var input=q("#teacher56Url");var url=linkOK(input?.value);
     if(!url){tell("유효한 Apps Script 웹앱 /exec 주소만 등록할 수 있습니다.",true);input?.focus();return}
-    try{localStorage.setItem(LINK_KEY,url);mount();tell("이 브라우저에 웹앱 주소를 저장했습니다. 실제 권한 연결은 보호된 웹앱에서 확인해야 합니다.",false)}
+    try{localStorage.setItem(LINK_KEY,url);mount();if(globalThis.TeacherOSConnections53?.render)globalThis.TeacherOSConnections53.render(true);tell("이 브라우저에 웹앱 주소를 저장했습니다. 실제 권한 연결은 보호된 웹앱에서 확인해야 합니다.",false)}
     catch(err){tell("브라우저 보안 설정으로 저장하지 못했습니다.",true)}return;
   }
   if(action==="clear"){
-    try{localStorage.removeItem(LINK_KEY);mount();tell("이 브라우저에서 웹앱 주소만 삭제했습니다. Google Sheets와 Apps Script 원본은 변경되지 않았습니다.",false)}
+    try{localStorage.removeItem(LINK_KEY);mount();if(globalThis.TeacherOSConnections53?.render)globalThis.TeacherOSConnections53.render(true);tell("이 브라우저에서 웹앱 주소만 삭제했습니다. Google Sheets와 Apps Script 원본은 변경되지 않았습니다.",false)}
     catch(err){tell("저장된 주소를 지우지 못했습니다.",true)}
   }
 });
