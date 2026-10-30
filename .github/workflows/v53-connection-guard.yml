@@ -1,0 +1,62 @@
+name: Teacher OS v53 Connection Truth Guard
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - index.html
+      - teacher-connections-v53.js
+      - teacher-connections-v53.css
+      - tests/v53-tests.js
+      - .github/workflows/v53-connection-guard.yml
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - teacher-connections-v53.js
+      - teacher-connections-v53.css
+      - tests/v53-tests.js
+      - .github/workflows/v53-connection-guard.yml
+permissions:
+  contents: read
+jobs:
+  diagnostics:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Regression and integration truth checks
+        run: |
+          node --check teacher-connections-v53.js
+          node tests/v49-tests.js
+          node tests/v50-tests.js
+          node tests/v51-tests.js
+          node tests/v52-tests.js
+          node tests/v53-tests.js
+      - name: Chrome first visit - connection button and diagnostics
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium)"
+          python3 -m http.server 8493 --bind 127.0.0.1 >/tmp/teacher-v53-server.log 2>&1 &
+          pid=$!
+          trap 'kill "$pid" 2>/dev/null || true' EXIT
+          sleep 2
+          "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \
+            --no-first-run --disable-extensions --window-size=1672,941 --virtual-time-budget=13000 \
+            --dump-dom http://127.0.0.1:8493/ > /tmp/v53.html 2>/tmp/v53-chrome.log
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          src=open('/tmp/v53.html',encoding='utf8').read()
+          for txt in ['id="t53Connections"','id="t53HeaderButton"','id="t53Rows"','id="t53SheetUrl"','인증된 자동 집계 경로 미구축','teacher51-mode']:
+              assert txt in src, f'Browser diagnostics missing {txt}'
+          assert '학생별 점수' not in src or 'GitHub Pages' in src
+          print('v53 Chromium connection diagnostics mounted successfully')
+          PY
+          "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \
+            --no-first-run --disable-extensions --window-size=1672,941 --virtual-time-budget=10000 \
+            --screenshot=teacheros-v53-diagnostics.png http://127.0.0.1:8493/ >/dev/null 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: teacheros-v53-diagnostics
+          path: teacheros-v53-diagnostics.png
+          if-no-files-found: ignore
+          retention-days: 5
