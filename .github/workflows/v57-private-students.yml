@@ -1,0 +1,51 @@
+name: Teacher OS v57 Protected Student Gradebook
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'apps-script/music-dashboard/**'
+      - 'tests/private-students-v57.test.js'
+      - '.github/workflows/v57-private-students.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'apps-script/music-dashboard/**'
+      - 'tests/private-students-v57.test.js'
+      - '.github/workflows/v57-private-students.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Student identity and score join tests
+        run: |
+          set -euo pipefail
+          node tests/private-students-v57.test.js
+          node tests/owner-apps-script-v56.test.js
+          node tests/owner-portal-v56.test.js
+      - name: Previous private dashboard and regression checks
+        run: |
+          set -euo pipefail
+          node tests/v53-tests.js
+          node tests/v54-core.test.js
+          node tests/v54-runtime.test.js
+          node tests/v55-csv.test.js
+      - name: Verify protected page has student lookup UI and no public grade API
+        run: |
+          set -euo pipefail
+          node - <<'JS'
+          const fs=require('fs'),assert=require('assert');
+          const html=fs.readFileSync('apps-script/music-dashboard/Index.html','utf8');
+          const main=fs.readFileSync('index.html','utf8');
+          const server=fs.readFileSync('apps-script/music-dashboard/StudentDetails.gs','utf8');
+          assert(html.includes('id="studentClass"'));
+          assert(html.includes('id="studentRows"'));
+          assert(html.includes('getStudentDetail(grade,room)'));
+          assert(html.includes('node("td",student.name)'));
+          assert(server.includes('getRange("A6:E270")'));
+          assert(server.includes('getRange("A5:G50")'));
+          assert(!main.includes('getStudentDetail'));
+          console.log('Student lookup UI only in private Apps Script: PASS');
+          JS
