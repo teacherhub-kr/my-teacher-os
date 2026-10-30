@@ -158,7 +158,7 @@
           student.scores.forEach(function(score,i){
             var td=node("td"),value=node("span",score===null?"미기록":score+"점",score===null?"grade-empty":"grade-score");
             td.appendChild(value);
-            if(student.statuses[i]&&student.statuses[i]!=="원본 없음")
+            if(student.statuses[i])
               td.appendChild(node("span",student.statuses[i],"grade-state"));
             tr.appendChild(td);
           });
