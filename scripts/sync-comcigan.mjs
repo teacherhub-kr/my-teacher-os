@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { failureKind } from './comcigan-diagnostics.mjs';
 import { upstreamFailureFingerprint } from './comcigan-runtime-diag.mjs';
+import {resolveTeacherIndex,selectTeacherDays,makePublicTimetable} from './comcigan-teacher-contract.mjs';
 import { probeClassReader } from './comcigan-class-probe.mjs';
 
 function normName(v){return String(v||'').replace(/\s+/g,'').replace(/\*/g,'').trim()}
@@ -57,29 +58,27 @@ const ComciganTeacher=mod.ComciganTeacher||mod.default?.ComciganTeacher;
 if(!ComciganTeacher)fail('parser-export');
 let client;
 await retryCollector('collector-init',async()=>{client=new ComciganTeacher(SCHOOL_CODE);await client.init();return true});
+// v3.0.4 stores teacher name indices on the instance after init(), and
+// getTimetable(index) takes a REQUIRED index. The old zero-argument call caused
+// a TypeError in dist/comcigan-teacher.js line 137.
+const selected=resolveTeacherIndex(client.teacherIndices,PREFERRED_INDEX,TEACHER_NAME);
+if(!selected.ok)fail(selected.code);
+const selectedIndex=selected.index;
 const result=await retryCollector('collector-fetch',async attempt=>{
-  if(attempt>0){client=new ComciganTeacher(SCHOOL_CODE);await client.init()}
-  return client.getTimetable();
-});
-const indexList=Array.isArray(result?.teacherIndex)?result.teacherIndex:[];
-let selectedIndex=0;
-if(PREFERRED_INDEX&&result?.data?.[PREFERRED_INDEX])selectedIndex=PREFERRED_INDEX;
-if(TEACHER_NAME){
-  const matches=indexList.map((name,i)=>({name,i})).filter(x=>x.i>0&&nameMatches(x.name,TEACHER_NAME));
-  if(matches.length===1)selectedIndex=matches[0].i;
-  else if(matches.length>1){
-    if(matches.some(x=>x.i===PREFERRED_INDEX))selectedIndex=PREFERRED_INDEX;
-    else fail('teacher-name-multiple');
-  }else if(selectedIndex&&indexList[selectedIndex]&&!nameMatches(indexList[selectedIndex],TEACHER_NAME)){
-    fail('teacher-index-name-mismatch');
+  if(attempt>0){
+    client=new ComciganTeacher(SCHOOL_CODE);
+    await client.init();
+    const rechecked=resolveTeacherIndex(client.teacherIndices,PREFERRED_INDEX,TEACHER_NAME);
+    if(!rechecked.ok || rechecked.index!==selectedIndex)throw new Error('selected teacher changed between attempts');
   }
-}
-if(!selectedIndex)fail('teacher-not-resolved');
-const teacherRaw=result?.data?.[selectedIndex]||result?.data?.[String(selectedIndex)];
+  return client.getTimetable(selectedIndex);
+});
+const teacherRaw=selectTeacherDays(result,selectedIndex);
 if(!teacherRaw)fail('teacher-data-missing');
 const weekStart=mondayKST(),slots=normalizeTeacherData(teacherRaw,weekStart);
 if(!slots.length)fail('timetable-empty');
-const payload={version:2,weekStart,fetchedAt:new Date().toISOString(),slots}; // No teacher identity/index or school code in public JSON.
+const payload=makePublicTimetable(weekStart,new Date().toISOString(),slots);
+if(!payload)fail('timetable-validation');
 const out=path.join(process.cwd(),'live','comcigan.json');
 await fs.mkdir(path.dirname(out),{recursive:true});
 await fs.writeFile(out,JSON.stringify(payload,null,2)+'\n','utf8');
