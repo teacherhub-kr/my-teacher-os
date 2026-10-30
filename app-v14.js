@@ -131,15 +131,34 @@
     const table=q('#timetableTable');if(table){table.classList.add('readonly-timetable');table.querySelectorAll('.cell-add').forEach(x=>x.remove());if(!table.dataset.readonlyGuard){table.dataset.readonlyGuard='1';table.addEventListener('click',ev=>{ev.preventDefault();ev.stopImmediatePropagation()},true)}}
     renderVerifiedTimetable();
   }
+  // Coverage is an advisory comparison against the teacher's 15 class targets.
+  // A missing class does NOT by itself prove a collector failure or justify
+  // overwriting a confirmed teacher/class-match feed.
+  function teacherClassCoverage(slots){
+    if(!Array.isArray(slots))return null;
+    const expected=[];
+    for(let room=1;room<=9;room++)expected.push('2-'+room);
+    for(let room=4;room<=9;room++)expected.push('3-'+room);
+    const assigned=new Set(slots.map(s=>String(s?.target||'')));
+    const absent=expected.filter(cls=>!assigned.has(cls));
+    return {present:expected.length-absent.length,expected:expected.length,absent};
+  }
   function renderPlainSyncCard(){
     const y=typeof cur==='function'?cur():null,box=q('#liveSyncCard');if(!box||!y)return;ensureYearSync(y);ensureConfigDialog();
     const c=config||blankConfig(),configured=completeConfig(c),status=y.comciganSync.status||'unconfigured',ok=configured&&status==='ok',mismatch=configured&&status==='mismatch',stale=configured&&status==='stale',failed=configured&&status==='error';
     const last=configured?(lastPayload?.fetchedAt||y.comciganSync?.lastApplied):null,when=last?new Date(last).toLocaleString('ko-KR'):'-';
+    const coverage=teacherClassCoverage(verifiedLiveSlots(y));
+    const coverageNotice=coverage&&coverage.absent.length
+      ? '<div class="notice warning" role="status" style="margin-top:10px"><b>수업 편성 대조 필요:</b> 검증된 이번 주 시간표에 담당 15개 반 중 '+coverage.present+
+        '개 반만 표시됩니다. 미표시: '+esc(coverage.absent.join(', '))+
+        '. 시간표 변경·행사·휴업 등의 영향일 수 있으므로 컴시간 원본과 확인하세요. 미표시가 곧 수집 오류라는 뜻은 아닙니다.</div>'
+      : '';
     box.innerHTML=`<div class="sync-auto"><div class="sync-auto-icon">↻</div><div class="sync-auto-meta"><b>컴시간 개인 설정</b><span>학교·교사 설정은 이 브라우저에만 저장되고 다른 사용자와 공유되지 않습니다.</span></div><div class="sync-auto-time">기기별</div></div><div class="sync-config"><span>학교코드 ${esc(configured?c.schoolCode:'미설정')}</span><span>교사번호 ${esc(configured?c.teacherIndex:'미설정')}</span><span>교사 ${esc(configured?c.teacherName:'미설정')}</span><span>최근 적용 ${esc(when)}</span></div><div class="sync-row spaced"><span class="pill ${ok?'':'warn'}">${ok?'자동 적용 중':mismatch?'설정 불일치':stale?'시간표 최신성 만료':failed?'컴시간 수집 실패':configured?'수집 결과 확인 중':'개인 설정 필요'}</span><span class="live-source">${!configured?'처음 사용하는 브라우저입니다. 내 학교·교사 설정을 먼저 저장하세요.':mismatch?'현재 수집 결과가 내 설정과 달라 적용하지 않았습니다.':stale?'오래된 파일을 최신 시간표로 적용하지 않았습니다.':failed?'컴시간 자동수집 실패. 최신 시간표가 아니므로 원본에서 확인하세요.':'설정과 수집 결과가 일치할 때만 시간표를 적용합니다.'}</span><span style="flex:1"></span><button class="btn secondary tiny" id="comciganConfigEdit" type="button">${configured?'컴시간 설정 변경':'내 컴시간 설정'}</button><button class="btn secondary tiny" id="plainSyncNow" type="button" ${configured?'':'disabled'}>최신표 다시 불러오기</button></div>`;
+    if(coverageNotice)box.insertAdjacentHTML('beforeend',coverageNotice);
     q('#comciganConfigEdit').onclick=openConfigDialog;q('#plainSyncNow').onclick=()=>pullComcigan(true);const old=q('#syncDlg');if(old)old.remove();lockTimetableReadOnly();
   }
   async function boot(){await loadConfig();ensureConfigDialog();lockTimetableReadOnly();const ok=await pullComcigan(false);if(ok&&typeof render==='function')render();renderPlainSyncCard();lockTimetableReadOnly();const foot=q('.side-foot');if(foot)foot.textContent='v0.14 · per-browser Comcigan config'}
   const previousRender=globalThis.render;if(typeof previousRender==='function'){globalThis.render=function(){const r=previousRender.apply(this,arguments);setTimeout(()=>{renderPlainSyncCard();lockTimetableReadOnly()},0);return r}}
-  globalThis.TeacherOSComcigan14={verifiedSlots:verifiedLiveSlots};
+  globalThis.TeacherOSComcigan14={verifiedSlots:verifiedLiveSlots,classCoverage:teacherClassCoverage};
   boot();
 })();
