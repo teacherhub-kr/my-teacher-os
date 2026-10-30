@@ -68,9 +68,9 @@ jobs:
           for marker in ['id="music54Panel"','id="music54Excel"','id="music54ClientId"',
                          'id="t53Connections"','id="t49Progress"','teacher51-mode']:
               assert marker in s, f"v54 UI not visible: {marker}"
-          assert '아직 실제 평가 집계가 표시되지 않았습니다' in s, 'Missing no-auth honesty disclosure'
+          assert '자동 연결은 위 교사용 Apps Script' in s, 'Owner-only setup and no-auth disclosure missing'
           assert '.csv' in s and 'music54Excel' in s, 'CSV-only import unavailable in actual Chromium DOM'
-          assert 'Google 읽기 전용 연결' in s, 'OAuth consent entry missing'
+          assert 'id="teacher56Panel"' in s and '교사 전용 화면 열기' in s, 'Owner-only Apps Script portal missing'
           print('v54 Chromium first visit: PASS')
           PY
           "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \

@@ -1,0 +1,76 @@
+name: Teacher OS v56 Owner-Only Apps Script Guard
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'teacher-private-music-v56.js'
+      - 'teacher-private-music-v56.css'
+      - 'teacher-connections-v53.js'
+      - 'apps-script/music-dashboard/**'
+      - 'tests/owner-*.test.js'
+      - '.github/workflows/v56-owner-only-music.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'teacher-private-music-v56.js'
+      - 'teacher-private-music-v56.css'
+      - 'teacher-connections-v53.js'
+      - 'apps-script/music-dashboard/**'
+      - 'tests/owner-*.test.js'
+      - '.github/workflows/v56-owner-only-music.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apps Script server and portal unit security tests
+        run: |
+          set -euo pipefail
+          node --check teacher-private-music-v56.js
+          node tests/owner-apps-script-v56.test.js
+          node tests/owner-portal-v56.test.js
+      - name: Existing Teacher OS smoke tests
+        run: |
+          set -euo pipefail
+          node tests/v49-tests.js
+          node tests/v50-tests.js
+          node tests/v51-tests.js
+          node tests/v52-tests.js
+          node tests/v53-tests.js
+          node tests/v54-core.test.js
+          node tests/v54-runtime.test.js
+          node tests/v55-csv.test.js
+      - name: Chromium first-visit portal DOM smoke and screenshot
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium)"
+          python3 -m http.server 8560 --bind 127.0.0.1 >/tmp/teacher56-server.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          sleep 2
+          "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --no-first-run --disable-extensions --window-size=1672,941 --virtual-time-budget=14000 \
+            --dump-dom http://127.0.0.1:8560/ >/tmp/teacher56-dom.html 2>/tmp/teacher56-chrome.log
+          python3 - <<'PY'
+          text=open('/tmp/teacher56-dom.html',encoding='utf8').read()
+          for marker in ['id="teacher56Panel"','id="teacher56Badge"','id="teacher56Url"',
+                         '나로 실행 · 나만 접근','교사 전용 화면 열기','teacher51-mode']:
+              assert marker in text, 'Owner-only portal not rendered: '+marker
+          assert 'teacher56-fallback' in text, 'The obsolete OAuth form must be hidden'
+          assert 'accounts.google.com/gsi/client' not in text, 'Legacy separate OAuth bootstrap still loaded'
+          print('Chromium owner-only portal: passed')
+          PY
+          "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --no-first-run --disable-extensions --window-size=1672,941 --virtual-time-budget=14000 \
+            --screenshot=teacher-os-v56-owner-only.png http://127.0.0.1:8560/ >/tmp/teacher56-shot.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: teacher-os-v56-owner-only-first-visit
+          path: teacher-os-v56-owner-only.png
+          if-no-files-found: ignore
+          retention-days: 6

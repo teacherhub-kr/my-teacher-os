@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko"><head>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MY MUSIC CLASS · 교사 전용</title>
+  <style>
+    :root {color-scheme:light;--navy:#17365f;--ink:#1c3155;--blue:#2565e8;--muted:#7385a1;--line:#e4eaf4;--bg:#f5f8ff}
+    *{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.6 "Noto Sans KR",Arial,sans-serif;color:var(--ink)}
+    .wrap{max-width:1190px;margin:auto;padding:28px 23px 60px}
+    header{background:linear-gradient(110deg,#fff 0%,#f2f6ff 77%);border:1px solid var(--line);border-radius:23px;padding:29px 32px;display:flex;gap:22px;align-items:center;justify-content:space-between}
+    .eyebrow{display:inline-flex;background:#e7f0ff;border-radius:20px;color:var(--blue);padding:4px 12px;font-size:11px;font-weight:800}
+    h1{font-size:clamp(22px,3vw,36px);color:#17325b;letter-spacing:-.045em;margin:12px 0 7px;line-height:1.28}
+    .lede{color:#6a7e9e;font-size:13px;margin:0}
+    .symbol{font-size:64px;color:#3775df;opacity:.7;flex-shrink:0}
+    .toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:19px 0;flex-wrap:wrap}
+    .tabs{display:flex;gap:7px}.tabs button,.refresh{font:inherit;border:1px solid #dce5f4;border-radius:11px;padding:10px 15px;cursor:pointer;font-weight:800;background:white;color:#4b6486;min-height:43px}
+    .tabs button[aria-selected="true"]{background:#2567eb;color:#fff;border-color:#2567eb}
+    .refresh{background:#f8fbff;color:#2865c7}.refresh:disabled{opacity:.5;cursor:wait}
+    button:focus-visible{outline:3px solid #93b5ff;outline-offset:2px}
+    .subtitle{font-size:12px;color:#687d9c;margin-top:2px}
+    .cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .card{background:white;border:1px solid var(--line);border-radius:16px;padding:19px 20px;box-shadow:0 8px 23px #1d448408}
+    .card:nth-child(1){background:#eaf3ff}.card:nth-child(2){background:#fff1f2}
+    .card:nth-child(3){background:#fff8e6}.card:nth-child(4){background:#f2edff}
+    .card small{font-size:12px;font-weight:800;color:#596e90;display:block}
+    .card strong{display:block;font-size:32px;line-height:1.35;letter-spacing:-.04em;margin:5px 0;color:#205fcb}
+    .card:nth-child(2) strong{color:#ca485a}.card:nth-child(3) strong{color:#b97e0e}.card:nth-child(4) strong{color:#7851c3}
+    .card span{font-size:11px;color:#7d8da6}
+    .panel{background:white;border:1px solid var(--line);border-radius:17px;margin-top:16px;padding:21px;box-shadow:0 8px 26px #1d448408}
+    .panel h2{font-size:18px;letter-spacing:-.03em;margin:0 0 5px}
+    .scroll{overflow-x:auto;margin-top:16px}table{border-collapse:collapse;min-width:670px;width:100%;font-size:13px}
+    thead{background:#f5f8fd;color:#617896}th,td{padding:13px 10px;text-align:center;border-bottom:1px solid #ecf0f6}
+    td:first-child,th:first-child{text-align:left;font-weight:850}
+    .pill{border-radius:9px;display:inline-flex;padding:5px 9px;font-size:11px;font-weight:800;background:#f0f4fa;color:#6e829e}
+    .pill.missing{background:#fff0ed;color:#a95a3c}.pill.notice{background:#fff3d9;color:#a77a1e}
+    .warn{border-radius:12px;padding:13px 16px;background:#fff9eb;border:1px solid #f2e6ca;font-size:12px;color:#826b3a;margin-top:13px}
+    .meta{color:#788ba5;font-size:11px;margin-top:16px}
+    .status{margin-top:16px;padding:13px 16px;border-radius:12px;background:#eaf2ff;color:#2b5fa9;font-size:12px}
+    .status.error{background:#fff0f1;color:#ae415a}
+    footer{margin-top:22px;color:#788ba4;font-size:11px}
+    @media(max-width:740px){.wrap{padding:13px 12px 38px}header{padding:23px 19px}.symbol{display:none}.cards{grid-template-columns:repeat(2,1fr);gap:8px}.card{padding:14px}.card strong{font-size:27px}.panel{padding:14px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+  </style>
+</head><body>
+<main class="wrap">
+ <header>
+  <div><span class="eyebrow">TEACHER ONLY · MUSIC DASHBOARD</span>
+  <h1>음악수업과 평가를<br>한눈에 관리합니다.</h1>
+  <p class="lede">기존 가변형 스케줄표의 반별 집계를 읽는 교사 전용 화면입니다.</p></div>
+  <div class="symbol" aria-hidden="true">♫ ♪</div>
+ </header>
+ <div class="toolbar">
+  <div><div class="tabs" role="tablist" aria-label="학년 선택">
+   <button type="button" role="tab" aria-selected="true" data-grade="2">2학년</button>
+   <button type="button" role="tab" aria-selected="false" data-grade="3">3학년</button>
+  </div><div id="semesterNote" class="subtitle">2학년 2학기 1~4차 수행평가</div></div>
+  <button id="refresh" type="button" class="refresh">↻ 원본 다시 읽기</button>
+ </div>
+ <section class="cards" aria-label="현재 학년 요약">
+  <div class="card"><small>대상 학급</small><strong id="classes">—</strong><span>반별 집계 수</span></div>
+  <div class="card"><small>미채점 합계</small><strong id="missing">—</strong><span>평가별 미채점 기록 합계</span></div>
+  <div class="card"><small>점검 알림</small><strong id="notices">—</strong><span>반 단위 확인 필요</span></div>
+  <div class="card"><small>긴급 표시</small><strong id="urgent">—</strong><span>원본 집계의 긴급 분류</span></div>
+ </section>
+ <section class="panel" aria-labelledby="tableHeading">
+  <h2 id="tableHeading">반별 수행평가 현황</h2>
+  <p class="subtitle">자료는 각 조회 시점의 Google Sheets 집계 결과입니다. 정확한 학생별 성적은 원본 채점표에서 확인하세요.</p>
+  <div class="scroll"><table><thead><tr id="headerRow"></tr></thead><tbody id="results">
+   <tr><td colspan="6">원본을 확인하는 중입니다.</td></tr>
+  </tbody></table></div>
+  <div id="caution" class="warn">미채점 0명은 실제 수업 실시·결시 처리·보충평가 완료를 뜻하지 않습니다.</div>
+  <div id="readAt" class="meta">조회 시각: —</div>
+ </section>
+ <div class="status" id="status" role="status" aria-live="polite">본인 Google 계정으로 원본의 학급별 집계를 조회하고 있습니다.</div>
+ <footer>학생 이름·개인 점수·결시 사유는 이 화면으로 전송하지 않습니다. 공유·배포 설정은 반드시 ‘나만’으로 유지하세요.</footer>
+</main>
+<script>
+(function(){
+  "use strict";
+  var activeGrade=2,latest=null,loading=false;
+  var $=function(id){return document.getElementById(id)};
+  function node(tag,value,cls){var e=document.createElement(tag);if(value!==undefined)e.textContent=String(value);if(cls)e.className=cls;return e}
+  function info(message,isError){var e=$("status");e.textContent=message;e.className="status"+(isError?" error":"")}
+  function refresh(){
+    if(loading)return;
+    if(!window.google||!google.script||!google.script.run){info("Apps Script 웹앱 환경에서만 실행할 수 있습니다.",true);return}
+    loading=true;$("refresh").disabled=true;info("원본 수행평가 집계를 읽는 중입니다.",false);
+    google.script.run
+      .withSuccessHandler(function(result){loading=false;$("refresh").disabled=false;latest=result;render();info("원본 집계 15개 반을 정상적으로 읽었습니다.",false)})
+      .withFailureHandler(function(err){loading=false;$("refresh").disabled=false;info("집계를 읽지 못했습니다. 원본 권한과 초기 설정을 확인하세요: "+String(err&&err.message||"연결 실패").slice(0,120),true)})
+      .getDashboardData();
+  }
+  function render(){
+    if(!latest)return;
+    var data=latest.classes.filter(function(c){return c.grade===activeGrade});
+    $("classes").textContent=data.length+"개 반";
+    $("missing").textContent=data.reduce(function(a,c){return a+c.missing.reduce(function(x,y){return x+y},0)},0)+"건";
+    $("notices").textContent=data.filter(function(c){return c.notice!=="없음"}).length+"개 반";
+    $("urgent").textContent=data.filter(function(c){return c.notice==="긴급"}).length+"개 반";
+    $("semesterNote").textContent=activeGrade===2?latest.semesterNotes.grade2:latest.semesterNotes.grade3;
+    $("caution").textContent=latest.caution;
+    $("readAt").textContent="원본 "+latest.readAtType+": "+latest.readAt;
+    var header=activeGrade===2?["학급","1차","2차","3차","4차","점검"]:["학급","1차(1학기)","2차(1학기)","3차(2학기)","4차(2학기)","점검"];
+    $("headerRow").replaceChildren();
+    header.forEach(function(v){$("headerRow").appendChild(node("th",v))});
+    var body=$("results");body.replaceChildren();
+    data.forEach(function(c){
+      var tr=node("tr");tr.appendChild(node("td",c.grade+"-"+c.room));
+      c.missing.forEach(function(n){var td=node("td");td.appendChild(node("span",n+"명",n?"pill missing":"pill"));tr.appendChild(td)});
+      var td=node("td"),category=c.notice==="긴급"?"긴급":c.notice==="없음"?"—":"확인 필요";
+      td.appendChild(node("span",category,c.notice==="없음"?"pill":"pill notice"));tr.appendChild(td);body.appendChild(tr);
+    });
+  }
+  document.querySelectorAll("[data-grade]").forEach(function(el){el.addEventListener("click",function(){
+    activeGrade=Number(el.dataset.grade);
+    document.querySelectorAll("[data-grade]").forEach(function(b){b.setAttribute("aria-selected",String(Number(b.dataset.grade)===activeGrade))});
+    render();
+  })});
+  $("refresh").addEventListener("click",refresh);
+  refresh();
+})();
+</script>
+</body></html>
