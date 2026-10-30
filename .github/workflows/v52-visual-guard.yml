@@ -1,0 +1,58 @@
+name: Teacher OS v52 Icons & Hero Guard
+on:
+  pull_request:
+    branches: [main]
+    paths: ['index.html','teacher-dashboard-v49.js','teacher-design-v51.css','tests/v52-tests.js','.github/workflows/v52-visual-guard.yml']
+  push:
+    branches: [main]
+    paths: ['index.html','teacher-dashboard-v49.js','teacher-design-v51.css','tests/v52-tests.js','.github/workflows/v52-visual-guard.yml']
+permissions:
+  contents: read
+jobs:
+  visual:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Static and regression checks
+        run: |
+          node --check teacher-dashboard-v49.js
+          node --check teacher-design-v51.js
+          node tests/v49-tests.js
+          node tests/v50-tests.js
+          node tests/v51-tests.js
+          node tests/v52-tests.js
+      - name: Korean fonts for Chromium screenshot
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk
+      - name: Chromium icon DOM smoke and full-page screenshot
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium)"
+          python3 -m http.server 8482 --bind 127.0.0.1 >/tmp/teacheros-v52-server.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          sleep 2
+          "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \
+            --no-first-run --disable-extensions --window-size=1672,941 --virtual-time-budget=15000 \
+            --dump-dom http://127.0.0.1:8482/ > /tmp/v52-render.html 2>/tmp/v52-chrome.log
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          doc=open('/tmp/v52-render.html',encoding='utf8').read()
+          assert 'teacher51-mode' in doc, 'Premium layout did not render'
+          assert 'id="t49Screen"' in doc, 'Home missing'
+          for marker in ['data-view="dashboard"','data-view="calendar"','data-view="assessment"','data-view="t49-classes"']:
+              assert marker in doc, f'Navigation missing: {marker}'
+          assert doc.count('stroke-width="1.85"')>=8, 'SVG navigation icons failed to render'
+          assert 'id="t49Kpis"' in doc, 'Dashboard KPI cards missing'
+          assert '<svg' in doc, 'No SVG icons rendered'
+          print('Chromium v52 smoke: dashboard + 8 SVG icons rendered')
+          PY
+          "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \
+            --no-first-run --disable-extensions --window-size=1672,941 --virtual-time-budget=15000 \
+            --screenshot=teacheros-v52-1672.png http://127.0.0.1:8482/ >/tmp/v52-screenshot.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: teacheros-v52-icons-crisp-hero
+          path: teacheros-v52-1672.png
+          if-no-files-found: ignore
+          retention-days: 5

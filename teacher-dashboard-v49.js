@@ -18,6 +18,23 @@
     {view:'projects',title:'행정업무',icon:'☷',number:'09'},
     {view:'settings',title:'설정',icon:'⚙',number:'10'}
   ];
+  // Local Lucide-style icons. Deliberately no external icon font or text glyphs.
+  var NAV_SVG_PATHS={
+    dashboard:'<path d="m3 10 9-7 9 7"/><path d="M5 9v12h14V9"/><path d="M9 21v-7h6v7"/>',
+    calendar:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/>',
+    assessment:'<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3.5h6M9 10h6M9 14h2"/><path d="m13 16 1.6 1.6L18 14"/>',
+    't49-classes':'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>',
+    't49-exceptions':'<path d="M10.3 3.9 2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/>',
+    't49-records':'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M8 13h8M8 17h8"/>',
+    documents:'<path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M3 11h18"/>',
+    settings:'<path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06-1.7 2.94-.09-.02a1.7 1.7 0 0 0-1.79.64l-.04.06H7.82a1.7 1.7 0 0 0-1.83-.65l-.1.02-1.69-2.94a1.7 1.7 0 0 0 .4-1.94l-.03-.07v-5.9a1.7 1.7 0 0 0-.37-1.9L5.9 4.2a1.7 1.7 0 0 0 1.93-.55h8.35a1.7 1.7 0 0 0 1.92.55l1.7 2.94a1.7 1.7 0 0 0-.4 1.91Z"/>',
+    timetable:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M10 9v11"/>',
+    projects:'<path d="M4 6h16M4 12h16M4 18h16"/>'
+  };
+  function navIcon(view){
+    var paths=NAV_SVG_PATHS[view]||NAV_SVG_PATHS.documents;
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.85" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'+paths+'</svg>';
+  }
   function current(){
     try{return typeof cur==='function'&&cur()?cur():null}catch(e){return null}
   }
@@ -56,7 +73,7 @@
       var t=el.querySelector('span:not(.t49-nav-glyph):not(.t49-nav-number)');if(t)t.textContent=item.title;
       var glyph=el.querySelector('.t49-nav-glyph');
       if(!glyph){glyph=document.createElement('i');glyph.className='t49-nav-glyph';glyph.style.fontStyle='normal';glyph.setAttribute('aria-hidden','true');el.insertBefore(glyph,el.firstChild)}
-      glyph.textContent=item.icon;
+      if(!glyph.querySelector('svg'))glyph.innerHTML=navIcon(item.view);
       var count=el.querySelector('.t49-nav-number');
       if(!count){count=document.createElement('span');count.className='t49-nav-number';count.setAttribute('aria-hidden','true');el.appendChild(count)}
       count.textContent=item.number;
