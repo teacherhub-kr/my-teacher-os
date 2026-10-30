@@ -39,6 +39,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Check sanitized diagnostic extraction
+        shell: bash
+        run: |
+          result=$(printf '%s\n' 'TEACHER_OS_CLASS_PROBE=ok' | sed -n 's/^TEACHER_OS_CLASS_PROBE=\([a-z,-]*\)$/\1/p')
+          test "$result" = "ok"
       - name: Offline syntax and safe-error regression
         run: |
           node --check scripts/sync-comcigan.mjs
@@ -121,7 +126,7 @@ jobs:
               parse) category=parser ;;
             esac
           fi
-          class_probe=$(sed -n 's/^TEACHER_OS_CLASS_PROBE=\\([a-z,-]*\\)$/\\1/p' /tmp/comcigan-fetch.log | tail -n 1)
+          class_probe=$(sed -n 's/^TEACHER_OS_CLASS_PROBE=\([a-z,-]*\)$/\1/p' /tmp/comcigan-fetch.log | tail -n 1)
           case "$class_probe" in ''|*[!a-z,-]*) class_probe=not-run ;; esac
           echo "class_probe=$class_probe" >> "$GITHUB_OUTPUT"
           echo "category=$category" >> "$GITHUB_OUTPUT"
