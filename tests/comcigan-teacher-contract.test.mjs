@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {resolveTeacherIndex,selectTeacherDays,validateMusicSchedule,makePublicTimetable,scheduleFailureReason} from '../scripts/comcigan-teacher-contract.mjs';
+import {resolveTeacherIndex,selectTeacherDays,validateMusicSchedule,makePublicTimetable,scheduleFailureReason,publicConfigFingerprint} from '../scripts/comcigan-teacher-contract.mjs';
 test('requires an unambiguous teacher name; uses current index, not stale config',()=>{
   assert.deepEqual(resolveTeacherIndex(['*','가나*','김다*'],1,'가나*'),{ok:true,index:1});
   assert.deepEqual(resolveTeacherIndex(['*','김다*','가나*'],1,'가나*'),{ok:true,index:2});
@@ -36,13 +36,14 @@ test('validates current-week slots without assuming 15 fixed lessons',()=>{
 });
 test('public payload is strict and contains no identifying metadata',()=>{
   const slots=validSlots();
-  const published=makePublicTimetable('2026-10-26','2026-10-30T10:45:00Z',slots,'match');
-  assert.deepEqual(Object.keys(published).sort(),['fetchedAt','slots','version','weekStart']);
+  const fp=publicConfigFingerprint(12345,12,'가나*');
+  const published=makePublicTimetable('2026-10-26','2026-10-30T10:45:00Z',slots,'match',fp);
+  assert.deepEqual(Object.keys(published).sort(),['configFingerprint','fetchedAt','slots','version','weekStart']);
   assert.equal('teacherName' in published,false);
   assert.equal('teacherIndex' in published,false);
   assert.equal('schoolCode' in published,false);
-  assert.ok(makePublicTimetable('2026-10-26','2026-10-30T10:45:00Z',slots.slice(1),'match'));
-  assert.equal(makePublicTimetable('2026-10-26','2026-10-30T10:45:00Z',slots.slice(1),'content-mismatch'),null);
+  assert.ok(makePublicTimetable('2026-10-26','2026-10-30T10:45:00Z',slots.slice(1),'match',fp));
+  assert.equal(makePublicTimetable('2026-10-26','2026-10-30T10:45:00Z',slots.slice(1),'content-mismatch',fp),null);
 });
 
 test('reports only fixed reason codes, not timetable contents',()=>{
@@ -54,4 +55,16 @@ test('reports only fixed reason codes, not timetable contents',()=>{
   assert.equal(scheduleFailureReason(duplicate),'ok');
   const nonmusic=structuredClone(slots);nonmusic[0].subject='PRIVATE SCIENCE';nonmusic[0].label=nonmusic[0].target+' '+nonmusic[0].subject;
   assert.equal(scheduleFailureReason(nonmusic),'ok');
+});
+
+test('browser SHA256 computation matches server-side config fingerprint',async()=>{
+  const source='teacher-os-config-v1|12345|12|가나';
+  const expected=Buffer.from(await (await import('node:crypto')).webcrypto.subtle.digest(
+    'SHA-256',new TextEncoder().encode(source))).toString('hex');
+  assert.equal(publicConfigFingerprint(12345,12,'가나*'),expected);
+  assert.equal(publicConfigFingerprint(12345,12,'가나다'),expected);
+  assert.notEqual(publicConfigFingerprint(12345,13,'가나다'),expected);
+  assert.equal(publicConfigFingerprint(0,12,'가나*'),null);
+  const slots=validSlots();
+  assert.equal(makePublicTimetable('2026-10-26','2026-10-30T10:45:00Z',slots,'match',null),null);
 });
