@@ -201,7 +201,7 @@
     var day=dayInKST(),live=verifiedSlots(y);
     var slots=live?live.filter(function(x){return x.day===day}).sort(function(a,b){return Number(a.period)-Number(b.period)}):null;
     if(!slots){el.innerHTML='<div class="t49-empty">검증된 이번 주 컴시간 자료가 없습니다. 시간표에서 내 설정과 수집 상태를 확인하세요.</div>';return}
-    if(!slots.length){el.innerHTML='<div class="t49-empty">오늘 수업 기록이 없습니다. 시간표 원본을 연결하거나 현재 학년도를 확인하세요.</div>';return}
+    if(!slots.length){el.innerHTML='<div class="t49-empty">검증된 컴시간 시간표에서 오늘 배정된 음악수업이 없습니다. 학교 시간표와 최종 대조하세요.</div>';return}
     el.innerHTML=slots.slice(0,8).map(function(x){return '<div class="t49-list-item"><span class="t49-circle">'+esc(x.period||'•')+'</span><span><b>'+esc(x.label||'수업')+'</b><small>교사·학급 교차검증 완료</small></span><span class="t49-when">'+esc(x.period||'')+'교시</span></div>'}).join('');
   }
   function renderAssessments(y){
