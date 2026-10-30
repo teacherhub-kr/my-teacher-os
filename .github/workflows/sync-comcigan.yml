@@ -11,6 +11,8 @@ on:
     paths:
       - 'comcigan-config.json'
       - 'scripts/sync-comcigan.mjs'
+      - 'scripts/comcigan-diagnostics.mjs'
+      - 'tests/comcigan-failure.test.mjs'
       - '.github/workflows/sync-comcigan.yml'
 
 permissions:
@@ -68,7 +70,7 @@ jobs:
                 detail="$machine_code"
                 ;;
               collector-init|collector-fetch)
-                category=network
+                category=collector
                 detail="$machine_code"
                 ;;
               parser-import|parser-export)
@@ -83,6 +85,13 @@ jobs:
                 category=config
                 detail="$machine_code"
                 ;;
+            esac
+          fi
+          # A collector-stage failure is not necessarily a network failure.
+          if [ "$category" = "collector" ]; then
+            case "$failure_kinds" in
+              connection|dns|rate-limit|upstream-*) category=network ;;
+              parse) category=parser ;;
             esac
           fi
           echo "category=$category" >> "$GITHUB_OUTPUT"
