@@ -45,7 +45,7 @@ jobs:
           python3 - <<'PY'
           from html.parser import HTMLParser
           src=open('/tmp/v53.html',encoding='utf8').read()
-          for txt in ['id="t53Connections"','id="t53HeaderButton"','id="t53Rows"','id="t53SheetUrl"','인증된 자동 집계 경로 미구축','teacher51-mode']:
+          for txt in ['id="t53Connections"','id="t53HeaderButton"','id="t53Rows"','id="t53SheetUrl"','인증된 집계 연결 대기','teacher51-mode']:
               assert txt in src, f'Browser diagnostics missing {txt}'
           assert '학생별 점수' not in src or 'GitHub Pages' in src
           print('v53 Chromium connection diagnostics mounted successfully')
