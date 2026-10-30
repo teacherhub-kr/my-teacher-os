@@ -2,7 +2,8 @@ name: Sync Comcigan timetable
 
 on:
   schedule:
-    - cron: '*/30 * * * *' # every 30 minutes; GitHub may delay scheduled runs
+    - cron: '10 23 * * 0-4' # 08:10 KST Monday-Friday (prior UTC day)
+    - cron: '20 3 * * 1-5'  # 12:20 KST Monday-Friday
   workflow_dispatch:
   push:
     branches:
@@ -34,6 +35,9 @@ jobs:
 
       - name: Install pinned parser
         run: npm install --no-save --ignore-scripts comcigan@3.0.4
+
+      - name: Validate collector syntax
+        run: node --check scripts/sync-comcigan.mjs
 
       - name: Fetch teacher timetable
         id: fetch
