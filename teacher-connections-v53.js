@@ -47,7 +47,7 @@
       {key:'google',name:'Google Gmail·Drive·Calendar',state:googleRecent?'ok':g.gatewayUrl?'partial':'missing',value:googleRecent?'최근 동기화 기록 확인':g.gatewayUrl?'Gateway 주소 있음 · 현재 연결 미확인':'Apps Script Gateway 미설정',detail:gs.lastError?'최근 동기화 오류 기록이 있습니다. 설정에서 상세 정보를 확인하세요.':g.gatewayUrl?'최근 기록 기준입니다. 실제 현재 접속 보장은 아닙니다.':'Google 자동화는 별도 Apps Script 승인과 Gateway 설정이 필요합니다.',action:'Google 설정',target:'google'},
       {key:'neis',name:'나이스 공식 일정',state:neisRecent?'ok':n.apiKey?'partial':'missing',value:neisRecent?'최근 동기화 기록 확인':n.apiKey?'인증키 저장됨 · 최신 동기화 미확인':'나이스 인증키 미등록',detail:ninfo.lastError?'최근 나이스 동기화 오류 기록이 있습니다. 설정에서 확인하세요.':'나이스 학교정보·학사일정은 인증키와 학년도 학교 설정이 모두 필요합니다.',action:'나이스 설정',target:'neis'},
       {key:'desktop',name:'PC 자료 동기화',state:desktopRecent?'ok':d.token?'partial':'missing',value:desktopRecent?'최근 PC 동기화 기록':d.token?'페어링 정보 있음 · 현재 접속 미확인':'PC 연결 미설정',detail:ds.lastError?'PC 동기화 오류 기록이 있습니다. 설정에서 확인하세요.':'Desktop Bridge 프로그램 실행 및 페어링이 필요합니다.',action:'PC 연결',target:'desktop'},
-      {key:'live',name:'수행평가 원본 → 대시보드 집계',state:(globalThis.TeacherOSMusic54?.status()?.live?'ok':globalThis.TeacherOSMusic54?.status()?.loaded?'partial':'missing'),value:(globalThis.TeacherOSMusic54?.status()?.live?'Google 인증 집계 확인':globalThis.TeacherOSMusic54?.status()?.loaded?'CSV 임시 집계':'인증된 집계 연결 대기'),detail:'15개 반의 집계만 표시합니다. 학생 이름·개별 점수는 웹사이트와 브라우저 저장소에 저장하지 않습니다.',action:'평가 집계 연결',target:'music54'}
+      {key:'live',name:'교사 전용 음악 평가 대시보드',state:(globalThis.TeacherOSPrivateMusic56?.getLink()||globalThis.TeacherOSMusic54?.status()?.loaded)?'partial':'missing',value:globalThis.TeacherOSPrivateMusic56?.getLink()?'교사용 Apps Script 주소 등록 · 접근 확인 필요':globalThis.TeacherOSMusic54?.status()?.loaded?'CSV 임시 집계 표시':'교사용 Apps Script 배포 및 주소 연결 필요',detail:'개인 Google 계정의 나만 접근 웹앱에서 실시간 조회합니다. Teacher OS는 학생정보를 받지 않으며 링크 등록은 실제 접근 확인이 아닙니다.',action:'교사 전용 화면 설정',target:'music56'}
     ];
     return {rows:rows,current:!!current,hasSheet:!!sheet,sheet:sheet,ready:rows.filter(function(x){return x.state==='ok'}).length};
   }
@@ -81,6 +81,7 @@
   }
   function goto(target){
     if(target==='year'){var t=$('#firstYear')||$('#newYear');if(t)t.click();return}
+    if(target==='music56'){var p=$('#teacher56Panel');if(p){p.scrollIntoView({block:'center',behavior:'smooth'});var s=p.querySelector('.teacher56-settings');if(s)s.open=true}return}
     if(target==='music54'){var s=$('#music54Panel');if(s){s.open=true;s.scrollIntoView({block:'center',behavior:'smooth'})}return}
     if(target==='sheet-open'){openSheet();return}
     if(target==='sheet-focus'){var i=$('#t53SheetUrl');if(i){i.focus();i.scrollIntoView({block:'center',behavior:'smooth'})}return}
