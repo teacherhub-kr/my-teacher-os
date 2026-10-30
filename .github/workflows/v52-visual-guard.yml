@@ -1,11 +1,43 @@
 name: Teacher OS v52 Icons & Hero Guard
+# Consolidates v50/v51/v52 visual regressions into one privacy-safe Chromium job.
+# Keep v52's existing check identity to avoid changing downstream expectations.
 on:
   pull_request:
     branches: [main]
-    paths: ['index.html','teacher-dashboard-v49.js','teacher-design-v51.css','tests/v52-tests.js','.github/workflows/v52-visual-guard.yml']
+    paths:
+      - 'index.html'
+      - 'teacher-dashboard-v49.js'
+      - 'teacher-dashboard-v49.css'
+      - 'teacher-design-v51.js'
+      - 'teacher-design-v51.css'
+      - 'teacher-hero-v50.svg'
+      - 'teacher-hero-reference-v51.jpg'
+      - 'tests/v49-tests.js'
+      - 'tests/v50-tests.js'
+      - 'tests/v51-tests.js'
+      - 'tests/v52-tests.js'
+      - 'tests/v61-tests.js'
+      - '.github/workflows/v50-visual-guard.yml'
+      - '.github/workflows/v51-visual-guard.yml'
+      - '.github/workflows/v52-visual-guard.yml'
   push:
     branches: [main]
-    paths: ['index.html','teacher-dashboard-v49.js','teacher-design-v51.css','tests/v52-tests.js','.github/workflows/v52-visual-guard.yml']
+    paths:
+      - 'index.html'
+      - 'teacher-dashboard-v49.js'
+      - 'teacher-dashboard-v49.css'
+      - 'teacher-design-v51.js'
+      - 'teacher-design-v51.css'
+      - 'teacher-hero-v50.svg'
+      - 'teacher-hero-reference-v51.jpg'
+      - 'tests/v49-tests.js'
+      - 'tests/v50-tests.js'
+      - 'tests/v51-tests.js'
+      - 'tests/v52-tests.js'
+      - 'tests/v61-tests.js'
+      - '.github/workflows/v50-visual-guard.yml'
+      - '.github/workflows/v51-visual-guard.yml'
+      - '.github/workflows/v52-visual-guard.yml'
 permissions:
   contents: read
 jobs:
@@ -21,6 +53,7 @@ jobs:
           node tests/v50-tests.js
           node tests/v51-tests.js
           node tests/v52-tests.js
+          node tests/v61-tests.js
       - name: Korean fonts for Chromium screenshot
         run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk
       - name: Chromium icon DOM smoke and full-page screenshot
@@ -44,15 +77,27 @@ jobs:
           assert doc.count('stroke-width="1.85"')>=8, 'SVG navigation icons failed to render'
           assert 'id="t49Kpis"' in doc, 'Dashboard KPI cards missing'
           assert '<svg' in doc, 'No SVG icons rendered'
+          # Preserve the distinct v50 first-year onboarding and v51 reference-layout contracts.
+          assert 'id="t49SetupBanner"' in doc, 'v50: first-time onboarding unavailable'
+          assert 'id="dashboardBody"' in doc, 'v50: dashboard body missing'
+          assert 'class="t49-kpis"' in doc, 'v50: KPI grid absent'
+          for marker in ['id="t51Profile"','class="t51-sidebar-note"','t51-evidence-table','t51-alert-preview']:
+              assert marker in doc, f'v51 reference composition missing: {marker}'
           print('Chromium v52 smoke: dashboard + 8 SVG icons rendered')
           PY
           "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \
             --no-first-run --disable-extensions --window-size=1672,941 --virtual-time-budget=15000 \
             --screenshot=teacheros-v52-1672.png http://127.0.0.1:8482/ >/tmp/v52-screenshot.log 2>&1
+          # Preserve the v50 narrower desktop screenshot, using this same Chromium session.
+          "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \
+            --no-first-run --disable-extensions --window-size=1460,950 --virtual-time-budget=12000 \
+            --screenshot=teacheros-v50-1460.png http://127.0.0.1:8482/ >/tmp/v50-screenshot.log 2>&1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: teacheros-v52-icons-crisp-hero
-          path: teacheros-v52-1672.png
+          path: |
+            teacheros-v52-1672.png
+            teacheros-v50-1460.png
           if-no-files-found: ignore
           retention-days: 5
