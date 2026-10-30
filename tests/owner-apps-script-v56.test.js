@@ -63,6 +63,8 @@ for(const invalid of [
 }
 assert(!/googleapis\.com\/auth\/drive|script\.external_request/.test(JSON.stringify(manifest)));
 assert(manifest.oauthScopes.includes("https://www.googleapis.com/auth/spreadsheets"),"SpreadsheetApp.openById requires full spreadsheets scope");
+assert.equal(manifest.webapp.access,"MYSELF","webapp must be owner-only");
+assert.equal(manifest.webapp.executeAs,"USER_DEPLOYING","webapp must execute under deploying teacher credentials");
 assert(!manifest.oauthScopes.some(s=>s.includes("drive")||s.endsWith("/spreadsheets.readonly")),"no conflicting or Drive scopes");
 assert(/google\.script\.run/.test(page)&&/textContent/.test(page));
 assert(!/localStorage|sessionStorage/.test(page),"private Apps Script screen must not persist scores");
