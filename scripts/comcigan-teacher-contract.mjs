@@ -58,3 +58,28 @@ export function makePublicTimetable(weekStart,fetchedAt,slots) {
   // Deliberately do not return teacher name, index, school code or raw data.
   return {version:2,weekStart,fetchedAt,slots};
 }
+
+/** Returns only a fixed failure category, never classes, subjects or times. */
+export function scheduleFailureReason(slots) {
+  if (!Array.isArray(slots) || slots.length===0) return 'empty';
+  if (slots.length<15) return 'too-few';
+  if (slots.length>15) return 'too-many';
+  const targetSet=new Set(),periodSet=new Set(),expected=new Set([
+    ...Array.from({length:9},(_,i)=>'2-'+(i+1)),
+    ...Array.from({length:6},(_,i)=>'3-'+(i+4))
+  ]);
+  for (const s of slots) {
+    if (!s || !expected.has(s.target)) return 'scope';
+    if (targetSet.has(s.target)) return 'duplicate-class';
+    if (!['월','화','수','목','금'].includes(s.day) ||
+        !Number.isInteger(s.period)||s.period<1||s.period>8 ||
+        !/^\d{4}-\d{2}-\d{2}$/.test(String(s.date||''))) return 'invalid-time';
+    const key=s.date+'|'+s.period;
+    if(periodSet.has(key))return 'period-conflict';
+    if(typeof s.subject!=='string'||!s.subject.includes('음악')||s.subject.length>32)return 'nonmusic';
+    if(typeof s.label!=='string'||s.label!==s.target+' '+s.subject)return 'invalid-label';
+    targetSet.add(s.target);periodSet.add(key);
+  }
+  if (targetSet.size!==expected.size) return 'coverage';
+  return 'ok';
+}
