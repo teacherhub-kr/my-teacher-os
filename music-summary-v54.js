@@ -5,7 +5,7 @@ const Core=globalThis.TeacherOSMusicCore54;if(!Core)return;
 const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
 const KEY_SHEET="myTeacherOS.teacher49.sheetUrl",KEY_CLIENT="myTeacherOS.music54.oauthClientId";
 const SCOPE="https://www.googleapis.com/auth/spreadsheets.readonly";
-let snapshot=null,source="",token="",expiry=0,client=null,lastGoodReadAt=0,readInFlight=false;
+let snapshot=null,source="",token="",expiry=0,client=null,lastGoodReadAt=0,lastAttemptAt=0,readInFlight=false,fetchGeneration=0;
 const saved=k=>{try{return localStorage.getItem(k)||""}catch(e){return""}};
 const sheetId=url=>{const m=/^https:\/\/docs\.google\.com\/spreadsheets\/d\/([A-Za-z0-9_-]{20,})(?:\/|[?#]|$)/.exec(String(url||""));return m?m[1]:""};
 const validClient=v=>/^[0-9]+-[\w-]+\.apps\.googleusercontent\.com$/.test(String(v||"").trim())?String(v).trim():"";
@@ -77,15 +77,15 @@ async function refresh(){
  if(!id){message("연결 상태 메뉴에서 비공개 Google Sheets 원본 주소를 등록해 주세요.",true);return false}
  if(!token||Date.now()>=expiry){message("Google 읽기 권한이 없거나 만료됐습니다. Google 연결을 다시 승인하세요.",true);return false}
  if(readInFlight)return false;
- readInFlight=true;
+ readInFlight=true;lastAttemptAt=Date.now();const generation=fetchGeneration;
  const p=new URLSearchParams();p.set("valueRenderOption","FORMATTED_VALUE");p.append("ranges","'평가통합현황'!A3:K18");
  try{
   message("원본의 학급별 미채점 집계를 읽는 중입니다.",false);
   const res=await fetch("https://sheets.googleapis.com/v4/spreadsheets/"+encodeURIComponent(id)+"/values:batchGet?"+p.toString(),{
    method:"GET",headers:{Authorization:"Bearer "+token},credentials:"omit",cache:"no-store",redirect:"error",referrerPolicy:"no-referrer"});
   if(!res.ok){if(res.status===401){token="";expiry=0}throw Error("Sheets API HTTP "+res.status)}
-  const parsed=Core.parseBatchGet(await res.json());apply(parsed,"google");return true;
- }catch(e){lastGoodReadAt=0;badge("연결 재확인 필요 · 이전 집계",false);message("집계를 읽지 못했습니다. 이전 수치는 최신 상태가 아닙니다. 원본 권한·Sheets API 설정을 확인하세요. ("+String(e.message||e).slice(0,40)+")",true);return false}
+  const parsed=Core.parseBatchGet(await res.json());if(generation!==fetchGeneration)return false;apply(parsed,"google");return true;
+ }catch(e){if(generation!==fetchGeneration)return false;lastGoodReadAt=0;badge("연결 재확인 필요 · 이전 집계",false);message("집계를 읽지 못했습니다. 이전 수치는 최신 상태가 아닙니다. 원본 권한·Sheets API 설정을 확인하세요. ("+String(e.message||e).slice(0,40)+")",true);return false}
  finally{readInFlight=false}
 }
 function authorize(){
@@ -110,7 +110,7 @@ async function importLocal(file){
  finally{const node=$("#music54Excel");if(node)node.value=""}
 }
 function clear(){
- snapshot=null;source="";token="";expiry=0;client=null;lastGoodReadAt=0;readInFlight=false;
+ snapshot=null;source="";token="";expiry=0;client=null;lastGoodReadAt=0;lastAttemptAt=0;readInFlight=false;fetchGeneration++;
  badge("연결 대기",false);message("표시를 종료했습니다. 미채점 집계와 인증 토큰은 브라우저 저장소에 저장하지 않았습니다.",false);
  if(globalThis.TeacherOSPremiumDashboard49?.apply)globalThis.TeacherOSPremiumDashboard49.apply();
  if(globalThis.TeacherOSConnections53?.render)globalThis.TeacherOSConnections53.render(true);
@@ -125,7 +125,8 @@ document.addEventListener("click",e=>{
 document.addEventListener("change",e=>{if(e.target.id==="music54Excel")importLocal(e.target.files?.[0])});
 function tick(){
  mount();
- if(source==="google"&&expiry&&Date.now()>=expiry){token="";expiry=0;badge("인증 만료 · 이전 집계",false);message("Google 인증이 만료됐습니다. 화면에 보이는 내용은 이전 집계입니다. 다시 인증하세요.",true)}
+ if(source==="google"&&expiry&&Date.now()>=expiry){token="";expiry=0;lastGoodReadAt=0;badge("인증 만료 · 이전 집계",false);message("Google 인증이 만료됐습니다. 화면에 보이는 내용은 이전 집계입니다. 다시 인증하세요.",true)}
+ if(source==="google"&&token&&Date.now()<expiry&&!readInFlight&&Date.now()-lastAttemptAt>5*60000&&document.visibilityState==="visible")refresh();
  render();
 }
 setTimeout(tick,300);setTimeout(tick,1600);setTimeout(tick,4600);setInterval(tick,3000);
