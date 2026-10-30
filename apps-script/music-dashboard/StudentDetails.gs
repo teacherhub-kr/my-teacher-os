@@ -26,13 +26,13 @@ function getStudentDetail(gradeValue, roomValue) {
   var notices = [];
   var allSourceRows = 0;
   counts.forEach(function (assessment) {
-    var index = grade === 2 ? assessment - 1 : assessment;
+    var index = grade === 2 ? assessment - 1 : assessment + 1;
     var sourceFile = SpreadsheetApp.openById(sourceIds[index]);
     var tab = sourceFile.getSheetByName(room + "반");
     if (!tab) throw new Error("채점원본에 해당 반이 없습니다: " + prefix + " / " + assessment + "차");
     // A = student number, B = student name, F = total, G = assessment status.
     // H free-text observations/exception notes are deliberately not read.
-    var rows = tab.getRange("A5:G65").getDisplayValues();
+    var rows = tab.getRange("A5:G50").getDisplayValues();
     rows.forEach(function (row) {
       var number = parseStudentNumber57_(row[0]);
       if (number === null) return;
