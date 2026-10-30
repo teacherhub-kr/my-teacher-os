@@ -62,8 +62,8 @@ for(const invalid of [
  assert.throws(()=>context.parseMusicSummary_(rows));
 }
 assert(!/googleapis\.com\/auth\/drive|script\.external_request/.test(JSON.stringify(manifest)));
-assert(manifest.oauthScopes.includes("https://www.googleapis.com/auth/spreadsheets.readonly"));
-assert(!manifest.oauthScopes.some(s=>s.endsWith("/spreadsheets")||s.includes("drive")));
+assert(manifest.oauthScopes.includes("https://www.googleapis.com/auth/spreadsheets"),"SpreadsheetApp.openById requires full spreadsheets scope");
+assert(!manifest.oauthScopes.some(s=>s.includes("drive")||s.endsWith("/spreadsheets.readonly")),"no conflicting or Drive scopes");
 assert(/google\.script\.run/.test(page)&&/textContent/.test(page));
 assert(!/localStorage|sessionStorage/.test(page),"private Apps Script screen must not persist scores");
 assert(!/getRange\(["']A1:/.test(source),"no student list read allowed");
