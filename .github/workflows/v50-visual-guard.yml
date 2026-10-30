@@ -9,6 +9,7 @@ on:
       - 'teacher-hero-v50.svg'
       - 'tests/v49-tests.js'
       - 'tests/v50-tests.js'
+      - 'tests/v61-tests.js'
       - '.github/workflows/v50-visual-guard.yml'
   push:
     branches: [main]
@@ -31,6 +32,7 @@ jobs:
           node --check teacher-dashboard-v49.js
           node tests/v49-tests.js
           node tests/v50-tests.js
+          node tests/v61-tests.js
       - name: Install Korean fonts for faithful screenshot comparison
         run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk
       - name: Chromium rendered DOM smoke test — first-time setup
