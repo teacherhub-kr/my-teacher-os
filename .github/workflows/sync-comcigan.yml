@@ -50,6 +50,11 @@ jobs:
           category=runtime
           detail=runtime
           machine_code=$(sed -n 's/^TEACHER_OS_CODE=\([a-z0-9-]*\)$/\1/p' /tmp/comcigan-fetch.log | tail -n 1)
+          # Only allow known, sanitized labels. Never print upstream URLs/responses.
+          failure_kinds=$(sed -n 's/^TEACHER_OS_FAILURE_KINDS=\([a-z,-]*\)$/\1/p' /tmp/comcigan-fetch.log | tail -n 1)
+          case "$failure_kinds" in
+            ''|*[!a-z,-]*) failure_kinds=unclassified ;;
+          esac
           if [ "$code" -eq 0 ] && [ -f live/comcigan.json ]; then
             category=ok
             detail=ok
@@ -79,6 +84,8 @@ jobs:
           fi
           echo "category=$category" >> "$GITHUB_OUTPUT"
           echo "detail=$detail" >> "$GITHUB_OUTPUT"
+          echo "failure_kinds=$failure_kinds" >> "$GITHUB_OUTPUT"
+          if [ "$code" -ne 0 ]; then echo "Sanitized collector failure kinds: $failure_kinds"; fi
           exit "$code"
 
       - name: Record sanitized collector health
@@ -86,12 +93,13 @@ jobs:
           FETCH_OUTCOME: ${{ steps.fetch.outcome }}
           FETCH_CATEGORY: ${{ steps.fetch.outputs.category }}
           FETCH_DETAIL: ${{ steps.fetch.outputs.detail }}
+          FETCH_FAILURE_KINDS: ${{ steps.fetch.outputs.failure_kinds }}
         run: |
           mkdir -p live
           if [ "$FETCH_OUTCOME" = "success" ] && [ -f live/comcigan.json ]; then
             printf '%s\n' '{"status":"ok","category":"ok","detail":"ok"}' > live/comcigan-status.json
           else
-            printf '%s\n' "{\"status\":\"error\",\"category\":\"${FETCH_CATEGORY:-runtime}\",\"detail\":\"${FETCH_DETAIL:-runtime}\"}" > live/comcigan-status.json
+            printf '%s\n' "{\"status\":\"error\",\"category\":\"${FETCH_CATEGORY:-runtime}\",\"detail\":\"${FETCH_DETAIL:-runtime}\",\"failureKinds\":\"${FETCH_FAILURE_KINDS:-unclassified}\"}" > live/comcigan-status.json
           fi
 
       - name: Commit live state only when changed
