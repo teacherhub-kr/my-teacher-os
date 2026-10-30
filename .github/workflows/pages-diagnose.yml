@@ -1,6 +1,7 @@
 name: Diagnose GitHub Pages
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -40,16 +41,16 @@ jobs:
             printf '{"jobs":[]}\n' > diagnostics/deploy-jobs.json
           fi
 
-          ROOT_STATUS=$(curl -L -sS -o /tmp/live-root.html -w '%{http_code}' 'https://puzzlex5.github.io/' || true)
-          PROJECT_STATUS=$(curl -L -sS -o /tmp/live-project.html -w '%{http_code}' 'https://puzzlex5.github.io/my-teacher-os/' || true)
-          V32_STATUS=$(curl -L -sS -o /tmp/live-v32.js -w '%{http_code}' 'https://puzzlex5.github.io/my-teacher-os/app-v32.js' || true)
-          V32CSS_STATUS=$(curl -L -sS -o /tmp/live-v32.css -w '%{http_code}' 'https://puzzlex5.github.io/my-teacher-os/app-v32.css' || true)
-          CORE31_STATUS=$(curl -L -sS -o /tmp/live-core-v31.js -w '%{http_code}' 'https://puzzlex5.github.io/my-teacher-os/core-v31.js' || true)
-          V31_STATUS=$(curl -L -sS -o /tmp/live-v31.js -w '%{http_code}' 'https://puzzlex5.github.io/my-teacher-os/app-v31.js' || true)
-          V31CSS_STATUS=$(curl -L -sS -o /tmp/live-v31.css -w '%{http_code}' 'https://puzzlex5.github.io/my-teacher-os/app-v31.css' || true)
-          CORE30_STATUS=$(curl -L -sS -o /tmp/live-core-v30.js -w '%{http_code}' 'https://puzzlex5.github.io/my-teacher-os/core-v30.js' || true)
-          V30_STATUS=$(curl -L -sS -o /tmp/live-v30.js -w '%{http_code}' 'https://puzzlex5.github.io/my-teacher-os/app-v30.js' || true)
-          V30CSS_STATUS=$(curl -L -sS -o /tmp/live-v30.css -w '%{http_code}' 'https://puzzlex5.github.io/my-teacher-os/app-v30.css' || true)
+          ROOT_STATUS=$(curl -L -sS -o /tmp/live-root.html -w '%{http_code}' 'https://teacherhub-kr.github.io/' || true)
+          PROJECT_STATUS=$(curl -L -sS -o /tmp/live-project.html -w '%{http_code}' 'https://teacherhub-kr.github.io/my-teacher-os/' || true)
+          V32_STATUS=$(curl -L -sS -o /tmp/live-v32.js -w '%{http_code}' 'https://teacherhub-kr.github.io/my-teacher-os/app-v32.js' || true)
+          V32CSS_STATUS=$(curl -L -sS -o /tmp/live-v32.css -w '%{http_code}' 'https://teacherhub-kr.github.io/my-teacher-os/app-v32.css' || true)
+          CORE31_STATUS=$(curl -L -sS -o /tmp/live-core-v31.js -w '%{http_code}' 'https://teacherhub-kr.github.io/my-teacher-os/core-v31.js' || true)
+          V31_STATUS=$(curl -L -sS -o /tmp/live-v31.js -w '%{http_code}' 'https://teacherhub-kr.github.io/my-teacher-os/app-v31.js' || true)
+          V31CSS_STATUS=$(curl -L -sS -o /tmp/live-v31.css -w '%{http_code}' 'https://teacherhub-kr.github.io/my-teacher-os/app-v31.css' || true)
+          CORE30_STATUS=$(curl -L -sS -o /tmp/live-core-v30.js -w '%{http_code}' 'https://teacherhub-kr.github.io/my-teacher-os/core-v30.js' || true)
+          V30_STATUS=$(curl -L -sS -o /tmp/live-v30.js -w '%{http_code}' 'https://teacherhub-kr.github.io/my-teacher-os/app-v30.js' || true)
+          V30CSS_STATUS=$(curl -L -sS -o /tmp/live-v30.css -w '%{http_code}' 'https://teacherhub-kr.github.io/my-teacher-os/app-v30.css' || true)
           INDEX_HAS_V32=$(grep -q 'app-v32.js' /tmp/live-project.html && grep -q 'app-v32.css' /tmp/live-project.html && echo true || echo false)
           printf '{"root":"%s","project":"%s","v32":"%s","v32css":"%s","core31":"%s","v31":"%s","v31css":"%s","core30":"%s","v30":"%s","v30css":"%s","indexHasV32":%s}\n' "$ROOT_STATUS" "$PROJECT_STATUS" "$V32_STATUS" "$V32CSS_STATUS" "$CORE31_STATUS" "$V31_STATUS" "$V31CSS_STATUS" "$CORE30_STATUS" "$V30_STATUS" "$V30CSS_STATUS" "$INDEX_HAS_V32" > diagnostics/live-http-status.json
           printf '{"checkedAt":"%s","sha":"%s","latestRunId":"%s"}\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$GITHUB_SHA" "$RUN_ID" > diagnostics/pages-check.json
