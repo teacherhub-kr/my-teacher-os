@@ -1,6 +1,12 @@
 name: Teacher OS Quality Guard
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/quality-guard.yml'
+      - 'scripts/public-audio-privacy-guard.cjs'
+      - 'tests/public-audio-privacy-guard.test.cjs'
   schedule:
     - cron: '17 */6 * * *'
   workflow_dispatch:
@@ -190,7 +196,7 @@ jobs:
       - name: Live site smoke test
         run: |
           set -euo pipefail
-          base='https://puzzlex5.github.io/my-teacher-os'
+          base='https://teacherhub-kr.github.io/my-teacher-os'
           curl --fail --silent --show-error --retry 3 --retry-delay 3 "$base/" >/dev/null
           if curl --fail --silent --show-error "$base/" | grep -q 'app-v32.js'; then
             curl --fail --silent --show-error --retry 3 --retry-delay 3 "$base/app-v32.js" >/dev/null
