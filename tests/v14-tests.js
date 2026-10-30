@@ -3,7 +3,10 @@ const cfg=JSON.parse(fs.readFileSync('comcigan-config.json','utf8'));
 if(!cfg.enabled)throw new Error('Comcigan collector config must be enabled');
 const wf=fs.readFileSync('.github/workflows/sync-comcigan.yml','utf8');
 const sync=fs.readFileSync('scripts/sync-comcigan.mjs','utf8');
-if(!wf.includes("cron: '*/30 * * * *'"))throw new Error('30-minute Comcigan refresh cron missing');
+if(!wf.includes("cron: '10 23 * * 0-4'")||!wf.includes("cron: '20 3 * * 1-5'"))throw new Error('Comcigan weekday 08:10/12:20 KST schedule missing');
+if(wf.includes("cron: '*/30 * * * *'"))throw new Error('Excessive 30-minute Comcigan polling must not be enabled');
+if(!wf.includes('node --check scripts/sync-comcigan.mjs'))throw new Error('Comcigan script syntax guard missing');
+if(!sync.includes('TEACHER_OS_FAILURE_KINDS='))throw new Error('Sanitized failure-kind logging missing');
 for(const token of ['teacher-name-multiple','teacher-index-name-mismatch','teacher-not-resolved','teacher-data-missing','collector-init','collector-fetch','parser-import','parser-export','timetable-empty','config-invalid','FETCH_DETAIL']){
   if(!wf.includes(token)&&!sync.includes(token))throw new Error('Sanitized Comcigan machine diagnostic missing: '+token);
 }
