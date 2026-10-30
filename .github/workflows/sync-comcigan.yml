@@ -6,6 +6,8 @@ on:
     paths:
       - 'scripts/sync-comcigan.mjs'
       - 'scripts/comcigan-diagnostics.mjs'
+      - 'scripts/comcigan-class-probe.mjs'
+      - 'tests/comcigan-class-probe.test.mjs'
       - 'tests/comcigan-failure.test.mjs'
       - '.github/workflows/sync-comcigan.yml'
   schedule:
@@ -41,7 +43,9 @@ jobs:
         run: |
           node --check scripts/sync-comcigan.mjs
           node --check scripts/comcigan-diagnostics.mjs
+          node --check scripts/comcigan-class-probe.mjs
           node --test tests/comcigan-failure.test.mjs
+          node --test tests/comcigan-class-probe.test.mjs
 
   sync:
     if: github.event_name != 'pull_request'
@@ -117,10 +121,16 @@ jobs:
               parse) category=parser ;;
             esac
           fi
+          class_probe=$(sed -n 's/^TEACHER_OS_CLASS_PROBE=\\([a-z,-]*\\)$/\\1/p' /tmp/comcigan-fetch.log | tail -n 1)
+          case "$class_probe" in ''|*[!a-z,-]*) class_probe=not-run ;; esac
+          echo "class_probe=$class_probe" >> "$GITHUB_OUTPUT"
           echo "category=$category" >> "$GITHUB_OUTPUT"
           echo "detail=$detail" >> "$GITHUB_OUTPUT"
           echo "failure_kinds=$failure_kinds" >> "$GITHUB_OUTPUT"
-          if [ "$code" -ne 0 ]; then echo "Sanitized collector failure kinds: $failure_kinds"; fi
+          if [ "$code" -ne 0 ]; then
+            echo "Sanitized collector failure kinds: $failure_kinds"
+            echo "Sanitized independent class probe: $class_probe"
+          fi
           exit "$code"
 
       - name: Record sanitized collector health
