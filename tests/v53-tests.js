@@ -3,7 +3,7 @@ const assert=require('assert'),fs=require('fs'),path=require('path'),vm=require(
 const root=path.resolve(__dirname,'..');
 const read=n=>fs.readFileSync(path.join(root,n),'utf8');
 const html=read('index.html'),app=read('teacher-connections-v53.js'),css=read('teacher-connections-v53.css');
-assert(html.includes('teacher-connections-v53.js?v=53.0-connection-truth'));
+assert(html.includes('teacher-connections-v53.js?v=55.0-health'));
 assert(html.includes('teacher-connections-v53.css?v=53.0-connection-truth'));
 assert(css.includes('.t53-grid'),'connection cards CSS missing');
 assert(app.includes("원본 주소 등록됨"),'original link state missing');
