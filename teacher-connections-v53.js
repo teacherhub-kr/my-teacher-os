@@ -19,6 +19,20 @@
     var t=Date.parse(date||'');
     return Number.isFinite(t)&&t<=Date.now()+120000?Math.max(0,Date.now()-t):Infinity;
   }
+  // A one-click personal setup link uses the URL fragment, never a public repo setting.
+  // Browser fragments are not part of GitHub Pages HTTP requests. Remove it immediately.
+  function consumePrivateSheetFragment(){
+    var fragment='';
+    try{fragment=String(location.hash||'')}catch(e){return false}
+    var m=/^#connectSheet=([A-Za-z0-9_-]{20,})$/.exec(fragment);
+    if(!m)return false;
+    var url=safeSheetUrl('https://docs.google.com/spreadsheets/d/'+m[1]+'/edit');
+    try{
+      if(url)localStorage.setItem(KEY_SHEET,url);
+      if(typeof history!=='undefined'&&history.replaceState)history.replaceState(null,'',location.pathname+location.search);
+      return !!url;
+    }catch(e){return false}
+  }
   function state(){
     var y=read(KEY_YEAR),current=y.currentYear&&y.years&&y.years[y.currentYear];
     var g=read(KEY_GOOGLE),gs=read(KEY_GOOGLE_STATUS),n=read(KEY_NEIS),d=read(KEY_DESKTOP),ds=read(KEY_DESKTOP_STATUS);
@@ -138,6 +152,7 @@
   });
   window.addEventListener('storage',function(e){if([KEY_YEAR,KEY_SHEET,KEY_GOOGLE,KEY_GOOGLE_STATUS,KEY_NEIS,KEY_DESKTOP,KEY_DESKTOP_STATUS].indexOf(e.key)>=0)render(true)});
   document.addEventListener('visibilitychange',function(){if(!document.hidden)render(true)});
+  consumePrivateSheetFragment();
   setTimeout(function(){render(true)},400);
   setTimeout(function(){render(true)},1600);
   setTimeout(function(){render(true)},4600);
