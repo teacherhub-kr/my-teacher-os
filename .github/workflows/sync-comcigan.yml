@@ -39,6 +39,9 @@ jobs:
       - name: Validate collector syntax
         run: node --check scripts/sync-comcigan.mjs
 
+      - name: Validate sanitized collector diagnostics
+        run: node --test tests/comcigan-failure.test.mjs
+
       - name: Fetch teacher timetable
         id: fetch
         continue-on-error: true
