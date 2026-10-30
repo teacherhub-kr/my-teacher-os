@@ -35,7 +35,7 @@ function dashboard(){
     copy.dataset.t51Updated='1';
   }
   const banner=$('#t49SetupBanner');
-  if(banner&&copy&&banner.parentElement!==copy){copy.appendChild(banner)}
+  const profile=$('#t51Profile');if(banner&&profile&&banner.parentElement!==profile){profile.insertBefore(banner,profile.firstChild)}
   if(banner){
     banner.classList.add('t51-onboarding-mini');
     const long=banner.querySelector('small');if(long)long.textContent='학년도를 설정하면 수업·평가 현황이 표시됩니다.';
