@@ -1,1 +1,1 @@
-{"status":"error","category":"collector","detail":"collector-fetch","failureKinds":"exception-typeerror"}
+{"status":"error","category":"runtime","detail":"runtime","failureKinds":"unclassified"}
