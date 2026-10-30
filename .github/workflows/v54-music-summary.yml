@@ -1,0 +1,81 @@
+name: Teacher OS v54 Private Music Summary
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'music-summary-core-v54.js'
+      - 'music-summary-v54.js'
+      - 'music-summary-v54.css'
+      - 'teacher-dashboard-v49.js'
+      - 'teacher-design-v51.js'
+      - 'teacher-connections-v53.js'
+      - 'tests/v54-*.js'
+      - '.github/workflows/v54-music-summary.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'music-summary-core-v54.js'
+      - 'music-summary-v54.js'
+      - 'music-summary-v54.css'
+      - 'teacher-dashboard-v49.js'
+      - 'teacher-design-v51.js'
+      - 'teacher-connections-v53.js'
+      - 'tests/v54-*.js'
+      - '.github/workflows/v54-music-summary.yml'
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Syntax and previous UI regression checks
+        run: |
+          set -euo pipefail
+          node --check music-summary-core-v54.js
+          node --check music-summary-v54.js
+          node --check teacher-dashboard-v49.js
+          node --check teacher-design-v51.js
+          node --check teacher-connections-v53.js
+          node tests/v49-tests.js
+          node tests/v50-tests.js
+          node tests/v51-tests.js
+          node tests/v52-tests.js
+          node tests/v53-tests.js
+      - name: Music summary aggregation and privacy tests
+        run: |
+          set -euo pipefail
+          node tests/v54-core.test.js
+          node tests/v54-runtime.test.js
+      - name: Chromium on first visit
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium)"
+          python3 -m http.server 8540 --bind 127.0.0.1 >/tmp/music-serve.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          sleep 2
+          "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \
+            --no-first-run --disable-extensions --window-size=1672,941 --virtual-time-budget=14000 \
+            --dump-dom http://127.0.0.1:8540/ >/tmp/music-v54-dom.html 2>/tmp/music-chrome.log
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          s=open('/tmp/music-v54-dom.html',encoding='utf8').read()
+          for marker in ['id="music54Panel"','id="music54Excel"','id="music54ClientId"',
+                         'id="t53Connections"','id="t49Progress"','teacher51-mode']:
+              assert marker in s, f"v54 UI not visible: {marker}"
+          assert '아직 실제 평가 집계가 표시되지 않았습니다' in s, 'Missing no-auth honesty disclosure'
+          print('v54 Chromium first visit: PASS')
+          PY
+          "$chrome" --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu \
+            --no-first-run --disable-extensions --window-size=1672,941 --virtual-time-budget=14000 \
+            --screenshot=music-v54-1672.png http://127.0.0.1:8540/ >/tmp/music-screenshot.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: teacher-os-v54-first-visit
+          path: music-v54-1672.png
+          if-no-files-found: ignore
+          retention-days: 4

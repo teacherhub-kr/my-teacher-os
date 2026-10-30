@@ -243,10 +243,11 @@
     var active=q('#nav button.active[data-view]');
     if(active&&q('#title')){var item=NAV.find(function(n){return n.view===active.dataset.view});if(item)q('#title').textContent=item.title}
     state.ready=true;
+    if(globalThis.TeacherOSMusic54?.status()?.loaded)globalThis.TeacherOSMusic54.render();
   }
   document.addEventListener('click',function(e){
     var b=e.target.closest('[data-t49-to]');if(b){switchTo(b.dataset.t49To);return}
-    var grade=e.target.closest('[data-t49-grade]');if(grade){state.grade=Number(grade.dataset.t49Grade);renderProgress();return}
+    var grade=e.target.closest('[data-t49-grade]');if(grade){state.grade=Number(grade.dataset.t49Grade);renderProgress();if(globalThis.TeacherOSMusic54?.status()?.loaded)globalThis.TeacherOSMusic54.render();return}
     var start=e.target.closest('[data-t49-start]');if(start){q('#firstYear')?.click();return}
     var sheet=e.target.closest('[data-t49-sheet]');if(sheet){openSheet();return}
     var save=e.target.closest('[data-t49-save]');if(save){

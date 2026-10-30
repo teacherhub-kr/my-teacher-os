@@ -1,0 +1,40 @@
+/* Music assessment v54 — keep per-student data off public pages. */
+.music54-panel{margin-top:12px;background:linear-gradient(115deg,#f4f8ff,#fff);border:1px solid #dce8f8;border-radius:16px;overflow:hidden;box-shadow:0 7px 22px #23509a08}
+.music54-panel summary{list-style:none;cursor:pointer;padding:15px 17px;display:flex;align-items:center;gap:12px}
+.music54-panel summary::-webkit-details-marker{display:none}
+.music54-panel summary .music54-symbol{display:grid;place-items:center;border-radius:11px;width:36px;height:36px;background:#d9eafe;color:#205fc8;font-size:20px}
+.music54-panel summary>span:nth-child(2){display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+.music54-panel summary b{font-size:13px;color:#193965}
+.music54-panel summary small{font-size:11px;color:#7287a5;line-height:1.5}
+.music54-badge{font-size:11px;color:#9b730d;font-weight:800;background:#fff4d8;border-radius:10px;padding:7px 12px;white-space:nowrap}
+.music54-badge.live{background:#e4f7ed;color:#178352}
+.music54-body{padding:4px 17px 17px}
+.music54-note,.music54-help{font-size:11px;line-height:1.7;color:#7287a3;margin:5px 0 15px}
+.music54-help{margin:13px 0 0}
+.music54-fields{display:flex;align-items:end;gap:8px;flex-wrap:wrap}
+.music54-fields label{flex:1 1 260px;font-size:11px;font-weight:800;color:#31527d;display:flex;flex-direction:column;gap:6px}
+.music54-fields input{width:100%;min-width:0;box-sizing:border-box;padding:11px;border:1px solid #dbe7f4;border-radius:9px;background:white;color:#20385b;font-size:12px}
+.music54-fields button{padding:11px;border:1px solid #cddbf1;border-radius:9px;background:white;color:#2856aa;font-weight:850;font-size:11px;cursor:pointer}
+.music54-fields button.music54-blue{background:#276beb;border-color:#276beb;color:white}
+.music54-fields button:focus-visible,.music54-import input:focus-visible{outline:3px solid #8dbafa;outline-offset:2px}
+.music54-import{margin-top:13px;border:1px solid #e0e9f5;background:white;border-radius:11px;padding:12px;display:flex;align-items:center;justify-content:space-between;gap:13px;flex-wrap:wrap}
+.music54-import label{display:flex;flex-direction:column;gap:5px;flex:1 1 260px}
+.music54-import b{font-size:11px;color:#31527d}
+.music54-import small{font-size:10px;line-height:1.5;color:#7c8fa8}
+.music54-import input{font-size:11px;max-width:240px}
+#music54Message{font-size:11px;margin:12px 0 0;color:#1f715a;line-height:1.6}
+#music54Message[data-error="1"]{color:#b75555}
+.music54-table{min-width:470px}
+.music54-pill{display:inline-block;border-radius:9px;white-space:nowrap;font-size:10px;font-weight:850;padding:5px 8px}
+.music54-pill.open{background:#fff0eb;color:#bb5b34}
+.music54-pill.clear{background:#e9f6ed;color:#267951}
+.t49-alert-panel .music54-alert em{font-style:normal;font-weight:900;font-size:11px;color:#3d71b7}
+body.teacher51-mode.premium-ui #t49Screen .music54-table th{font-size:10px!important}
+body.teacher51-mode.premium-ui #t49Screen .music54-table td{font-size:10px!important;padding:7px 4px!important}
+@media(max-width:820px){.music54-panel summary{flex-wrap:wrap}.music54-badge{margin-left:48px}.music54-fields button{flex:1 1 140px}.music54-import input{max-width:100%}}
+
+/* Show every class from the validated source, not merely first three preview rows. */
+body.teacher51-mode.premium-ui #t49Screen .t49-progress-panel:has(#t49Progress[data-music54="true"]){height:auto!important;min-height:225px!important;max-height:none!important;overflow:visible!important}
+body.teacher51-mode.premium-ui #t49Screen #t49Progress[data-music54="true"]{overflow-x:auto!important;overflow-y:visible!important}
+body.teacher51-mode.premium-ui #t49Screen .t49-panels:has(#t49Progress[data-music54="true"]){align-items:start!important}
+body.teacher51-mode.premium-ui #t49Screen .t49-panel:has(#t49Progress[data-music54="true"]) .t49-muted{display:block!important;font-size:10px!important;margin-top:9px!important}

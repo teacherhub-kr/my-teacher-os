@@ -7,7 +7,7 @@ assert(html.includes('teacher-connections-v53.js?v=53.0-connection-truth'));
 assert(html.includes('teacher-connections-v53.css?v=53.0-connection-truth'));
 assert(css.includes('.t53-grid'),'connection cards CSS missing');
 assert(app.includes("원본 주소 등록됨"),'original link state missing');
-assert(app.includes("실시간 집계"),'must explicitly disclose lack of live gradebook integration');
+assert(app.includes("인증된 집계 연결 대기"),'unconnected state must remain explicit');
 assert(!app.includes('IMPORTRANGE('),'public app cannot fetch private student marks');
 assert(!app.includes('최윤우')&&!app.includes('이우주'),'student identifiers in public JS');
 const ls=new Map();

@@ -45,7 +45,7 @@ function dashboard(){
   const icons=['▣','▤','△','✎'];
   cards.forEach((el,i)=>{
     const label=el.querySelector('.t49-kpi-label');
-    if(label)label.textContent=labels[i];
+    if(label&&(!(i===1||i===2)||!globalThis.TeacherOSMusic54?.status()?.loaded))label.textContent=labels[i];
     const icon=el.querySelector('.t49-kpi-icon');if(icon)icon.textContent=icons[i];
     el.classList.add('t51-kpi');
   });
@@ -55,7 +55,7 @@ function dashboard(){
   if(panels[2]){panels[2].classList.add('t51-recent-panel');const t=panels[2].querySelector('.t49-panel-head h3');if(t)t.textContent='▥  최근 수행평가 · 업무 현황'}
   if(panels[3]){panels[3].classList.add('t51-alert-panel');const t=panels[3].querySelector('.t49-panel-head h3');if(t)t.textContent='🔔  확인해야 할 알림'}
   const progress=$('#t49Progress');
-  if(progress&&progress.querySelectorAll('tbody tr').length>3){progress.querySelectorAll('tbody tr').forEach((tr,i)=>{tr.hidden=i>=3})}
+  if(progress&&progress.dataset.music54!=='true'&&progress.querySelectorAll('tbody tr').length>3){progress.querySelectorAll('tbody tr').forEach((tr,i)=>{tr.hidden=i>=3})}
   const recent=$('#t49AssessList');
   if(recent&&!recent.querySelector('.t51-evidence-table')){
     const existing=recent.querySelectorAll('.t49-list-item');
@@ -81,7 +81,7 @@ function dashboard(){
       '</div>';
   }
   const alerts=$('#t49Alerts');
-  if(alerts&&alerts.querySelectorAll('.t49-list-item').length<=1&&!alerts.querySelector('.t51-alert-preview')){
+  if(alerts&&alerts.dataset.music54!=='true'&&alerts.querySelectorAll('.t49-list-item').length<=1&&!alerts.querySelector('.t51-alert-preview')){
     alerts.innerHTML='<div class="t51-alert-preview">'+
       '<div class="t51-alert-row"><span class="t51-alert-icon red">▤</span><b>수행평가 미채점</b><small>교사용 채점 원본에서 확인</small><em>—</em></div>'+
       '<div class="t51-alert-row"><span class="t51-alert-icon orange">♧</span><b>자발적 미참여</b><small>학생별 예외상태는 비공개</small><em>—</em></div>'+
