@@ -110,7 +110,7 @@ jobs:
             detail=ok
           else
             case "$machine_code" in
-              teacher-name-multiple|teacher-index-name-mismatch|teacher-not-resolved|teacher-data-missing)
+              teacher-indices-missing|teacher-name-not-found|teacher-name-multiple|teacher-index-name-mismatch|teacher-not-resolved|teacher-data-missing)
                 category=teacher-resolution
                 detail="$machine_code"
                 ;;
@@ -122,8 +122,8 @@ jobs:
                 category=parser
                 detail="$machine_code"
                 ;;
-              timetable-empty)
-                category=empty
+              timetable-empty|timetable-validation)
+                category=validation
                 detail="$machine_code"
                 ;;
               config-invalid)
@@ -149,6 +149,11 @@ jobs:
           echo "detail=$detail" >> "$GITHUB_OUTPUT"
           echo "failure_kinds=$failure_kinds" >> "$GITHUB_OUTPUT"
           if [ "$code" -ne 0 ]; then
+            case "$machine_code" in
+              config-invalid|teacher-indices-missing|teacher-name-not-found|teacher-name-multiple|teacher-index-name-mismatch|teacher-not-resolved|teacher-data-missing|timetable-empty|timetable-validation|collector-init|collector-fetch|parser-import|parser-export)
+                echo "Sanitized collector stage: $machine_code" ;;
+              *) echo "Sanitized collector stage: unknown" ;;
+            esac
             echo "Sanitized collector failure kinds: $failure_kinds"
             echo "Sanitized independent class probe: $class_probe"
             echo "Sanitized upstream error site: $error_origin"
