@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { failureKind } from './comcigan-diagnostics.mjs';
+import { upstreamFailureFingerprint } from './comcigan-runtime-diag.mjs';
 import { probeClassReader } from './comcigan-class-probe.mjs';
 
 function normName(v){return String(v||'').replace(/\s+/g,'').replace(/\*/g,'').trim()}
@@ -14,13 +15,14 @@ function fail(code){console.error(`TEACHER_OS_CODE=${code}`);process.exit(1)}
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 // Failure categories are sanitized in a separately tested pure module.
 async function retryCollector(code,fn){
-  const delays=[0,1500,4000],causes=[];
+  const delays=[0,1500,4000],causes=[],safeOrigins=[];
   for(let attempt=0;attempt<delays.length;attempt++){
     if(delays[attempt])await sleep(delays[attempt]);
     try{return await fn(attempt)}
-    catch(error){causes.push(failureKind(error))}
+    catch(error){causes.push(failureKind(error));safeOrigins.push(upstreamFailureFingerprint(error))}
   }
   console.error('TEACHER_OS_FAILURE_KINDS='+[...new Set(causes)].join(','));
+  console.error('TEACHER_OS_FAILURE_ORIGINS='+[...new Set(safeOrigins)].join(','));
   if (code === 'collector-fetch') {
     const Reader = mod?.Comcigan || mod?.default?.Comcigan;
     const result = await probeClassReader(Reader, SCHOOL_CODE, 12000, TEACHER_NAME);
@@ -77,7 +79,7 @@ const teacherRaw=result?.data?.[selectedIndex]||result?.data?.[String(selectedIn
 if(!teacherRaw)fail('teacher-data-missing');
 const weekStart=mondayKST(),slots=normalizeTeacherData(teacherRaw,weekStart);
 if(!slots.length)fail('timetable-empty');
-const payload={version:2,weekStart,fetchedAt:new Date().toISOString(),schoolCode:SCHOOL_CODE,teacherIndex:selectedIndex,teacherName:indexList[selectedIndex]||TEACHER_NAME,slots};
+const payload={version:2,weekStart,fetchedAt:new Date().toISOString(),slots}; // No teacher identity/index or school code in public JSON.
 const out=path.join(process.cwd(),'live','comcigan.json');
 await fs.mkdir(path.dirname(out),{recursive:true});
 await fs.writeFile(out,JSON.stringify(payload,null,2)+'\n','utf8');
