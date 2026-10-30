@@ -10,12 +10,27 @@ function addDays(date,n){const d=new Date(date+'T00:00:00Z');d.setUTCDate(d.getU
 function targetFromCls(cls){const n=Number(cls);if(!Number.isFinite(n)||n<101)return'';return `${Math.floor(n/100)}-${n%100}`}
 function fail(code){console.error(`TEACHER_OS_CODE=${code}`);process.exit(1)}
 const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+// Classify failures without printing private teacher names, URLs or response bodies.
+function failureKind(error){
+  const status=Number(error?.response?.status??error?.status??0);
+  if(status===429)return 'rate-limit';
+  if(status===401||status===403)return 'upstream-denied';
+  if(status>=500&&status<=599)return 'upstream-5xx';
+  if(status>=400&&status<=499)return 'upstream-4xx';
+  const code=String(error?.code??error?.cause?.code??'').toUpperCase();
+  if(code==='ENOTFOUND'||code==='EAI_AGAIN')return 'dns';
+  if(['ETIMEDOUT','ECONNRESET','ECONNREFUSED','UND_ERR_CONNECT_TIMEOUT'].includes(code))return 'connection';
+  if(error instanceof SyntaxError)return 'parse';
+  return 'unclassified';
+}
 async function retryCollector(code,fn){
-  const delays=[0,1500,4000];
+  const delays=[0,1500,4000],causes=[];
   for(let attempt=0;attempt<delays.length;attempt++){
     if(delays[attempt])await sleep(delays[attempt]);
-    try{return await fn(attempt)}catch{}
+    try{return await fn(attempt)}
+    catch(error){causes.push(failureKind(error))}
   }
+  console.error('TEACHER_OS_FAILURE_KINDS='+[...new Set(causes)].join(','));
   fail(code);
 }
 function normalizeTeacherData(raw,weekStart){
