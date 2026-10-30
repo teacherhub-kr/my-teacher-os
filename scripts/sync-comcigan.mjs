@@ -23,7 +23,7 @@ async function retryCollector(code,fn){
   console.error('TEACHER_OS_FAILURE_KINDS='+[...new Set(causes)].join(','));
   if (code === 'collector-fetch') {
     const Reader = mod?.Comcigan || mod?.default?.Comcigan;
-    const result = await probeClassReader(Reader, SCHOOL_CODE);
+    const result = await probeClassReader(Reader, SCHOOL_CODE, 12000, TEACHER_NAME);
     console.error('TEACHER_OS_CLASS_PROBE=' + result);
   }
   fail(code);
