@@ -34,10 +34,11 @@ if(!app.includes('configFingerprint')||!app.includes('crypto.subtle.digest'))thr
 if(!app.includes('sameConfig'))throw new Error('Comcigan payload/config mismatch guard missing');
 if(!app.includes("fetch('./live/comcigan-status.json"))throw new Error('Collector health must gate automatic time table ingestion');
 if(!app.includes("health?.status!=='ok'"))throw new Error('Failed collector status must not be treated as healthy timetable');
+if(!app.includes('verifiedLiveSlots(y)')||!app.includes('renderVerifiedTimetable()'))throw new Error('Live timetable view must not use stale y.timetable');
 if(!app.includes('currentTimetableFeed(p)'))throw new Error('Current week and freshness must be enforced');
 if(!app.includes('시간표 최신성 만료')||!app.includes('컴시간 수집 실패'))throw new Error('UI must distinguish stale from failed timetable');
 const index=fs.readFileSync('index.html','utf8');
-if(!index.includes('app-v14.js?v=60.0-config-binding'))throw new Error('Latest timetable freshness client must bypass old browser cache');
+if(!index.includes('app-v14.js?v=61.0-live-view'))throw new Error('Latest timetable freshness client must bypass old browser cache');
 if(!app.includes('개인 설정 필요'))throw new Error('Personal config onboarding copy missing');
 if(app.includes("c.teacherName||p?.teacherName"))throw new Error('Shared payload teacher name must not leak into unconfigured UI');
 console.log('v0.14 per-browser Comcigan isolation, bounded retry and sanitized collector diagnostics tests passed');

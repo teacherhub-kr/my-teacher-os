@@ -68,7 +68,60 @@
       y.comciganSync.lastChecked=new Date().toISOString();y.comciganSync.status=err?.code==='CONFIG_MISMATCH'?'mismatch':err?.code==='STALE_FEED'?'stale':err?.code==='COLLECTOR_UNAVAILABLE'?'error':'waiting';localStorage.setItem(KEY,JSON.stringify(state));
       if(manual)alert('컴시간 최신표 확인: '+err.message);
       return false;
-    }finally{loading=false;renderPlainSyncCard();lockTimetableReadOnly()}
+    }finally{loading=false;renderPlainSyncCard();lockTimetableReadOnly();globalThis.TeacherOSPremiumDashboard49?.apply?.()}
+  }
+  // No local timetable overwrite: verified current-week data is a read-only view.
+  function verifiedLiveSlots(y){
+    if(!y||y.comciganSync?.status!=='ok'||!completeConfig(config))return null;
+    const week=currentWeekStartKST(),feed=y.liveTimetableWeeks?.[week];
+    const fetched=Date.parse(feed?.updatedAt||'');
+    if(feed?.weekStart!==week||feed?.source!=='컴시간 자동동기화'||
+       !Number.isFinite(fetched)||fetched>Date.now()+120000||Date.now()-fetched>=30*3600000||
+       !Array.isArray(feed.slots)||feed.slots.length<1||feed.slots.length>40)return null;
+    const days=['월','화','수','목','금'],seen=new Set();
+    const monday=Date.parse(week+'T00:00:00Z');
+    for(const s of feed.slots){
+      const idx=days.indexOf(s?.day);
+      const target=String(s?.target||''),subject=String(s?.subject||'');
+      const when=String(s?.date||'')+'|'+String(s?.period||'');
+      if(idx<0||!Number.isInteger(s?.period)||s.period<1||s.period>8||
+         !/^[23]-\d{1,2}$/.test(target)||subject.length<1||subject.length>32||
+         s.label!==target+' '+subject||s.source!=='컴시간 자동동기화'||
+         s.date!==new Date(monday+idx*86400000).toISOString().slice(0,10)||
+         seen.has(when))return null;
+      seen.add(when);
+    }
+    return feed.slots;
+  }
+  function renderVerifiedTimetable(){
+    const y=typeof cur==='function'?cur():null,slots=verifiedLiveSlots(y);
+    const table=q('#timetableTable'),today=q('#todayTimetable');
+    const todayDay=['일','월','화','수','목','금','토'][new Date(Date.now()+9*3600000).getUTCDay()];
+    if(!slots){
+      const message='검증된 이번 주 컴시간 시간표가 없습니다. 내 컴시간 설정과 최신 수집 상태를 확인하세요.';
+      if(table)table.innerHTML='<tbody><tr><td class="empty">'+esc(message)+'</td></tr></tbody>';
+      if(today)today.innerHTML='<span class="muted">'+esc(message)+'</span>';
+      return;
+    }
+    const days=['월','화','수','목','금'];
+    if(table){
+      let html='<thead><tr><th>교시</th>'+days.map(d=>'<th>'+d+'</th>').join('')+'</tr></thead><tbody>';
+      for(let p=1;p<=8;p++){
+        html+='<tr><td><b>'+p+'</b></td>';
+        for(const day of days){
+          const lessons=slots.filter(s=>s.day===day&&s.period===p);
+          html+='<td>'+lessons.map(s=>'<div class="slot">'+esc(s.label)+'</div>').join('')+'</td>';
+        }
+        html+='</tr>';
+      }
+      table.innerHTML=html+'</tbody>';
+    }
+    if(today){
+      const lessons=slots.filter(s=>s.day===todayDay).sort((a,b)=>a.period-b.period);
+      today.innerHTML=lessons.length
+        ?lessons.map(s=>'<span>'+s.period+'교시 · '+esc(s.label)+'</span>').join('')
+        :'<span class="muted">오늘 배정된 수업이 없습니다. (컴시간 검증 기준)</span>';
+    }
   }
   function lockTimetableReadOnly(){
     const tt=q('#timetable');if(!tt)return;
@@ -76,6 +129,7 @@
     const desc=tt.querySelector('.section-intro .muted');if(desc)desc.textContent='시간표는 컴시간에서 자동으로 가져옵니다. Teacher OS에서는 직접 수정하지 않습니다.';
     const notice=tt.querySelector('.notice');if(notice)notice.innerHTML='<b>자동 운영:</b> 이 브라우저에 저장한 컴시간 설정과 수집 결과가 정확히 일치할 때만 실제 주간표를 적용합니다.';
     const table=q('#timetableTable');if(table){table.classList.add('readonly-timetable');table.querySelectorAll('.cell-add').forEach(x=>x.remove());if(!table.dataset.readonlyGuard){table.dataset.readonlyGuard='1';table.addEventListener('click',ev=>{ev.preventDefault();ev.stopImmediatePropagation()},true)}}
+    renderVerifiedTimetable();
   }
   function renderPlainSyncCard(){
     const y=typeof cur==='function'?cur():null,box=q('#liveSyncCard');if(!box||!y)return;ensureYearSync(y);ensureConfigDialog();
@@ -86,5 +140,6 @@
   }
   async function boot(){await loadConfig();ensureConfigDialog();lockTimetableReadOnly();const ok=await pullComcigan(false);if(ok&&typeof render==='function')render();renderPlainSyncCard();lockTimetableReadOnly();const foot=q('.side-foot');if(foot)foot.textContent='v0.14 · per-browser Comcigan config'}
   const previousRender=globalThis.render;if(typeof previousRender==='function'){globalThis.render=function(){const r=previousRender.apply(this,arguments);setTimeout(()=>{renderPlainSyncCard();lockTimetableReadOnly()},0);return r}}
+  globalThis.TeacherOSComcigan14={verifiedSlots:verifiedLiveSlots};
   boot();
 })();

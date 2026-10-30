@@ -171,13 +171,19 @@
       '<span class="t49-kpi-icon" aria-hidden="true">'+symbol+'</span><span><div class="t49-kpi-label">'+esc(label)+'</div>'+
       '<div class="t49-kpi-value">'+esc(value)+'</div><div class="t49-kpi-foot">'+esc(foot)+'</div></span></button>';
   }
+  function verifiedSlots(y){
+    return globalThis.TeacherOSComcigan14?.verifiedSlots?.(y)||null;
+  }
+  function dayInKST(){
+    return ['일','월','화','수','목','금','토'][new Date(Date.now()+9*3600000).getUTCDay()];
+  }
   function renderKpis(y){
     var el=q('#t49Kpis');if(!el)return;
-    var days=['일','월','화','수','목','금','토'],today=days[new Date().getDay()];
-    var slots=y&&Array.isArray(y.timetable)?y.timetable.filter(function(x){return x.day===today}):[];
+    var today=dayInKST(),live=verifiedSlots(y);
+    var slots=live?live.filter(function(x){return x.day===today}):null;
     var asses=y&&Array.isArray(y.assessments)?y.assessments:[];
     var tasks=y&&Array.isArray(y.tasks)?y.tasks.filter(function(x){return !x.done}):[];
-    el.innerHTML=showMetric('오늘 수업',y?slots.length:'—','Teacher OS 시간표 기준','▣','timetable')+
+    el.innerHTML=showMetric('오늘 수업',slots?slots.length:'—','검증된 이번 주 컴시간 기준','▣','timetable')+
       showMetric('등록 평가',y?asses.length:'—','현재 학년도에 등록된 평가','▥','assessment')+
       showMetric('확인할 일',y?tasks.length:'—','미완료로 기록한 업무','△','projects')+
       showMetric('미채점 현황','—','교사용 원본에서 확인','✎','t49-classes');
@@ -192,10 +198,11 @@
   }
   function renderToday(y){
     var el=q('#t49TodayList');if(!el)return;
-    var day=['일','월','화','수','목','금','토'][new Date().getDay()];
-    var slots=y&&Array.isArray(y.timetable)?y.timetable.filter(function(x){return x.day===day}).sort(function(a,b){return Number(a.period)-Number(b.period)}):[];
+    var day=dayInKST(),live=verifiedSlots(y);
+    var slots=live?live.filter(function(x){return x.day===day}).sort(function(a,b){return Number(a.period)-Number(b.period)}):null;
+    if(!slots){el.innerHTML='<div class="t49-empty">검증된 이번 주 컴시간 자료가 없습니다. 시간표에서 내 설정과 수집 상태를 확인하세요.</div>';return}
     if(!slots.length){el.innerHTML='<div class="t49-empty">오늘 수업 기록이 없습니다. 시간표 원본을 연결하거나 현재 학년도를 확인하세요.</div>';return}
-    el.innerHTML=slots.slice(0,8).map(function(x){return '<div class="t49-list-item"><span class="t49-circle">'+esc(x.period||'•')+'</span><span><b>'+esc(x.label||'수업')+'</b><small>등록된 교사 시간표</small></span><span class="t49-when">'+esc(x.period||'')+'교시</span></div>'}).join('');
+    el.innerHTML=slots.slice(0,8).map(function(x){return '<div class="t49-list-item"><span class="t49-circle">'+esc(x.period||'•')+'</span><span><b>'+esc(x.label||'수업')+'</b><small>교사·학급 교차검증 완료</small></span><span class="t49-when">'+esc(x.period||'')+'교시</span></div>'}).join('');
   }
   function renderAssessments(y){
     var el=q('#t49AssessList');if(!el)return;
