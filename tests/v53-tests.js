@@ -45,4 +45,18 @@ st=t.state();assert.equal(st.rows.find(x=>x.key==='google').state,'ok');
 ls.set('myTeacherOS.google34.state.v1',JSON.stringify({connected:true,lastSyncAt:'2025-01-01T00:00:00Z'}));
 st=t.state();assert.equal(st.rows.find(x=>x.key==='google').state,'partial','stale sync must not be green');
 assert(listeners.click&&listeners.visibilitychange,'UI interactions not wired');
+
+assert(app.includes("history.replaceState"),'one-click setup should clear private fragment from visible URL');
+const secondStore=new Map();
+let cleaned='';
+const second={document:{querySelector:()=>null,addEventListener:()=>{},hidden:false},window:{addEventListener:()=>{}},
+  localStorage:{getItem:k=>secondStore.get(k)||null,setItem:(k,v)=>secondStore.set(k,v),removeItem:k=>secondStore.delete(k)},
+  location:{hash:'#connectSheet='+SHEET,pathname:'/my-teacher-os/',search:'?v=53'},
+  history:{replaceState:(_s,_t,url)=>{cleaned=url}},
+  Date:Date,JSON:JSON,Number:Number,String:String,Math:Math,setTimeout:()=>{},setInterval:()=>{},console:console,globalThis:{}};
+vm.runInNewContext(app,second,{filename:'teacher-connections-v53.js'});
+assert.equal(secondStore.get('myTeacherOS.teacher49.sheetUrl'),good);
+assert.equal(cleaned,'/my-teacher-os/?v=53','private fragment must be erased');
+assert.equal(second.globalThis.TeacherOSConnections53.state().rows.find(x=>x.key==='sheet').state,'partial');
+
 console.log('v53 connection truth, stale status, private URL, browser-only configuration tests passed');
