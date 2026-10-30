@@ -32,3 +32,9 @@
 body.teacher51-mode.premium-ui #t49Screen .music54-table th{font-size:10px!important}
 body.teacher51-mode.premium-ui #t49Screen .music54-table td{font-size:10px!important;padding:7px 4px!important}
 @media(max-width:820px){.music54-panel summary{flex-wrap:wrap}.music54-badge{margin-left:48px}.music54-fields button{flex:1 1 140px}.music54-import input{max-width:100%}}
+
+/* Show every class from the validated source, not merely first three preview rows. */
+body.teacher51-mode.premium-ui #t49Screen .t49-progress-panel:has(#t49Progress[data-music54="true"]){height:auto!important;min-height:225px!important;max-height:none!important;overflow:visible!important}
+body.teacher51-mode.premium-ui #t49Screen #t49Progress[data-music54="true"]{overflow-x:auto!important;overflow-y:visible!important}
+body.teacher51-mode.premium-ui #t49Screen .t49-panels:has(#t49Progress[data-music54="true"]){align-items:start!important}
+body.teacher51-mode.premium-ui #t49Screen .t49-panel:has(#t49Progress[data-music54="true"]) .t49-muted{display:block!important;font-size:10px!important;margin-top:9px!important}
