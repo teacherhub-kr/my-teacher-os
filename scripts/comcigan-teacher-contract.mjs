@@ -30,30 +30,14 @@ export function selectTeacherDays(result, selectedIndex) {
   return days;
 }
 
+// Valid current-week lessons may be fewer than enrolled classes due to holidays,
+// events or temporary school timetable changes. They still require cross-view verification.
 export function validateMusicSchedule(slots) {
-  const expected=new Set([
-    ...Array.from({length:9},(_,i)=>'2-'+(i+1)),
-    ...Array.from({length:6},(_,i)=>'3-'+(i+4))
-  ]);
-  if (!Array.isArray(slots) || slots.length!==15) return false;
-  const targets=new Set(),timeSlots=new Set();
-  for (const s of slots) {
-    if (!s || !expected.has(s.target) || targets.has(s.target)) return false;
-    if (!['월','화','수','목','금'].includes(s.day) ||
-        !Number.isInteger(s.period) || s.period<1 || s.period>8) return false;
-    const time=s.date+'|'+s.period;
-    if (timeSlots.has(time)) return false;
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(s.date||''))) return false;
-    if (typeof s.subject!=='string' || !s.subject.includes('음악') || s.subject.length>32) return false;
-    if (typeof s.label!=='string' || s.label!==s.target+' '+s.subject) return false;
-    targets.add(s.target);
-    timeSlots.add(time);
-  }
-  return targets.size===15 && [...expected].every(t=>targets.has(t));
+  return scheduleFailureReason(slots)==='ok';
 }
 
-export function makePublicTimetable(weekStart,fetchedAt,slots) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(weekStart) || !Number.isFinite(Date.parse(fetchedAt)) ||
+export function makePublicTimetable(weekStart,fetchedAt,slots,crosscheck) {
+  if (crosscheck!=='match' || !/^\d{4}-\d{2}-\d{2}$/.test(weekStart) || !Number.isFinite(Date.parse(fetchedAt)) ||
       !validateMusicSchedule(slots)) return null;
   // Deliberately do not return teacher name, index, school code or raw data.
   return {version:2,weekStart,fetchedAt,slots};
@@ -61,25 +45,26 @@ export function makePublicTimetable(weekStart,fetchedAt,slots) {
 
 /** Returns only a fixed failure category, never classes, subjects or times. */
 export function scheduleFailureReason(slots) {
-  if (!Array.isArray(slots) || slots.length===0) return 'empty';
-  if (slots.length<15) return 'too-few';
-  if (slots.length>15) return 'too-many';
-  const targetSet=new Set(),periodSet=new Set(),expected=new Set([
+  if (!Array.isArray(slots)||!slots.length) return 'empty';
+  if (slots.length>40) return 'too-many';
+  const permitted=new Set([
     ...Array.from({length:9},(_,i)=>'2-'+(i+1)),
     ...Array.from({length:6},(_,i)=>'3-'+(i+4))
   ]);
-  for (const s of slots) {
-    if (!s || !expected.has(s.target)) return 'scope';
-    if (targetSet.has(s.target)) return 'duplicate-class';
-    if (!['월','화','수','목','금'].includes(s.day) ||
-        !Number.isInteger(s.period)||s.period<1||s.period>8 ||
-        !/^\d{4}-\d{2}-\d{2}$/.test(String(s.date||''))) return 'invalid-time';
-    const key=s.date+'|'+s.period;
-    if(periodSet.has(key))return 'period-conflict';
-    if(typeof s.subject!=='string'||!s.subject.includes('음악')||s.subject.length>32)return 'nonmusic';
+  const periods=new Set(),records=new Set();
+  for(const s of slots){
+    if(!s||!permitted.has(s.target))return 'scope';
+    if(!['월','화','수','목','금'].includes(s.day)||
+       !Number.isInteger(s.period)||s.period<1||s.period>8||
+       !/^\d{4}-\d{2}-\d{2}$/.test(String(s.date||'')))return 'invalid-time';
+    const when=s.date+'|'+s.period;
+    const record=when+'|'+s.target;
+    if(periods.has(when))return 'period-conflict';
+    if(records.has(record))return 'duplicate-class';
+    if(typeof s.subject!=='string'||!s.subject.trim()||s.subject.length>32)return 'invalid-subject';
     if(typeof s.label!=='string'||s.label!==s.target+' '+s.subject)return 'invalid-label';
-    targetSet.add(s.target);periodSet.add(key);
+    if(s.source!=='컴시간 자동동기화')return 'source-invalid';
+    periods.add(when);records.add(record);
   }
-  if (targetSet.size!==expected.size) return 'coverage';
   return 'ok';
 }
