@@ -149,3 +149,26 @@ body.teacher51-mode .t49-legacy{margin-top:25px!important}
  body.teacher51-mode.premium-ui #t49Screen .t49-kpi-foot{display:none}
 }
 @media(prefers-reduced-motion:reduce){body.teacher51-mode *{transition:none!important}}
+
+
+/* Exact reference artwork provided by the user; local public illustration contains no student data. */
+body.teacher51-mode.premium-ui #t49Screen .t49-art{
+  background-image:url("./teacher-hero-reference-v51.jpg"),url("./teacher-hero-v50.svg")!important;
+  background-repeat:no-repeat!important;
+  background-size:contain,contain!important;
+  background-position:right center,right center!important;
+}
+body.teacher51-mode.premium-ui .t51-profile .t51-onboarding-mini{
+ display:inline-flex!important;align-items:center!important;padding:0!important;margin:0 11px 0 0!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;gap:0!important;
+}
+body.teacher51-mode.premium-ui .t51-profile .t51-onboarding-mini .t49-onboarding-copy,
+body.teacher51-mode.premium-ui .t51-profile .t51-onboarding-mini .t49-onboarding-icon{display:none!important}
+body.teacher51-mode.premium-ui .t51-profile .t51-onboarding-mini .t49-action{
+ padding:8px 12px!important;background:#2468ef!important;color:#fff!important;border-radius:10px!important;
+ font-size:11px!important;white-space:nowrap!important;font-weight:800!important
+}
+@media(max-width:820px){
+ body.teacher51-mode.premium-ui .t51-profile .t51-onboarding-mini{margin:0 5px 0 0!important}
+ body.teacher51-mode.premium-ui .t51-profile .t51-onboarding-mini .t49-action{font-size:10px!important;padding:7px!important}
+}
