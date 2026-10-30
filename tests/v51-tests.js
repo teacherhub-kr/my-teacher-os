@@ -1,0 +1,16 @@
+const assert=require('assert');const fs=require('fs');const path=require('path');
+const root=path.join(__dirname,'..');const read=x=>fs.readFileSync(path.join(root,x),'utf8');
+const html=read('index.html'),ui=read('teacher-design-v51.js'),css=read('teacher-design-v51.css');
+assert(html.includes('teacher-design-v51.css?v=51.0-reference-parity'));
+assert(html.includes('teacher-design-v51.js?v=51.0-reference-parity'));
+assert(ui.includes('t51-sidebar-note')&&ui.includes('t51-profile'));
+assert(ui.includes('t51-evidence-table')&&ui.includes('t51-alert-row'));
+assert(ui.includes('t51-onboarding-mini'));
+assert(css.includes('height:355px!important'));
+assert(css.includes('margin-top:-118px!important'));
+assert(css.includes('grid-template-columns:minmax(0,1.2fr) minmax(0,.8fr)'));
+assert(css.includes('grid-template-columns:repeat(4,minmax(0,1fr))'));
+assert(css.includes('@media(max-width:820px)'));
+assert(!ui.includes('최윤우')&&!ui.includes('이우주'));
+assert(!ui.includes('https://docs.google.com/spreadsheets/d/1XapLQCP'));
+console.log('v51 reference structure, privacy and loader checks passed');
