@@ -2,10 +2,10 @@ name: Teacher OS v51 Reference Visual Guard
 on:
   pull_request:
     branches: [main]
-    paths: ['index.html','teacher-design-v51.js','teacher-design-v51.css','tests/v51-tests.js','.github/workflows/v51-visual-guard.yml']
+    paths: ['index.html','teacher-design-v51.js','teacher-design-v51.css','teacher-hero-reference-v51.jpg','tests/v51-tests.js','.github/workflows/v51-visual-guard.yml']
   push:
     branches: [main]
-    paths: ['index.html','teacher-design-v51.js','teacher-design-v51.css','tests/v51-tests.js','.github/workflows/v51-visual-guard.yml']
+    paths: ['index.html','teacher-design-v51.js','teacher-design-v51.css','teacher-hero-reference-v51.jpg','tests/v51-tests.js','.github/workflows/v51-visual-guard.yml']
 permissions:
   contents: read
 jobs:
