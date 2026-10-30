@@ -13,4 +13,5 @@ assert(css.includes('grid-template-columns:repeat(4,minmax(0,1fr))'));
 assert(css.includes('@media(max-width:820px)'));
 assert(!ui.includes('최윤우')&&!ui.includes('이우주'));
 assert(!ui.includes('https://docs.google.com/spreadsheets/d/1XapLQCP'));
+assert(fs.statSync(path.join(root,'teacher-hero-reference-v51.jpg')).size===5328,'reference illustration must be complete');
 console.log('v51 reference structure, privacy and loader checks passed');
