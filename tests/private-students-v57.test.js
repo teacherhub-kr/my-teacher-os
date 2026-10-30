@@ -74,6 +74,17 @@ assert.throws(()=>ctx.parseStudentScore57_("35","2-3",1,1),/범위/);
 assert.equal(ctx.parseStudentScore57_("","2-3",1,1),null);
 const separate={};ctx.findOrAddStudent57_(separate,1,"가상학생하나","2-3");
 assert.throws(()=>ctx.findOrAddStudent57_(separate,1,"다른 이름","2-3"),/불일치/);
+const savedGetTab=originals[sourceIds[0]].getSheetByName;
+originals[sourceIds[0]].getSheetByName=function(){
+  return {getRange:()=>({getDisplayValues:()=>[
+    ["1","가상학생하나",null,null,null,"20","응시"],
+    ["1","가상학생하나",null,null,null,"20","응시"]
+  ]})};
+};
+assert.throws(()=>ctx.getStudentDetail(2,3),/중복/,"Duplicated ID within one gradebook must fail closed");
+originals[sourceIds[0]].getSheetByName=savedGetTab;
+assert(ui.includes('if(student.statuses[i])'),"Display lack of source score instead of hiding it");
+
 assert(ui.includes("getStudentDetail(grade,room)"));
 assert(ui.includes("student.name")&&ui.includes("textContent"));
 assert(!index.includes("getStudentDetail"),"student details MUST NOT be exposed on public GitHub Pages");
