@@ -36,7 +36,17 @@ function getStudentDetail(gradeValue, roomValue) {
     var numbersInThisSource = {};
     rows.forEach(function (row) {
       var number = parseStudentNumber57_(row[0]);
-      if (number === null) return;
+      if (number === null) {
+        // Real gradebooks contain an '응시완료' aggregate row and a blank
+        // summary/status row. Keep those, but never silently discard a row
+        // with a student name and a missing or malformed student number.
+        var rawNumber = String(row[0] == null ? "" : row[0]).trim();
+        var rawName = String(row[1] == null ? "" : row[1]).trim();
+        if (rawName && rawNumber !== "응시완료") {
+          throw new Error("채점원본 학생 번호 누락 또는 형식 오류: " + prefix + " " + assessment + "차");
+        }
+        return;
+      }
       if (numbersInThisSource[number]) throw new Error("채점원본에 동일 학생 번호가 중복됩니다: " + prefix + " " + assessment + "차");
       numbersInThisSource[number] = true;
       var name = parseStudentName57_(row[1], prefix);
