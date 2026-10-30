@@ -55,7 +55,7 @@
       if(!el.dataset.t49Clean){Array.from(el.childNodes).filter(function(n){return n.nodeType===3}).forEach(function(n){n.remove()});el.dataset.t49Clean='1'}
       var t=el.querySelector('span:not(.t49-nav-glyph):not(.t49-nav-number)');if(t)t.textContent=item.title;
       var glyph=el.querySelector('.t49-nav-glyph');
-      if(!glyph){glyph=document.createElement('span');glyph.className='t49-nav-glyph';glyph.setAttribute('aria-hidden','true');el.insertBefore(glyph,el.firstChild)}
+      if(!glyph){glyph=document.createElement('i');glyph.className='t49-nav-glyph';glyph.style.fontStyle='normal';glyph.setAttribute('aria-hidden','true');el.insertBefore(glyph,el.firstChild)}
       glyph.textContent=item.icon;
       var count=el.querySelector('.t49-nav-number');
       if(!count){count=document.createElement('span');count.className='t49-nav-number';count.setAttribute('aria-hidden','true');el.appendChild(count)}
@@ -66,6 +66,12 @@
     var tagline=q('.brand small');if(tagline)tagline.textContent='음악 교사의 스마트 업무 공간';
     var link=nav.querySelector('a.musicLibraryLink');if(link){link.style.display='flex';link.setAttribute('aria-label','MY MUSIC CLASS 음악 수업자료실 열기')}
     var foot=q('.side-foot');if(foot)foot.textContent='수업 · 평가 · 기록을 한곳에서';
+    // Reorder the primary navigation to match the approved seven-section design.
+    // Non-primary legacy views stay in the DOM for existing feature buttons.
+    ['dashboard','calendar','assessment','t49-classes','t49-exceptions','t49-records','documents','settings'].forEach(function(view){
+      var button=nav.querySelector('button[data-view="'+view+'"]');
+      if(button)nav.appendChild(button);
+    });
   }
   function addSearch(){
     var top=q('.top');if(!top||q('#t49Search'))return;
@@ -190,10 +196,31 @@
   function fillSavedSheet(){
     document.querySelectorAll('.t49SheetUrl').forEach(function(input){if(document.activeElement!==input)input.value=sheetUrl()});
   }
+  function keepHomeVisible(){
+    var body=q('#dashboardBody'),first=q('#firstHero'),y=current();
+    // The legacy v05 renderer intentionally hides the entire dashboard until a year exists.
+    // Our welcome dashboard must be visible before setup, with setup offered as a safe action.
+    if(body)body.style.display='block';
+    if(first)first.hidden=true;
+    var screen=q('#t49Screen');if(!screen)return;
+    var banner=q('#t49SetupBanner');
+    if(!y){
+      if(!banner){
+        banner=document.createElement('div');
+        banner.id='t49SetupBanner';
+        banner.className='t49-onboarding';
+        banner.setAttribute('role','status');
+        banner.innerHTML='<span class="t49-onboarding-icon" aria-hidden="true">✦</span>'+
+          '<span class="t49-onboarding-copy"><b>2026학년도 수업·평가를 연결해 주세요.</b><small>학년도를 설정하면 이 브라우저에 저장된 시간표와 평가정보가 대시보드에 표시됩니다. 성적은 교사용 Google Sheets에서만 확인합니다.</small></span>'+
+          '<button type="button" class="t49-action" data-t49-start>학년도 시작 →</button>';
+        var anchor=q('#t49Kpis');if(anchor)screen.insertBefore(banner,anchor);else screen.appendChild(banner);
+      }
+    }else if(banner)banner.remove();
+  }
   function apply(){
     if(!q('.shell')||!q('#dashboardBody'))return;
     document.body.classList.add('teacher49-mode');
-    addNav();addSearch();addViews();addDashboard();fillSavedSheet();
+    addNav();addViews();addDashboard();keepHomeVisible();fillSavedSheet();
     var y=current();
     renderKpis(y);renderProgress();renderToday(y);renderAssessments(y);renderAlerts(y);
     var active=q('#nav button.active[data-view]');
@@ -203,6 +230,7 @@
   document.addEventListener('click',function(e){
     var b=e.target.closest('[data-t49-to]');if(b){switchTo(b.dataset.t49To);return}
     var grade=e.target.closest('[data-t49-grade]');if(grade){state.grade=Number(grade.dataset.t49Grade);renderProgress();return}
+    var start=e.target.closest('[data-t49-start]');if(start){q('#firstYear')?.click();return}
     var sheet=e.target.closest('[data-t49-sheet]');if(sheet){openSheet();return}
     var save=e.target.closest('[data-t49-save]');if(save){
       var input=save.closest('.t49-panel').querySelector('.t49SheetUrl');
@@ -215,7 +243,7 @@
   });
   var old=globalThis.render;
   if(typeof old==='function'){globalThis.render=function(){var result=old.apply(this,arguments);setTimeout(apply,0);return result}}
-  setTimeout(apply,200);setTimeout(apply,1400);setTimeout(apply,3500);
+  setTimeout(apply,200);setTimeout(apply,1400);setTimeout(apply,3500);setTimeout(apply,4400);
   setInterval(apply,30000);
   document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')apply()});
   globalThis.TeacherOSPremiumDashboard49={apply:apply,openSheet:openSheet,safeSheetUrl:safeSheetUrl};
