@@ -31,7 +31,7 @@ jobs:
           node tests/v51-tests.js
           node tests/v52-tests.js
           node tests/v53-tests.js
-      - name: Chrome first visit: connection button and diagnostics
+      - name: Chrome first visit - connection button and diagnostics
         run: |
           set -euo pipefail
           chrome="$(command -v google-chrome || command -v chromium)"
