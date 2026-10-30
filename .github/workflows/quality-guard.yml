@@ -184,12 +184,8 @@ jobs:
       - name: Public-repo privacy guard
         run: |
           set -euo pipefail
-          find . -type f \( -iname '*.m4a' -o -iname '*.mp3' -o -iname '*.wav' -o -iname '*.aac' -o -iname '*.ogg' \) -not -path './.git/*' -print > /tmp/audio-files.txt
-          if [ -s /tmp/audio-files.txt ]; then
-            echo 'Audio files must not be committed to the public Teacher OS repository.'
-            cat /tmp/audio-files.txt
-            exit 1
-          fi
+          node --test tests/public-audio-privacy-guard.test.cjs
+          node scripts/public-audio-privacy-guard.cjs
 
       - name: Live site smoke test
         run: |
