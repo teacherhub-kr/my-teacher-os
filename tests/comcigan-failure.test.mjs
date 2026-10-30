@@ -13,6 +13,15 @@ test('classifies nested transport and parser failures', () => {
   assert.equal(failureKind(new SyntaxError('Unexpected token')), 'parse');
 });
 test('unknown exceptions remain unclassified, not falsely successful', () => {
-  assert.equal(failureKind(new Error('unknown upstream rejection')), 'unclassified');
+  assert.equal(failureKind(new Error('unknown upstream rejection')), 'exception-error');
   assert.equal(failureKind(null), 'unclassified');
+});
+
+test('unknown thrown types are categorized with fixed safe labels', () => {
+  assert.equal(failureKind(new TypeError('private URL and student')), 'exception-typeerror');
+  assert.equal(failureKind(new ReferenceError('private teacher')), 'exception-referenceerror');
+  assert.equal(failureKind(new RangeError('private source')), 'exception-rangeerror');
+  assert.equal(failureKind('student name'), 'throw-string');
+  assert.equal(failureKind({school:'private source'}), 'throw-object');
+  assert.ok(!failureKind(new TypeError('private')).includes('private'));
 });

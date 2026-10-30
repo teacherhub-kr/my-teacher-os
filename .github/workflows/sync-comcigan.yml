@@ -1,6 +1,13 @@
 name: Sync Comcigan timetable
 
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/sync-comcigan.mjs'
+      - 'scripts/comcigan-diagnostics.mjs'
+      - 'tests/comcigan-failure.test.mjs'
+      - '.github/workflows/sync-comcigan.yml'
   schedule:
     - cron: '10 23 * * 0-4' # 08:10 KST Monday-Friday (prior UTC day)
     - cron: '20 3 * * 1-5'  # 12:20 KST Monday-Friday
@@ -11,17 +18,35 @@ on:
     paths:
       - 'comcigan-config.json'
       - 'scripts/sync-comcigan.mjs'
+      - 'scripts/comcigan-diagnostics.mjs'
+      - 'tests/comcigan-failure.test.mjs'
       - '.github/workflows/sync-comcigan.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: comcigan-sync
   cancel-in-progress: true
 
 jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Offline syntax and safe-error regression
+        run: |
+          node --check scripts/sync-comcigan.mjs
+          node --check scripts/comcigan-diagnostics.mjs
+          node --test tests/comcigan-failure.test.mjs
+
   sync:
+    if: github.event_name != 'pull_request'
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -68,7 +93,7 @@ jobs:
                 detail="$machine_code"
                 ;;
               collector-init|collector-fetch)
-                category=network
+                category=collector
                 detail="$machine_code"
                 ;;
               parser-import|parser-export)
@@ -83,6 +108,13 @@ jobs:
                 category=config
                 detail="$machine_code"
                 ;;
+            esac
+          fi
+          # A collector-stage failure is not necessarily a network failure.
+          if [ "$category" = "collector" ]; then
+            case "$failure_kinds" in
+              connection|dns|rate-limit|upstream-*) category=network ;;
+              parse) category=parser ;;
             esac
           fi
           echo "category=$category" >> "$GITHUB_OUTPUT"
