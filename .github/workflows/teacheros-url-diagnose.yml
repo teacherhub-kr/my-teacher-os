@@ -24,6 +24,8 @@ jobs:
           n=0
           for target in \
             'https://teacherhub-kr.github.io/my-teacher-os/' \
+            'https://teacherhub-kr.github.io/my-teacher-os/index.html' \
+            'https://teacherhub-kr.github.io/my-teacher-os/app-v05.html' \
             'https://teacherhub-kr.github.io/my-teacher-os/lessons/' \
             'https://teacherhub-kr.github.io/my-teacher-os/lessons/orchestra-timbre/' \
             'https://puzzlex5.github.io/my-teacher-os/' \
