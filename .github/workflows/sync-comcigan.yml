@@ -71,7 +71,6 @@ jobs:
           node --test tests/comcigan-teacher-contract.test.mjs
           node --test tests/comcigan-crosscheck.test.mjs
           node --test tests/comcigan-deadline.test.mjs
-          node --test tests/comcigan-crosscheck.test.mjs
           node --test tests/comcigan-class-probe.test.mjs
 
   sync:
