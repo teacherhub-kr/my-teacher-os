@@ -1,1 +1,1 @@
-{"status":"ok","category":"ok","detail":"ok","verification":"teacher-class-match"}
+{"status":"error","category":"network","detail":"collector-init","failureKinds":"connection"}
