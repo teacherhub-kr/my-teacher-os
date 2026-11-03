@@ -19,11 +19,12 @@ for(const id of ['dashboard','calendar','timetable','lessonlog','policy','assess
  assert(js.includes("'"+id+"'"),'Task workflow unavailable: '+id);
 for(const id of ['settings','documents','importer'])
  assert(js.includes("['"+id+"'"),'Utility access missing: '+id);
-for(const marker of ['#os66SettingsButton','#os66Tabs','#os66LegacyNav','#os65TaskForm','#taskInput','#taskList','#t49Screen','#policyBanner'])
+for(const marker of ['#os66SettingsButton','#os66Tabs','#os66LegacyNav','#os65TaskForm','#taskInput','#taskList','#t49Screen'])
  assert(js.includes(marker),'UI/data connection missing: '+marker);
 assert(!js.includes("detail.appendChild(body)"),'No single giant detailed view should remain');
 assert(!js.includes("detail.id='os65-detail'"),'All-in-one old work screen forbidden');
 assert(js.includes('workspace.remove()'),'Legacy workspace container must disappear');
+assert(js.includes("['policyBanner','policy',false]"),'Original curriculum banner must move with its reference to the policy task');
 assert(js.includes('classes.appendChild(screen)'),'Existing class progress must be in the assessment task');
 assert(js.includes('card=m[2]?node.closest'),'Original live card must be moved rather than rebuilt');
 assert(js.includes('task.value=value;add.click()'),'Task creation must reuse previous save handler');
