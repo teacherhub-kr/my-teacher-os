@@ -81,7 +81,7 @@
   }
   function goto(target){
     if(target==='year'){var t=$('#firstYear')||$('#newYear');if(t)t.click();return}
-    if(target==='music56'){var p=$('#teacher56Panel');if(p){p.scrollIntoView({block:'center',behavior:'smooth'});var s=p.querySelector('.teacher56-settings');if(s)s.open=true}return}
+    if(target==='music56'){$('#nav button[data-view="settings"]')?.click();var p=$('#teacher56Panel');if(p){var s=p.querySelector('.teacher56-settings');if(s)s.open=true;setTimeout(function(){p.scrollIntoView({block:'center',behavior:'smooth'})},100)}return}
     if(target==='music54'){var s=$('#music54Panel');if(s){s.open=true;s.scrollIntoView({block:'center',behavior:'smooth'})}return}
     if(target==='sheet-open'){openSheet();return}
     if(target==='sheet-focus'){var i=$('#t53SheetUrl');if(i){i.focus();i.scrollIntoView({block:'center',behavior:'smooth'})}return}
