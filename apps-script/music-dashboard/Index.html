@@ -52,6 +52,33 @@
     .status.error{background:#fff0f1;color:#ae415a}
     footer{margin-top:22px;color:#788ba4;font-size:11px}
     @media(max-width:740px){.wrap{padding:13px 12px 38px}header{padding:23px 19px}.symbol{display:none}.cards{grid-template-columns:repeat(2,1fr);gap:8px}.card{padding:14px}.card strong{font-size:27px}.panel{padding:14px}}
+
+    /* Owner-only home: live aggregate counts, actionable queues and evidence-based record drafts. */
+    .action-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    .assess-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:13px}
+    .assess-item{border:1px solid #dfe7f5;border-radius:12px;padding:13px;background:#f8fbff}
+    .assess-item b{display:block;color:#355981;font-size:12px}
+    .assess-item strong{display:block;font-size:24px;color:#d15c43;margin:4px 0}
+    .assess-item span{font-size:11px;color:#7484a2}
+    .attention-list{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+    .attention-list li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;border:1px solid #e8eef9;border-radius:10px;background:#fff}
+    .attention-list strong{font-size:12px;color:#273f66}
+    .attention-list span{font-size:11px;color:#647c9d;text-align:right}
+    .attention-empty{color:#647c9d;background:#f4f8ff!important}
+    .record-form{display:grid;gap:12px;margin-top:13px}
+    .record-form label{font-size:12px;font-weight:800;color:#355276;display:grid;gap:5px}
+    .record-form input,.record-form select,.record-form textarea{width:100%;min-width:0;font:inherit;border:1px solid #d5e1f3;border-radius:10px;background:#fff;color:#263a5a;padding:10px 11px}
+    .record-form textarea{min-height:76px;resize:vertical;line-height:1.65}
+    .record-form textarea#recordDraft{min-height:120px;background:#f5f8ff}
+    .record-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .record-actions button{min-height:41px;border:0;border-radius:10px;background:#266bea;color:#fff;cursor:pointer;padding:10px 16px;font-weight:800;font:inherit}
+    .record-actions button:disabled{opacity:.5;cursor:not-allowed}
+    .record-actions button.secondary{background:#eaf1ff;color:#2057b6}
+    .record-help{font-size:11px;color:#6d7f98}
+    .record-status{font-size:12px;color:#245db9;margin:0}
+    .record-status.error{color:#ae3752}
+    .record-form input:focus-visible,.record-form select:focus-visible,.record-form textarea:focus-visible,.record-actions button:focus-visible{outline:3px solid #aac7ff;outline-offset:2px}
+    @media(max-width:740px){.assess-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.attention-list li{align-items:flex-start;flex-direction:column}}
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
   </style>
 </head><body>
@@ -75,6 +102,13 @@
   <div class="card"><small>점검 알림</small><strong id="notices">—</strong><span>반 단위 확인 필요</span></div>
   <div class="card"><small>긴급 표시</small><strong id="urgent">—</strong><span>원본 집계의 긴급 분류</span></div>
  </section>
+ <section class="panel" id="actionPanel" aria-labelledby="actionHeading">
+  <div class="action-heading"><h2 id="actionHeading">평가별 미채점 · 지금 확인할 일</h2><span class="subtitle" id="actionAt">원본 연결 중</span></div>
+  <p class="subtitle">학생 이름 없이 학급별 인원수만 보여줍니다. 1~4차는 서로 다른 평가 기록이므로 학생 수와 합산하지 마세요.</p>
+  <div class="assess-grid" id="assessmentSummary" aria-label="평가별 미채점 집계"></div>
+  <ul class="attention-list" id="attentionList" aria-label="확인할 학급"></ul>
+  <p class="record-help">이 알림은 원본의 미채점 기록과 표시 상태를 기준으로 하며, 수업·평가의 실시 여부나 성적 확정을 판정하지 않습니다.</p>
+ </section>
  <section class="panel" aria-labelledby="tableHeading">
   <h2 id="tableHeading">반별 수행평가 현황</h2>
   <p class="subtitle">자료는 각 조회 시점의 Google Sheets 집계 결과입니다. 정확한 학생별 성적은 원본 채점표에서 확인하세요.</p>
@@ -97,6 +131,34 @@
    <tbody id="studentRows"><tr><td colspan="6">조회할 반을 선택하세요.</td></tr></tbody>
   </table></div>
   <p class="student-note">3학년 1·2차는 1학기 참고 성적입니다. 점수 공란은 0점이 아닙니다. 이름이 서로 다른 원본은 잘못된 학생에게 합산되지 않도록 조회를 중단합니다.</p>
+ </section>
+ <section class="panel" id="recordPanel" aria-labelledby="recordHeading">
+  <h2 id="recordHeading">생활기록부 근거 → 교사 검토용 문장 초안</h2>
+  <p class="subtitle">위에서 학급 학생 명렬을 조회한 다음, 교사가 실제로 관찰한 내용을 입력하면 해당 내용만 토대로 초안을 구성합니다. 점수만으로 태도·역량·성장 사실을 만들어내지 않습니다.</p>
+  <div class="record-form">
+   <label for="recordStudent">초안 작성 대상 학생 (본인 전용 화면에서만 표시)
+    <select id="recordStudent" disabled><option value="">먼저 해당 반 학생을 조회하세요</option></select>
+   </label>
+   <p class="record-help" id="recordEvidence">학생을 선택하면 원본 채점 기록(1~4차)만 근거 확인용으로 표시합니다. 초안에는 성적 수치를 자동 삽입하지 않습니다.</p>
+   <label for="recordActivity">활동·수행평가명
+    <input id="recordActivity" maxlength="100" placeholder="예: 우쿨렐레 합주, 음악 감상 발표"/>
+   </label>
+   <label for="recordObserved">직접 관찰한 구체적 사실 (필수)
+    <textarea id="recordObserved" maxlength="1000" placeholder="예: 박자 변화를 구별하여 합주에서 자신의 리듬을 조정함"></textarea>
+   </label>
+   <label for="recordChange">관찰한 변화·결과 (선택)
+    <textarea id="recordChange" maxlength="800" placeholder="예: 연습 뒤 다양한 빠르기에서도 일정한 박을 유지함"></textarea>
+   </label>
+   <div class="record-actions">
+    <button type="button" id="makeRecord">관찰 근거로 초안 작성</button>
+    <button type="button" id="copyRecord" class="secondary" disabled>초안 복사</button>
+   </div>
+   <label for="recordDraft">교사 검토용 생활기록부 초안
+    <textarea id="recordDraft" readonly placeholder="학생과 관찰 근거를 선택하면 초안이 여기에 나타납니다."></textarea>
+   </label>
+   <p class="record-status" id="recordStatus" role="status" aria-live="polite">아직 작성하지 않았습니다.</p>
+   <p class="record-help">이 화면은 초안·관찰 메모를 자동 저장하거나 Google Sheets에 기록하지 않습니다. 문장 내용·사실관계·생활기록부 작성지침 준수 여부는 교사가 최종 검토하세요.</p>
+  </div>
  </section>
  <div class="status" id="status" role="status" aria-live="polite">본인 Google 계정으로 원본의 학급별 집계를 조회하고 있습니다.</div>
  <footer>학생 이름·번호·점수·평가상태는 교사 전용 Apps Script 화면에서만 조회합니다. 결시 사유 등 자유기술 메모는 조회하지 않습니다. 공유·배포 설정은 반드시 ‘나만’으로 유지하세요.</footer>
