@@ -12,12 +12,12 @@
 </head>
 <body>
 <div class="boot"><div><b>MY TEACHER OS</b><span>최신 화면을 불러오는 중입니다.</span></div></div>
-<script src="teacher-owner-entry-v58.js?v=58.0-owner-first"></script>
+<script src="teacher-owner-entry-v58.js?v=59.0-explicit-private"></script>
 <script>
 (async()=>{
   try{
-    // If a teacher has already linked the owner-only Google web app, enter it first.
-    // Google authenticates the user; this public page never receives private grades.
+    // Teacher OS tools open by default. Only an explicit ?mode=private request
+    // enters the owner-only Google dashboard. No student data are read here.
     if(globalThis.TeacherOSEntry58?.start?.()===true)return;
     const stamp=Date.now();
     let h=await fetch('./app-v05.html?v=46.0-student-privacy&ts='+stamp,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('기본 앱을 불러오지 못했습니다.');return r.text()});
