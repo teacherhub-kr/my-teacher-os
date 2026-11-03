@@ -17,7 +17,7 @@ assert(!elements['#t49AssessList'].innerHTML.includes('등록된 평가가 있�
 scope.renderAlerts(null);
 assert(elements['#t49Alerts'].innerHTML.includes('학년도 업무 미설정'));
 assert(!elements['#t49Alerts'].innerHTML.includes('업무 완료'));
-assert(elements['#t49Alerts'].innerHTML.includes('data-teacher56="open"'));
+assert(!elements['#t49Alerts'].innerHTML.includes('data-teacher56="open"'),'Do not repeat the same private destination in alerts');
 const state={
   assessments:[{name:'가상 수행평가',target:'3학년',due:'2026-11-04'}],
   projects:[{name:'가상 학교행사',due:'2026-11-06'}],
@@ -31,8 +31,7 @@ assert(recent.includes('data-t49-record-status="미완료"'));
 scope.renderAlerts(state);
 let alerts=elements['#t49Alerts'].innerHTML;
 assert(alerts.includes('교구 준비')&&!alerts.includes('처리 완료'));
-assert(alerts.includes('교사 전용 원본'));
-assert(alerts.includes('data-teacher56="open"'));
+assert(!alerts.includes('data-teacher56="open"'),'Actionable local alerts must remain local');
 scope.renderAlerts({assessments:[],projects:[],tasks:[]});
 alerts=elements['#t49Alerts'].innerHTML;
 assert(alerts.includes('OS 미완료 할 일 기록 없음'));
@@ -42,7 +41,7 @@ scope.renderAssessments({assessments:[{name:'<script>alert(1)</script>',due:'',t
 assert(!elements['#t49AssessList'].innerHTML.includes('<script>'),'Never render local title as HTML');
 assert(!elements['#t49AssessList'].innerHTML.includes('<img'),'Never render local target as HTML');
 assert(layout.includes('const status=el.dataset.t49RecordStatus'), 'Design layer must show actual pending state');
-assert(layout.includes('data-teacher56="open"'), 'Design layer must keep owner-only link');
+assert(app.includes('data-teacher56="open"'), 'Single protected entry remains in the assessment card');
 assert(!layout.includes('<em>—</em>'), 'No synthetic alerts with dash values');
 assert(!layout.includes('학생별 예외상태는 비공개</small><em>'), 'No fabricated missing-participant entries');
 assert(index.includes('teacher-design-v51.js?v=51.0-reference-parity-activity'), 'Updated JS must avoid stale browser cache');
