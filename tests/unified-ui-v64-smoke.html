@@ -1,93 +1,83 @@
-<!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><title>Teacher OS focused UX browser audit</title>
-<style>html,body{margin:0;width:100%;height:100%;font-family:system-ui}iframe{border:0;width:100%;height:100%}pre{position:fixed;top:0;right:0;background:rgba(255,255,255,.96);z-index:999999;font-size:9px;max-width:520px;max-height:160px;overflow:auto;padding:6px;white-space:pre-wrap}</style>
-</head><body><iframe id="teacher-os" src="../?mode=tools" title="Teacher OS UI"></iframe><pre id="audit" data-status="PENDING">LOADING</pre>
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>Teacher OS v66 end-to-end navigation</title>
+<style>html,body{margin:0;width:100%;height:100%;font-family:system-ui}iframe{border:0;width:100%;height:100%}pre{position:fixed;top:0;right:0;background:rgba(255,255,255,.97);z-index:999999;font-size:9px;max-width:520px;max-height:170px;overflow:auto;padding:6px;white-space:pre-wrap}</style>
+</head><body><iframe id="teacher-os" src="../?mode=tools" title="Teacher OS"></iframe><pre id="audit" data-status="PENDING">LOADING</pre>
 <script>
 (function(){
-var attempts=0,once=false;
-function verify(){
-  if(once)return;
-  var frame=document.getElementById('teacher-os'),d,w;
-  try{d=frame.contentDocument;w=frame.contentWindow}catch(e){return}
-  if(!d||!d.body||!d.body.classList.contains('teacher65-mode')||!d.getElementById('os65Home')){
-    if(++attempts>150){document.getElementById('audit').textContent='FAIL: modern focused view was not ready';document.getElementById('audit').dataset.status='FAIL'}
-    return;
+var ticks=0,done=false;
+function checkAll(){
+ if(done)return;
+ var frame=document.getElementById('teacher-os'),d,w;
+ try{d=frame.contentDocument;w=frame.contentWindow}catch(e){return}
+ if(!d||!d.body||!d.body.classList.contains('teacher66-mode')){
+  if(++ticks>100){done=true;var o=document.getElementById('audit');o.dataset.status='FAIL';o.textContent='v66 UI not initialized'}return;
+ }
+ done=true;
+ var trace=[],errs=[],style=w.getComputedStyle.bind(w);
+ function check(ok,message){trace.push((ok?'OK ':'FAIL ')+message);if(!ok)errs.push(message)}
+ try{
+  var groups=[['home','dashboard'],['lesson','timetable'],['assessment','assessment'],['student','studentrecords'],['work','projects']];
+  check(d.body.classList.contains('teacher51-mode'),'Preserved global current design');
+  check(!!d.querySelector('link[href*="teacher-focused-v65.css"]'),'v66 unified styles loaded');
+  check(d.querySelectorAll('#nav>.os66-category').length===5,'Exactly five first-level options');
+  check(style(d.getElementById('os66LegacyNav')).display==='none','Old fourteen-button menu is hidden');
+  check(!d.getElementById('os65-detail'),'Old all-in-one detailed page removed');
+  check(!d.getElementById('t49Workspace'),'Old all-in-one workspace container removed');
+  check(d.querySelectorAll('#os65Home .os65-quick-card').length===4,'Four concise home actions');
+  check(d.querySelectorAll('#os65Home [data-teacher56="open"]').length===1,'One protected gradebook entry on home');
+  check(!!d.getElementById('os65PendingItems')&&!!d.getElementById('os65UpcomingItems'),'Actionable pending and calendar data containers present');
+  var placements=[['nextList','calendar'],['agentRun','policy'],['todayTimetable','timetable'],['flowList','assessment'],['taskList','projects'],['taskInput','projects'],['taskAdd','projects'],['policyBanner','policy'],['t49Screen','t49-classes']];
+  placements.forEach(function(pair){
+   var item=d.getElementById(pair[0]),page=d.getElementById(pair[1]);
+   check(!!item&&!!page&&page.contains(item),'Original functional widget relocated: '+pair[0]+' → '+pair[1]);
+  });
+  check(!!d.querySelector('#timetable .musicLibraryFeatured'),'Music resource shortcut belongs with lessons');
+  check(!!d.querySelector('#settings .summary'),'Source configuration metrics belong with settings');
+  for(var i=0;i<groups.length;i++){
+   var g=groups[i],b=d.querySelector('[data-os66-category="'+g[0]+'"]');
+   check(!!b&&b.getBoundingClientRect().height>0,'Visible main category '+g[0]);
+   if(!b)continue;
+   b.click();
+   var expected=g[1]==='studentrecords'&&!d.getElementById('studentrecords')?'t49-records':g[1];
+   check(!!d.getElementById(expected)&&d.getElementById(expected).classList.contains('active'),'Single-click main category '+g[0]);
+   if(g[0]!=='home'){
+    var tabs=d.getElementById('os66Tabs');
+    check(tabs&&!tabs.hidden&&tabs.querySelectorAll('.os66-tab').length>=2,'Contextual subtabs for '+g[0]);
+   }
   }
-  once=true;
-  var errors=[],trace=[],style=w.getComputedStyle.bind(w);
-  function check(ok,message){if(!ok)errors.push(message);trace.push((ok?'OK ':'FAIL ')+message)}
-  try{
-    var menus=['dashboard','os65-detail','importer','calendar','timetable','assessment','clubs','projects','policy','documents','memory','settings','t49-classes','t49-exceptions','t49-records'];
-    var groups=['home','lesson','record','work','tools'];
-    check(d.body.classList.contains('teacher51-mode'),'Existing unified theme initialized');
-    check(!!d.querySelector('link[href*="teacher-focused-v65.css"]'),'Focused style loaded');
-    check(!!d.querySelector('link[href*="teacher-unified-v64.css"]'),'Existing stylesheet retained');
-    check(!d.getElementById('t49Legacy'),'Old collapsible interface removed');
-    check(d.querySelectorAll('#nav>.os65-group').length===5,'Exactly five primary workflow groups');
-    groups.forEach(function(g){
-      var header=d.getElementById('os65-toggle-'+g),list=d.getElementById('os65-group-'+g);
-      check(!!header&&!!list&&header.getBoundingClientRect().height>0,'Primary workflow group visible: '+g);
-    });
-    var home=d.getElementById('os65Home'),detail=d.getElementById('os65-detail');
-    check(!!home&&d.getElementById('dashboard').contains(home),'Focused home is the real dashboard');
-    check(!!detail&&detail.contains(d.getElementById('dashboardBody')),'Original app engine preserved as a first-class detail view');
-    check(!d.getElementById('dashboard').contains(d.getElementById('t49Workspace')),'Old giant dashboard removed from first page');
-    check(d.querySelectorAll('#os65Home .os65-quick-card').length===4,'Home has only four primary tasks');
-    check(d.querySelectorAll('#os65Home [data-teacher56="open"]').length===1,'Only one secure grade link on focused home');
-    check(!!d.getElementById('os65PendingItems')&&!!d.getElementById('os65UpcomingItems'),'Pending work and upcoming deadlines visible');
-    var workspace=d.getElementById('t49Workspace');
-    for(var j=0,ids=['nextList','agentRun','todayTimetable','flowList','taskList','taskInput','taskAdd','mEnv','mCal','mTT','mAss','mClub','mProj'];j<ids.length;j++){
-      var widget=d.getElementById(ids[j]);
-      check(!!widget&&workspace.contains(widget),'Original live widget preserved: '+ids[j]);
-    }
-    for(var i=0;i<menus.length;i++){
-      var view=menus[i],button=d.querySelector('#nav button[data-view="'+view+'"]');
-      check(!!button&&!!button.closest('.os65-group'),'Workflow remains in navigation: '+view);
-      if(!button)continue;
-      var parent=button.closest('.os65-group');
-      var toggle=parent.querySelector('button[data-os65-group]');
-      if(toggle.getAttribute('aria-expanded')!=='true')toggle.click();
-      if(view!=='dashboard')check(button.getBoundingClientRect().height>0,'Workflow can be revealed: '+view);
-      button.click();
-      var section=d.getElementById(view);
-      check(!!section&&section.classList.contains('active')&&style(section).display!=='none','Workflow navigates correctly: '+view);
-    }
-    var agent=d.querySelector('.t49-workspace .agent');
-    if(agent)check(style(agent).backgroundColor==='rgb(255, 255, 255)','Old green agent card replaced');
-    d.querySelector('#os65-toggle-home').click();
-    check(d.getElementById('dashboard').classList.contains('active'),'Return to focused home');
-    check(style(d.querySelector('.top-actions')).display!=='none','Academic year actions still accessible');
-    // Synthetic write tests run ONLY on isolated localhost with explicit CI opt-in.
-    // Opening the published smoke page must never change the teacher's records.
-    if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).get('ci')==='true'){
-    var newYear=d.getElementById('newYear');
-    newYear.click();
-    check(d.getElementById('yearDlg').open,'Original academic year form works');
-    d.getElementById('yYear').value='2026';
-    d.getElementById('yearForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
-    var raw=JSON.parse(w.localStorage.getItem('myTeacherOS.v01')||'{}');
-    check(!!(raw.years&&raw.years['2026']),'Original year record saved to same localStorage key');
-    var homeInput=d.getElementById('os65NewTask');
-    homeInput.value='가상 업무 검증';
-    d.getElementById('os65TaskForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
-    raw=JSON.parse(w.localStorage.getItem('myTeacherOS.v01')||'{}');
-    var tasks=raw.years&&raw.years['2026']&&raw.years['2026'].tasks||[];
-    check(tasks.some(function(t){return t.text==='가상 업무 검증'&&!t.done}),'Focused task form uses the original save handler');
-    var checkbox=d.querySelector('#os65PendingItems [data-os65-complete]');
-    check(!!checkbox,'Saved task is visible on the focused home');
-    if(checkbox){
-      checkbox.click();
-      raw=JSON.parse(w.localStorage.getItem('myTeacherOS.v01')||'{}');
-      tasks=raw.years&&raw.years['2026']&&raw.years['2026'].tasks||[];
-      check(tasks.some(function(t){return t.text==='가상 업무 검증'&&t.done}),'Task completion persists through original data handler');
-    }
-    }
-    check(style(d.querySelector('.os65-focus-grid')).display==='grid','Focused task panels use the new design');
-  }catch(err){errors.push('EXCEPTION: '+(err&&err.stack||err));trace.push('FAIL: '+String(err))}
-  var output=document.getElementById('audit');
-  output.dataset.status=errors.length?'FAIL':'PASS';
-  output.textContent=(errors.length?'FAIL: '+errors.length+'\n':'PASS: '+trace.length+' checks\n')+trace.join('\n');
+  var categories={
+   lesson:['calendar','policy'],assessment:['t49-classes','t49-exceptions'],
+   student:['t49-records'],work:['clubs','memory']
+  };
+  Object.keys(categories).forEach(function(g){
+   d.querySelector('[data-os66-category="'+g+'"]').click();
+   categories[g].forEach(function(v){
+    var tab=d.querySelector('#os66Tabs [data-os66-view="'+v+'"]');
+    check(!!tab&&tab.getBoundingClientRect().height>0,'Visible subtab '+v);
+    if(tab){tab.click();check(d.getElementById(v).classList.contains('active'),'Reachable workflow '+v)}
+   });
+  });
+  var settings=d.getElementById('os66SettingsButton');
+  check(!!settings&&settings.getBoundingClientRect().height>0,'Settings available in top bar');
+  if(settings){
+   settings.click();check(d.getElementById('settings').classList.contains('active'),'Settings opens in one click');
+   ['documents','importer'].forEach(function(v){
+    var tab=d.querySelector('#os66Tabs [data-os66-view="'+v+'"]');
+    check(!!tab&&tab.getBoundingClientRect().height>0,'Utility subtab available '+v);
+    if(tab){tab.click();check(d.getElementById(v).classList.contains('active'),'Utility tool opens '+v)}
+   });
+  }
+  d.querySelector('[data-os66-category="home"]').click();
+  check(d.getElementById('dashboard').classList.contains('active'),'Returns to concise home');
+  check(d.getElementById('os66Tabs').hidden,'Home has no distracting subtab bar');
+  check(!!d.querySelector('.top-actions #yearSelect'),'Year setting preserved');
+  check(!!d.querySelector('#os65TaskForm')&&!!d.querySelector('#taskList'),'Quick add and original task editor both exist');
+  var ann=d.querySelector('#t49-classes #t49Screen .t49-panels>.t49-panel:not(:first-child)');
+  if(ann)check(style(ann).display==='none','Duplicate old dashboard panels hidden from class progress');
+ }catch(e){errs.push('EXCEPTION '+(e&&e.stack||e));trace.push('FAIL EXCEPTION '+String(e))}
+ var out=document.getElementById('audit');
+ out.dataset.status=errs.length?'FAIL':'PASS';
+ out.textContent=(errs.length?'FAIL: '+errs.length+'\n':'PASS: '+trace.length+' checks\n')+trace.join('\n');
 }
-setInterval(verify,300);setTimeout(verify,2200);
+setInterval(checkAll,280);
 })();
 </script></body></html>

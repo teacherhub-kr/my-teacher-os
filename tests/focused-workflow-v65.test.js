@@ -11,8 +11,8 @@ assert(index.includes('teacher-focused-v65.css?v=65.0-focused-home'));
 assert(index.includes('teacher-focused-v65.js?v=65.0-focused-home'));
 assert(index.indexOf('teacher-focused-v65.css')>index.indexOf('teacher-unified-v64.css'));
 assert(index.indexOf('teacher-focused-v65.js')>index.indexOf('teacher-private-music-v56.js'));
-assert(index.includes('body:not(.teacher65-mode):not(.teacher-os-fallback) .shell'));
-assert(index.includes('document.body.classList.contains("teacher65-mode")'));
+assert(index.includes('body:not(.teacher66-mode):not(.teacher-os-fallback) .shell'));
+assert(index.includes('document.body.classList.contains("teacher66-mode")'));
 assert(base.includes("if(nav.dataset.os65Grouped!=='1')NAV.forEach"));
 for(const label of ["홈","수업","평가·기록","학교업무","자료·설정"])
   assert(app.includes("label:'"+label+"'"),'Missing primary group '+label);

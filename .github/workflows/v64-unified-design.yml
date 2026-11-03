@@ -6,6 +6,8 @@ on:
       - 'index.html'
       - 'teacher-unified-v64.css'
       - 'teacher-focused-v65.js'
+      - 'teacher-workflow-v66.js'
+      - 'tests/workflow-v66.test.js'
       - 'teacher-focused-v65.css'
       - 'teacher-dashboard-v49.js'
       - 'tests/focused-workflow-v65.test.js'
@@ -22,6 +24,8 @@ on:
       - 'index.html'
       - 'teacher-unified-v64.css'
       - 'teacher-focused-v65.js'
+      - 'teacher-workflow-v66.js'
+      - 'tests/workflow-v66.test.js'
       - 'teacher-focused-v65.css'
       - 'teacher-dashboard-v49.js'
       - 'tests/focused-workflow-v65.test.js'
@@ -42,6 +46,8 @@ jobs:
           node tests/unified-design-v64.test.js
           node --check teacher-focused-v65.js
           node tests/focused-workflow-v65.test.js
+          node --check teacher-workflow-v66.js
+          node tests/workflow-v66.test.js
           node tests/integrated-workspace-v63.test.js
           node tests/teacher-activity-home-v61.test.js
           node tests/owner-portal-v56.test.js

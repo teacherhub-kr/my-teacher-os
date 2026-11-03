@@ -102,7 +102,7 @@
     });
     var lessons=nav.querySelector('a.musicLibraryLink');
     var assessment=nav.querySelector('button[data-view="assessment"]');
-    if(lessons&&assessment)assessment.after(lessons);
+    if(lessons&&assessment&&!document.body.classList.contains('teacher66-mode'))assessment.after(lessons);
   }
   function addSearch(){
     var top=q('.top');if(!top||q('#t49Search'))return;
@@ -163,7 +163,7 @@
     });
   }
   function addDashboard(){
-    var dash=q('#dashboardBody');if(!dash)return;
+    var dash=q('#dashboardBody');if(!dash||document.body.classList.contains('teacher66-mode'))return;
     if(!q('#t49Screen')){
       var container=document.createElement('div');
       container.innerHTML=mainMarkup();
