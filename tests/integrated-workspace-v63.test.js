@@ -13,7 +13,8 @@ assert(app.includes('original=original.concat(Array.from(oldSlot.children))'),'O
 assert(app.includes('home.appendChild(child)'),'Original event listeners, element ids and form fields must be preserved');
 assert(app.includes('if(legacy)legacy.remove()'),'Obsolete collapsible UI must not remain');
 assert(!app.includes('기존 Teacher OS 업무 도구 펼치기'),'Old collapsible interface must be eliminated');
-for(const id of ['policyBanner','musicLibraryFeatured','mEnv','mCal','mTT','mAss','mClub','mProj','nextList','agentRun','todayTimetable','flowList','taskList','taskInput','taskAdd']){
+assert(html.includes('class="musicLibraryFeatured"'),'Original music lesson library card must remain intact');
+for(const id of ['policyBanner','mEnv','mCal','mTT','mAss','mClub','mProj','nextList','agentRun','todayTimetable','flowList','taskList','taskInput','taskAdd']){
   assert(html.includes('id="'+id+'"'),'Original DOM ID must still exist: '+id);
 }
 for(const slot of ['t49WorkspaceOverview','t49WorkspacePlans','t49WorkspaceTeaching','t49WorkspaceTasks','t49WorkspaceResources','t49WorkspaceOther']){
