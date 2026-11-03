@@ -167,6 +167,34 @@ with sync_playwright() as p:
     pick(2)
     check("4c 이름이 같은 2번 학생 기록은 유지", "박자" in app.input_value("#recordObserved"))
 
+    # ---- 4-1. Within-workroom grade switch: grade 2 (9 rooms) vs grade 3 (6 rooms).
+    # Use the SAME fictional students in both grades to detect cross-grade state leakage.
+    app.locator("#recordPanel [data-grade='3']").click()
+    app.wait_for_function("document.getElementById('recordClass').options.length===6")
+    grade3rooms = app.locator("#recordClass option").evaluate_all("(nodes)=>nodes.map(n=>n.value)")
+    check("4d 세특 작성실에서 3학년으로 전환하면 4~9반만 표시",
+          grade3rooms == ['4','5','6','7','8','9'], str(grade3rooms))
+    app.select_option("#recordClass", "4")
+    app.click("#recordLoadClass")
+    app.wait_for_function("document.getElementById('recordStudent').options.length===3")
+    calls = app.evaluate("window.__calls")
+    check("4e 3학년 4반은 보호된 기존 수행평가 조회(getStudentDetail) 재사용",
+          any(c[0]=="getStudentDetail" and json.loads(c[1])==[3,4] for c in calls))
+    pick(2)
+    check("4f 같은 번호·이름이어도 다른 학년·반의 관찰 초안이 섞이지 않음",
+          app.input_value("#recordObserved")=="" and app.input_value("#recordDraft")=="")
+    app.locator("#recordPanel [data-grade='2']").click()
+    app.wait_for_function("document.getElementById('recordClass').options.length===9")
+    grade2rooms = app.locator("#recordClass option").evaluate_all("(nodes)=>nodes.map(n=>n.value)")
+    check("4g 다시 2학년으로 전환하면 1~9반만 표시",
+          grade2rooms==[str(i) for i in range(1,10)], str(grade2rooms))
+    app.select_option("#recordClass","3")
+    app.click("#recordLoadClass")
+    app.wait_for_function("document.getElementById('recordStudent').options.length===3")
+    pick(2)
+    check("4h 기존 2학년 3반의 임시 작업은 학년 전환 후에도 해당 학생에게만 남음",
+          "박자" in app.input_value("#recordObserved"))
+
     # ---- 6. loss warning is explicit
     banner = app.inner_text("#recordUnsaved")
     check("6a 저장 안 됨 경고가 작성 중 학생 수와 함께 상시 표시", "저장되지 않은" in banner and "새로고침" in banner, banner)

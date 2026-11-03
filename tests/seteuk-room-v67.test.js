@@ -160,6 +160,12 @@ assert.equal(plain(ctx.restoreRecordWork_(exported,'2-4',roster)).rejected[0].re
 assert.equal(plain(ctx.restoreRecordWork_('{bad','2-3',roster)).rejected[0].reason,'형식 오류');
 assert(!/exportRecordWork_\(|restoreRecordWork_\(/.test(ui.split('// END OWNER_ONLY_HOME_CORE')[1]),'Storage design is not wired to the UI before school approval');
 
+// 5-4. Grade-specific tabs must be accessible from the workroom, not only at the top of the dashboard.
+assert(ui.includes('aria-label="교과세특 작성 학년 선택"'),'Grade selector must be inside the record workroom');
+const recordPanel=ui.split('id="recordPanel"')[1].split('</section>')[0];
+assert(recordPanel.includes('data-grade="2"')&&recordPanel.includes('data-grade="3"'),'Both grade switches visible in the record workroom');
+assert(recordPanel.includes('2학년 · 1~9반')&&recordPanel.includes('3학년 · 4~9반'),'Grade-specific class ranges identified');
+
 // 6. Discoverable workroom: named, reachable from an in-page nav and deep link.
 for(const marker of ['id="recordPanel"','✎ 음악 교과세특 작성실','data-jump="recordPanel"','id="recordClass"','id="recordLoadClass"',
   'id="recordProgress"','id="recordWork"','id="recordSource"','id="recordBytes"','id="recordChecks"','id="confirmRecord"',
