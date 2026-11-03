@@ -49,8 +49,9 @@ jobs:
       - name: v67 세특 workroom real-browser scenarios (fictional students, emulated Google)
         run: |
           set -euo pipefail
-          python3 -m pip install --quiet playwright==1.63.0
-          python3 -I tests/e2e/seteuk-v67-browser.py "$GITHUB_WORKSPACE"
+          python3 -m venv /tmp/teacheros-seteuk-venv
+          /tmp/teacheros-seteuk-venv/bin/python -m pip install --quiet playwright==1.63.0
+          /tmp/teacheros-seteuk-venv/bin/python -I tests/e2e/seteuk-v67-browser.py "$GITHUB_WORKSPACE"
       - name: Existing Teacher OS smoke tests
         run: |
           set -euo pipefail
