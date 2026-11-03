@@ -37,6 +37,7 @@ jobs:
           node tests/owner-entry-v58.test.js
           node tests/teacher-activity-home-v61.test.js
           node tests/private-teacher-home-v62.test.js
+          node tests/integrated-workspace-v63.test.js
       - name: Existing Teacher OS smoke tests
         run: |
           set -euo pipefail
@@ -64,6 +65,31 @@ jobs:
           for marker in ['id="teacher56Panel"','id="teacher56Badge"','id="teacher56Url"',
                          '나로 실행 · 나만 접근','교사 전용 화면 열기','teacher51-mode']:
               assert marker in text, 'Owner-only portal not rendered: '+marker
+          # The old v05 home must be integrated into the new design, not hidden in <details>.
+          from html.parser import HTMLParser
+          class Audit(HTMLParser):
+              def __init__(self):
+                  super().__init__();self.stack=[];self.ids={};self.nav=set()
+              def handle_starttag(self,tag,attrs):
+                  a=dict(attrs);ident=a.get('id','')
+                  if ident:self.ids[ident]=[x[1] for x in self.stack]
+                  if tag=='button' and a.get('data-view'):self.nav.add(a['data-view'])
+                  self.stack.append((tag,ident))
+              def handle_startendtag(self,tag,attrs):
+                  pass
+              def handle_endtag(self,tag):
+                  for i in range(len(self.stack)-1,-1,-1):
+                      if self.stack[i][0]==tag:
+                          self.stack=self.stack[:i];break
+          audit=Audit();audit.feed(text)
+          for ident in ['t49Workspace','nextList','agentRun','todayTimetable','flowList','taskList','taskInput','taskAdd','mEnv','mCal','mTT','mAss','mClub','mProj']:
+              assert ident in audit.ids,'Missing existing feature DOM: '+ident
+          for ident in ['nextList','agentRun','todayTimetable','flowList','taskList','taskInput','taskAdd']:
+              assert 't49Workspace' in audit.ids[ident],'Original feature hidden outside integrated home: '+ident
+          assert 't49Legacy' not in audit.ids,'Obsolete collapsed tools must not exist'
+          for view in ['importer','timetable','clubs','projects','policy','memory','documents','settings']:
+              assert view in audit.nav,'An established menu vanished: '+view
+          assert 'teacher-os-fallback' in text,'Startup flash-prevention fallback missing'
           assert 'teacher56-fallback' in text, 'The obsolete OAuth form must be hidden'
           assert 'accounts.google.com/gsi/client' not in text, 'Legacy separate OAuth bootstrap still loaded'
           print('Chromium owner-only portal: passed')
