@@ -82,6 +82,8 @@ jobs:
         run: |
           set -euo pipefail
           node tests/core-tests.js
+          node --check teacher-owner-entry-v58.js
+          node tests/owner-entry-v58.test.js
           for f in $(find tests -maxdepth 1 -name 'v*-tests.js' | sort -V); do
             echo "== $f =="
             node "$f"
