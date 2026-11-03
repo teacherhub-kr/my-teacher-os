@@ -42,8 +42,8 @@ assert.equal(t.api.start(),false,'Explicit public-tool route stays on existing T
 assert.equal(t.navigation.length,0);
 t=setup(null,'');
 assert.equal(t.api.start(),false,'Fresh browser must preserve prior registration flow');
-t=setup(secretFreeUrl,'',true);
-assert.equal(t.api.start(),false,'Blocked navigation must fail back to existing tools');
+t=setup(secretFreeUrl,'?mode=private',true);
+assert.equal(t.api.start(),false,'Blocked explicit private navigation must fail back to existing tools');
 assert(t.span.textContent.includes('실패'));
 assert(index.includes('teacher-owner-entry-v58.js?v=59.0-explicit-private'));
 assert(index.includes('TeacherOSEntry58?.start?.()===true'));
