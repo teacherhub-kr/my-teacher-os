@@ -209,15 +209,39 @@
   }
   function renderAssessments(y){
     var el=q('#t49AssessList');if(!el)return;
-    var a=y&&Array.isArray(y.assessments)?y.assessments.slice():[];
-    if(!a.length){el.innerHTML='<div class="t49-empty">Teacher OS에 등록된 평가가 없습니다. 실제 성적은 별도 인증된 Google Sheets에서 관리합니다.</div>';return}
-    a.sort(function(x,y){return String(x.due||'9999').localeCompare(String(y.due||'9999'))});
-    el.innerHTML=a.slice(0,5).map(function(x){return '<div class="t49-list-item"><span class="t49-circle">♪</span><span><b>'+esc(x.name||'평가')+'</b><small>'+esc(x.target||'학급 확인')+'</small></span><span class="t49-when">'+esc(x.due||'일정 미정')+'</span></div>'}).join('');
+    // The public shell knows only local OS records, never Google gradebook data.
+    var assessments=y&&Array.isArray(y.assessments)?y.assessments:[];
+    var projects=y&&Array.isArray(y.projects)?y.projects:[];
+    var tasks=y&&Array.isArray(y.tasks)?y.tasks:[];
+    var records=assessments.map(function(a){return {name:a.name||'평가',target:a.target||'OS 등록 평가',due:a.due||'',status:'등록',kind:'평가'}})
+      .concat(projects.map(function(p){return {name:p.name||'행정업무',target:'행정업무',due:p.due||'',status:'등록',kind:'업무'}}))
+      .concat(tasks.filter(function(t){return !t.done}).map(function(t){return {name:t.text||'확인할 일',target:'OS 할 일',due:t.due||'',status:'미완료',kind:'업무'}}));
+    if(!records.length){
+      el.innerHTML='<div class="t49-empty">이 브라우저의 OS에 평가·업무 기록이 없습니다. Google 수행평가 원본은 별도 인증이 필요합니다.</div>';
+      return;
+    }
+    records.sort(function(a,b){return (a.due||'9999-12-31').localeCompare(b.due||'9999-12-31')});
+    el.innerHTML=records.slice(0,5).map(function(r){
+      return '<div class="t49-list-item" data-t49-kind="'+esc(r.kind)+'" data-t49-record-status="'+esc(r.status)+'">'+
+        '<span class="t49-circle">♪</span><span><b>'+esc(r.name)+'</b><small>'+esc(r.target)+'</small></span>'+
+        '<span class="t49-when">'+esc(r.due||'일정 미등록')+'</span></div>';
+    }).join('');
   }
   function renderAlerts(y){
-    var el=q('#t49Alerts');if(!el)return;var tasks=y&&Array.isArray(y.tasks)?y.tasks.filter(function(x){return !x.done}):[];
-    var items=tasks.slice(0,3).map(function(x){return '<div class="t49-list-item"><span class="t49-circle">!</span><span><b>'+esc(x.text||'확인할 일')+'</b><small>현재 학년도 업무 기록</small></span></div>'});
-    items.push('<div class="t49-list-item"><span class="t49-circle">✓</span><span><b>채점·예외 정보는 교사용 원본에서 확인</b><small>공개 페이지에서 학생명·점수·결석 사유를 조회하지 않습니다.</small></span></div>');
+    var el=q('#t49Alerts');if(!el)return;
+    var tasks=y&&Array.isArray(y.tasks)?y.tasks.filter(function(x){return !x.done}):[];
+    var items=tasks.slice(0,3).map(function(x){
+      return '<div class="t49-list-item"><span class="t49-circle">!</span><span><b>'+esc(x.text||'확인할 일')+
+        '</b><small>이 브라우저의 OS에 미완료로 등록된 업무</small></span><span class="t49-when">미완료</span></div>';
+    });
+    if(!tasks.length){
+      items.push('<div class="t49-list-item"><span class="t49-circle">✓</span><span><b>'+
+        (y?'OS 미완료 할 일 기록 없음':'OS 학년도 업무 미설정')+
+        '</b><small>실제 학교업무의 완료 여부를 뜻하지 않습니다.</small></span><span class="t49-when">OS 기준</span></div>');
+    }
+    items.push('<div class="t49-list-item"><span class="t49-circle">♫</span><span><b>실제 수행평가 미채점 확인</b>'+
+      '<small>Google 교사 전용 원본에서 최신 상태 조회</small></span>'+
+      '<button type="button" class="t49-action" data-teacher56="open">열기 ↗</button></div>');
     el.innerHTML=items.join('');
   }
   function fillSavedSheet(){
