@@ -5,6 +5,10 @@ on:
     paths:
       - 'index.html'
       - 'teacher-unified-v64.css'
+      - 'teacher-focused-v65.js'
+      - 'teacher-focused-v65.css'
+      - 'teacher-dashboard-v49.js'
+      - 'tests/focused-workflow-v65.test.js'
       - 'teacher-dashboard-v49.css'
       - 'teacher-design-v51.css'
       - 'teacher-dashboard-v49.js'
@@ -16,6 +20,10 @@ on:
     paths:
       - 'index.html'
       - 'teacher-unified-v64.css'
+      - 'teacher-focused-v65.js'
+      - 'teacher-focused-v65.css'
+      - 'teacher-dashboard-v49.js'
+      - 'tests/focused-workflow-v65.test.js'
       - 'tests/unified-*.test.js'
       - 'tests/unified-ui-v64-smoke.html'
       - '.github/workflows/v64-unified-design.yml'
@@ -30,6 +38,8 @@ jobs:
         run: |
           set -euo pipefail
           node tests/unified-design-v64.test.js
+          node --check teacher-focused-v65.js
+          node tests/focused-workflow-v65.test.js
           node tests/integrated-workspace-v63.test.js
           node tests/teacher-activity-home-v61.test.js
           node tests/owner-portal-v56.test.js
