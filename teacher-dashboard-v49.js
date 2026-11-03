@@ -8,15 +8,19 @@
   var state={grade:2,ready:false};
   var NAV=[
     {view:'dashboard',title:'오늘 홈',icon:'⌂',number:'01'},
-    {view:'calendar',title:'수업 일정',icon:'▣',number:'02'},
-    {view:'assessment',title:'수행평가',icon:'▥',number:'03'},
-    {view:'t49-classes',title:'반별 현황',icon:'▦',number:'04'},
-    {view:'t49-exceptions',title:'예외학생',icon:'△',number:'05'},
-    {view:'t49-records',title:'생활기록부',icon:'▤',number:'06'},
-    {view:'documents',title:'자료·결과물',icon:'▱',number:'07'},
-    {view:'timetable',title:'시간표',icon:'◫',number:'08'},
+    {view:'calendar',title:'학사일정',icon:'▣',number:'02'},
+    {view:'timetable',title:'시간표',icon:'◫',number:'03'},
+    {view:'assessment',title:'수행평가',icon:'▥',number:'04'},
+    {view:'t49-classes',title:'반별 현황',icon:'▦',number:'05'},
+    {view:'t49-exceptions',title:'평가 예외 확인',icon:'△',number:'06'},
+    {view:'t49-records',title:'생활기록부 근거',icon:'▤',number:'07'},
+    {view:'clubs',title:'동아리',icon:'♫',number:'08'},
     {view:'projects',title:'행정업무',icon:'☷',number:'09'},
-    {view:'settings',title:'설정',icon:'⚙',number:'10'}
+    {view:'policy',title:'교육과정·지침',icon:'◎',number:'10'},
+    {view:'importer',title:'학교자료 자동세팅',icon:'⇧',number:'11'},
+    {view:'documents',title:'자료함',icon:'▱',number:'12'},
+    {view:'memory',title:'업무기억',icon:'↺',number:'13'},
+    {view:'settings',title:'설정·백업',icon:'⚙',number:'14'}
   ];
   // Local Lucide-style icons. Deliberately no external icon font or text glyphs.
   var NAV_SVG_PATHS={
@@ -29,7 +33,11 @@
     documents:'<path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M3 11h18"/>',
     settings:'<path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .34 1.87l.06.06-1.7 2.94-.09-.02a1.7 1.7 0 0 0-1.79.64l-.04.06H7.82a1.7 1.7 0 0 0-1.83-.65l-.1.02-1.69-2.94a1.7 1.7 0 0 0 .4-1.94l-.03-.07v-5.9a1.7 1.7 0 0 0-.37-1.9L5.9 4.2a1.7 1.7 0 0 0 1.93-.55h8.35a1.7 1.7 0 0 0 1.92.55l1.7 2.94a1.7 1.7 0 0 0-.4 1.91Z"/>',
     timetable:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M10 9v11"/>',
-    projects:'<path d="M4 6h16M4 12h16M4 18h16"/>'
+    projects:'<path d="M4 6h16M4 12h16M4 18h16"/>',
+    importer:'<path d="M12 3v12m-5-5 5 5 5-5"/><path d="M4 17v4h16v-4"/>',
+    clubs:'<path d="M9 18V5l12-2v13"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="18" cy="16" rx="3" ry="2"/>',
+    policy:'<path d="M7 3h10v18H7a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Z"/><path d="M4 17h13M10 8h4M10 12h4"/>',
+    memory:'<path d="M3 12a9 9 0 1 1 3 6.7M3 16v-4h4"/><path d="M12 7v5l3 2"/>'
   };
   function navIcon(view){
     var paths=NAV_SVG_PATHS[view]||NAV_SVG_PATHS.documents;
@@ -83,12 +91,16 @@
     var tagline=q('.brand small');if(tagline)tagline.textContent='음악 교사의 스마트 업무 공간';
     var link=nav.querySelector('a.musicLibraryLink');if(link){link.style.display='flex';link.setAttribute('aria-label','MY MUSIC CLASS 음악 수업자료실 열기')}
     var foot=q('.side-foot');if(foot)foot.textContent='수업 · 평가 · 기록을 한곳에서';
-    // Reorder the primary navigation to match the approved seven-section design.
-    // Non-primary legacy views stay in the DOM for existing feature buttons.
-    ['dashboard','calendar','assessment','t49-classes','t49-exceptions','t49-records','documents','settings'].forEach(function(view){
+    // Keep every established workflow in the current design, not behind CSS.
+    // The underlying nav handlers and year-scoped data stores remain untouched.
+    NAV.forEach(function(item){
+      var view=item.view;
       var button=nav.querySelector('button[data-view="'+view+'"]');
       if(button)nav.appendChild(button);
     });
+    var lessons=nav.querySelector('a.musicLibraryLink');
+    var assessment=nav.querySelector('button[data-view="assessment"]');
+    if(lessons&&assessment)assessment.after(lessons);
   }
   function addSearch(){
     var top=q('.top');if(!top||q('#t49Search'))return;
@@ -155,17 +167,40 @@
       container.innerHTML=mainMarkup();
       dash.insertBefore(container.firstElementChild,dash.firstChild);
     }
-    var legacy=q('#t49Legacy');
-    if(!legacy){
-      legacy=document.createElement('details');legacy.id='t49Legacy';legacy.className='t49-legacy';
-      legacy.innerHTML='<summary>기존 Teacher OS 업무 도구 펼치기</summary><div id="t49LegacyBody"></div>';
-      dash.appendChild(legacy);
+    // The original dashboard nodes are the live application: do not clone or
+    // replace IDs, registered handlers, form values, or year-scoped state.
+    var workspace=q('#t49Workspace');
+    if(!workspace){
+      workspace=document.createElement('section');
+      workspace.id='t49Workspace';
+      workspace.className='t49-workspace';
+      workspace.setAttribute('aria-label','통합 학교업무');
+      workspace.innerHTML=
+        '<div class="t49-workspace-head"><span class="t49-workspace-eyebrow">WORKSPACE · 기존 기능 그대로</span><h2>학교업무를 계속 관리합니다</h2><p>학사일정·수업흐름·동아리·행정업무·자료·할 일을 현재 디자인에서 바로 사용합니다. 기존 기록과 입력 기능은 그대로 유지됩니다.</p></div>'+
+        '<div id="t49WorkspaceOverview" class="t49-workspace-group" aria-label="학년도 운영 현황"></div>'+
+        '<section class="t49-workspace-group"><h3>다가오는 일정 · 운영 점검</h3><div id="t49WorkspacePlans"></div></section>'+
+        '<section class="t49-workspace-group"><h3>실제 수업시간표 · 평가까지 수업 흐름</h3><div id="t49WorkspaceTeaching"></div></section>'+
+        '<section class="t49-workspace-group"><h3>할 일 관리</h3><div id="t49WorkspaceTasks"></div></section>'+
+        '<section class="t49-workspace-group"><h3>음악 수업자료실</h3><div id="t49WorkspaceResources"></div></section>'+
+        '<div id="t49WorkspaceOther" class="t49-workspace-group"></div>';
+      dash.appendChild(workspace);
     }
-    var slot=q('#t49LegacyBody');
-    Array.from(dash.children).forEach(function(child){
-      if(child.id==='t49Screen'||child.id==='t49Legacy'||child.id==='firstHero')return;
-      slot.appendChild(child);
+    var legacy=q('#t49Legacy'),oldSlot=q('#t49LegacyBody');
+    var original=Array.from(dash.children);
+    if(oldSlot)original=original.concat(Array.from(oldSlot.children));
+    original.forEach(function(child){
+      if(child.id==='t49Screen'||child.id==='t49Workspace'||
+         child.id==='t49Legacy'||child.id==='firstHero')return;
+      var target='t49WorkspaceOther';
+      if(child.id==='policyBanner'||child.classList.contains('summary'))target='t49WorkspaceOverview';
+      else if(child.classList.contains('musicLibraryFeatured'))target='t49WorkspaceResources';
+      else if(child.querySelector('#nextList')||child.querySelector('#agentRun'))target='t49WorkspacePlans';
+      else if(child.querySelector('#todayTimetable')||child.querySelector('#flowList'))target='t49WorkspaceTeaching';
+      else if(child.querySelector('#taskList'))target='t49WorkspaceTasks';
+      var home=q('#'+target);
+      if(home&&child.parentElement!==home)home.appendChild(child);
     });
+    if(legacy)legacy.remove();
   }
   function showMetric(label,value,foot,symbol,view){
     return '<button type="button" class="t49-kpi" data-t49-to="'+esc(view)+'" aria-label="'+esc(label)+' '+esc(value)+'">'+
