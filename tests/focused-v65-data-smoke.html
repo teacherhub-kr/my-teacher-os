@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>Teacher OS v65 local-only task round-trip</title>
+<style>body{margin:0;font-family:system-ui}iframe{width:100%;height:100vh;border:0}pre{position:fixed;top:0;right:0;max-width:500px;max-height:200px;overflow:auto;z-index:9999;background:white;padding:10px;font-size:11px}</style>
+</head><body><pre id="audit" data-status="PENDING">CI ONLY</pre>
+<script>
+(function(){
+ var out=document.getElementById('audit');
+ // This page is published with the site. It MUST NOT touch anybody's saved
+ // records except on a local GitHub Actions server with explicit ?ci=true.
+ if(location.hostname!=='127.0.0.1'||new URLSearchParams(location.search).get('ci')!=='true'){
+   out.dataset.status='SKIPPED';out.textContent='가상 데이터 테스트는 격리된 localhost CI에서만 실행합니다.';return;
+ }
+ var fixture={version:5,currentYear:'2026',profile:{major:'음악',minutes:45},years:{
+  '2026':{year:2026,schoolLevel:'중학교',schoolName:'',educationOffice:'경기도교육청',
+   subjects:['음악'],projects:[],clubs:[],assessments:[],memories:[],tasks:[],
+   calendarEvents:[],timetable:[],imports:[],lastBackupAt:null}
+ }};
+ localStorage.setItem('myTeacherOS.v01',JSON.stringify(fixture));
+ var frame=document.createElement('iframe');frame.id='teacher-os';frame.src='../?mode=tools';document.body.appendChild(frame);
+ var steps=[],attempts=0,phase='load';
+ function check(ok,desc){steps.push((ok?'OK ':'FAIL ')+desc);if(!ok)throw Error(desc)}
+ function finish(e){
+   clearInterval(loop);
+   out.dataset.status=e?'FAIL':'PASS';
+   out.textContent=(e?'FAIL '+String(e)+'\n':'PASS '+steps.length+' checks\n')+steps.join('\n');
+ }
+ var loop=setInterval(function(){
+   if(attempts++>100){finish('Focused home was not ready');return}
+   try{
+     var d=frame.contentDocument,w=frame.contentWindow;
+     if(!d||!d.body||!d.body.classList.contains('teacher65-mode'))return;
+     if(phase==='load'){
+       check(!!d.getElementById('os65TaskForm'),'Focused task form visible');
+       check(!!d.getElementById('taskAdd')&&!!d.getElementById('taskList'),'Original underlying task editor remains');
+       var v=d.getElementById('os65NewTask');v.value='CI 가상 업무';
+       d.getElementById('os65TaskForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+       phase='added';return;
+     }
+     if(phase==='added'){
+       var store=JSON.parse(w.localStorage.getItem('myTeacherOS.v01')||'{}');
+       var items=store.years&&store.years['2026']&&store.years['2026'].tasks||[];
+       check(items.length===1&&items[0].text==='CI 가상 업무'&&!items[0].done,'New task saved to original myTeacherOS.v01');
+       var toggle=d.querySelector('#os65PendingItems input[data-os65-complete]');
+       if(!toggle)return;
+       check(!!d.querySelector('#taskList input[data-task]'),'Original task checkbox exists');
+       toggle.click();phase='done';return;
+     }
+     if(phase==='done'){
+       var after=JSON.parse(w.localStorage.getItem('myTeacherOS.v01')||'{}').years['2026'].tasks;
+       check(after.length===1&&after[0].done,'Home checkbox completes same original task');
+       check(d.getElementById('os65TaskForm')!==null,'Focused home preserved after save');
+       check(d.getElementById('taskList')!==null,'Original task list remains intact');
+       finish(null);
+     }
+   }catch(e){finish(e.message||String(e))}
+ },250);
+})();
+</script></body></html>
