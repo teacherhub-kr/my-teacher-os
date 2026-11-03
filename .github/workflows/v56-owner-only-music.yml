@@ -36,6 +36,7 @@ jobs:
           node --check teacher-owner-entry-v58.js
           node tests/owner-entry-v58.test.js
           node tests/teacher-activity-home-v61.test.js
+          node tests/private-teacher-home-v62.test.js
       - name: Existing Teacher OS smoke tests
         run: |
           set -euo pipefail
