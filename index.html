@@ -37,7 +37,7 @@
     h=h.replace('</body>','<script src="teacher-connections-v53.js?v=55.0-health-settings"><\/script></body>');
     h=h.replace('</body>','<script src="music-summary-core-v54.js?v=55.0-csv"><\/script><script src="music-summary-v54.js?v=55.0-csv"><\/script></body>');
     h=h.replace('</body>','<script src="teacher-private-music-v56.js?v=56.0-owner-only-settings"><\/script></body>');
-    h=h.replace('</body>','<script>setTimeout(function(){if(!document.body.classList.contains("teacher51-mode"))document.body.classList.add("teacher-os-fallback")},4000);<\\/script></body>');
+    h=h.replace('</body>','<script>setTimeout(function(){if(!document.body.classList.contains("teacher51-mode"))document.body.classList.add("teacher-os-fallback")},4000);<\/script></body>');
     document.open();document.write(h);document.close();
   }catch(e){
     document.body.innerHTML='<div class="boot"><div><b>Teacher OS를 불러오지 못했습니다.</b><span>'+String(e.message||e)+'</span><br><button onclick="location.reload()" style="margin-top:18px;padding:11px 16px;border:0;border-radius:10px;background:#03c75a;color:white;font-weight:800">다시 불러오기</button></div></div>';
