@@ -265,6 +265,7 @@ function bindEvents(){
   });
 }
 function mount(){
+  if(globalThis.TeacherOSV66Active)return;
   if(initialized)return;
   if(!q('.main')||!q('#dashboardBody')||!q('#nav button[data-view="t49-records"]')||
       !document.body.classList.contains('teacher51-mode'))return;
@@ -280,5 +281,5 @@ setTimeout(mount,400);
 setTimeout(mount,750);
 setTimeout(mount,1450);
 setInterval(function(){mount();if(initialized){attachExtras();renderHome()}},3000);
-globalThis.TeacherOSFocusedV65={mount:mount,render:renderHome,goto:goto};
+globalThis.TeacherOSFocusedV65={mount:mount,render:renderHome,goto:goto,homeMarkup:homeMarkup};
 })();
