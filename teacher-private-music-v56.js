@@ -14,8 +14,8 @@ function tell(message,bad){
   if(s){s.textContent=message;s.dataset.error=bad?"true":"false"}
 }
 function mount(){
-  var home=q("#t49Screen");
-  if(!home)return false;
+  var home=q("#t49Screen"),settings=q("#settings");
+  if(!home&&!settings)return false;
   if(!q("#teacher56Panel")){
     var el=document.createElement("section");
     el.id="teacher56Panel";el.className="teacher56-panel";el.setAttribute("aria-label","교사 전용 음악 대시보드 연결");
@@ -31,7 +31,9 @@ function mount(){
       '<a class="teacher56-guide" href="https://github.com/teacherhub-kr/my-teacher-os/tree/main/apps-script/music-dashboard" target="_blank" rel="noopener noreferrer">최초 설정 안내 ↗</a></div>'+
       '<p id="teacher56Status" role="status" aria-live="polite" class="teacher56-status">교사용 웹앱은 아직 이 브라우저에 등록되지 않았습니다. 먼저 Google Sheets에서 나만 접근 웹앱으로 배포하세요.</p>'+
       '<p class="teacher56-security">구글 Cloud OAuth 클라이언트 ID는 필요하지 않습니다. 단, Google Apps Script 최초 실행 권한 승인은 필요합니다. 웹앱은 반드시 <b>나로 실행 · 나만 접근</b>으로 배포하세요. 링크 등록은 접속·권한 검증이 아닙니다.</p>';
-    home.insertBefore(el,q("#music54Panel")||q("#t53Connections")||null);
+    // Connection settings belong on the Settings screen, never as a repeated home card.
+    if(settings)settings.appendChild(el);
+    else home.insertBefore(el,q("#music54Panel")||q("#t53Connections")||null);
   }
   var url=q("#teacher56Url");
   if(url&&document.activeElement!==url)url.value=getLink();
@@ -56,6 +58,7 @@ function openPrivate(){
   var url=getLink();
   if(!url){
     tell("아직 웹앱 주소가 없습니다. 먼저 Google Sheets에서 Apps Script를 배포하고 주소를 등록하세요.",true);
+    q('#nav button[data-view="settings"]')?.click();
     var details=q("#teacher56Panel .teacher56-settings");
     if(details)details.open=true;
     q("#teacher56Url")?.focus();return;

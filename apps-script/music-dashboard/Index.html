@@ -3,7 +3,7 @@
   <base target="_top">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>MY MUSIC CLASS · 교사 전용</title>
+  <title>MY TEACHER OS · 교사 전용 평가·기록</title>
   <style>
     :root {color-scheme:light;--navy:#17365f;--ink:#1c3155;--blue:#2565e8;--muted:#7385a1;--line:#e4eaf4;--bg:#f5f8ff}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.6 "Noto Sans KR",Arial,sans-serif;color:var(--ink)}
@@ -52,14 +52,41 @@
     .status.error{background:#fff0f1;color:#ae415a}
     footer{margin-top:22px;color:#788ba4;font-size:11px}
     @media(max-width:740px){.wrap{padding:13px 12px 38px}header{padding:23px 19px}.symbol{display:none}.cards{grid-template-columns:repeat(2,1fr);gap:8px}.card{padding:14px}.card strong{font-size:27px}.panel{padding:14px}}
+
+    /* Owner-only home: live aggregate counts, actionable queues and evidence-based record drafts. */
+    .action-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+    .assess-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:13px}
+    .assess-item{border:1px solid #dfe7f5;border-radius:12px;padding:13px;background:#f8fbff}
+    .assess-item b{display:block;color:#355981;font-size:12px}
+    .assess-item strong{display:block;font-size:24px;color:#d15c43;margin:4px 0}
+    .assess-item span{font-size:11px;color:#7484a2}
+    .attention-list{margin:12px 0 0;padding:0;list-style:none;display:grid;gap:8px}
+    .attention-list li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 13px;border:1px solid #e8eef9;border-radius:10px;background:#fff}
+    .attention-list strong{font-size:12px;color:#273f66}
+    .attention-list span{font-size:11px;color:#647c9d;text-align:right}
+    .attention-empty{color:#647c9d;background:#f4f8ff!important}
+    .record-form{display:grid;gap:12px;margin-top:13px}
+    .record-form label{font-size:12px;font-weight:800;color:#355276;display:grid;gap:5px}
+    .record-form input,.record-form select,.record-form textarea{width:100%;min-width:0;font:inherit;border:1px solid #d5e1f3;border-radius:10px;background:#fff;color:#263a5a;padding:10px 11px}
+    .record-form textarea{min-height:76px;resize:vertical;line-height:1.65}
+    .record-form textarea#recordDraft{min-height:120px;background:#f5f8ff}
+    .record-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .record-actions button{min-height:41px;border:0;border-radius:10px;background:#266bea;color:#fff;cursor:pointer;padding:10px 16px;font-weight:800;font:inherit}
+    .record-actions button:disabled{opacity:.5;cursor:not-allowed}
+    .record-actions button.secondary{background:#eaf1ff;color:#2057b6}
+    .record-help{font-size:11px;color:#6d7f98}
+    .record-status{font-size:12px;color:#245db9;margin:0}
+    .record-status.error{color:#ae3752}
+    .record-form input:focus-visible,.record-form select:focus-visible,.record-form textarea:focus-visible,.record-actions button:focus-visible{outline:3px solid #aac7ff;outline-offset:2px}
+    @media(max-width:740px){.assess-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.attention-list li{align-items:flex-start;flex-direction:column}}
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
   </style>
 </head><body>
 <main class="wrap">
  <header>
-  <div><span class="eyebrow">TEACHER ONLY · MUSIC DASHBOARD</span>
-  <h1>음악수업과 평가를<br>한눈에 관리합니다.</h1>
-  <p class="lede">기존 가변형 스케줄표의 반별 집계를 읽는 교사 전용 화면입니다.</p></div>
+  <div><span class="eyebrow">TEACHER ONLY · MY TEACHER OS</span>
+  <h1>실제 수행평가와 기록을<br>한눈에 관리합니다.</h1>
+  <p class="lede">15개 반의 실제 미채점 집계·확인할 학급·생활기록부 근거 초안을 Google 본인 인증 화면에서 관리합니다.</p></div>
   <div class="symbol" aria-hidden="true">♫ ♪</div>
  </header>
  <div class="toolbar">
@@ -67,13 +94,20 @@
    <button type="button" role="tab" aria-selected="true" data-grade="2">2학년</button>
    <button type="button" role="tab" aria-selected="false" data-grade="3">3학년</button>
   </div><div id="semesterNote" class="subtitle">2학년 2학기 1~4차 수행평가</div></div>
-  <button id="refresh" type="button" class="refresh">↻ 원본 다시 읽기</button>
+  <div class="record-actions"><a class="refresh" href="https://teacherhub-kr.github.io/my-teacher-os/?mode=tools" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:inline-flex;align-items:center">수업·시간표·업무도구 ↗</a><button id="refresh" type="button" class="refresh">↻ 원본 다시 읽기</button></div>
  </div>
  <section class="cards" aria-label="현재 학년 요약">
   <div class="card"><small>대상 학급</small><strong id="classes">—</strong><span>반별 집계 수</span></div>
   <div class="card"><small>미채점 합계</small><strong id="missing">—</strong><span>평가별 미채점 기록 합계</span></div>
   <div class="card"><small>점검 알림</small><strong id="notices">—</strong><span>반 단위 확인 필요</span></div>
   <div class="card"><small>긴급 표시</small><strong id="urgent">—</strong><span>원본 집계의 긴급 분류</span></div>
+ </section>
+ <section class="panel" id="actionPanel" aria-labelledby="actionHeading">
+  <div class="action-heading"><h2 id="actionHeading">평가별 미채점 · 지금 확인할 일</h2><span class="subtitle" id="actionAt">원본 연결 중</span></div>
+  <p class="subtitle">학생 이름 없이 학급별 인원수만 보여줍니다. 1~4차는 서로 다른 평가 기록이므로 학생 수와 합산하지 마세요.</p>
+  <div class="assess-grid" id="assessmentSummary" aria-label="평가별 미채점 집계"></div>
+  <ul class="attention-list" id="attentionList" aria-label="확인할 학급"></ul>
+  <p class="record-help">이 알림은 원본의 미채점 기록과 표시 상태를 기준으로 하며, 수업·평가의 실시 여부나 성적 확정을 판정하지 않습니다.</p>
  </section>
  <section class="panel" aria-labelledby="tableHeading">
   <h2 id="tableHeading">반별 수행평가 현황</h2>
@@ -98,6 +132,34 @@
   </table></div>
   <p class="student-note">3학년 1·2차는 1학기 참고 성적입니다. 점수 공란은 0점이 아닙니다. 이름이 서로 다른 원본은 잘못된 학생에게 합산되지 않도록 조회를 중단합니다.</p>
  </section>
+ <section class="panel" id="recordPanel" aria-labelledby="recordHeading">
+  <h2 id="recordHeading">생활기록부 근거 → 교사 검토용 문장 초안</h2>
+  <p class="subtitle">위에서 학급 학생 명렬을 조회한 다음, 교사가 실제로 관찰한 내용을 입력하면 해당 내용만 토대로 초안을 구성합니다. 점수만으로 태도·역량·성장 사실을 만들어내지 않습니다.</p>
+  <div class="record-form">
+   <label for="recordStudent">초안 작성 대상 학생 (본인 전용 화면에서만 표시)
+    <select id="recordStudent" disabled><option value="">먼저 해당 반 학생을 조회하세요</option></select>
+   </label>
+   <p class="record-help" id="recordEvidence">학생을 선택하면 원본 채점 기록(1~4차)만 근거 확인용으로 표시합니다. 초안에는 성적 수치를 자동 삽입하지 않습니다.</p>
+   <label for="recordActivity">활동·수행평가명
+    <input id="recordActivity" maxlength="100" placeholder="예: 우쿨렐레 합주, 음악 감상 발표"/>
+   </label>
+   <label for="recordObserved">직접 관찰한 구체적 사실 (필수)
+    <textarea id="recordObserved" maxlength="1000" placeholder="예: 박자 변화를 구별하여 합주에서 자신의 리듬을 조정함"></textarea>
+   </label>
+   <label for="recordChange">관찰한 변화·결과 (선택)
+    <textarea id="recordChange" maxlength="800" placeholder="예: 연습 뒤 다양한 빠르기에서도 일정한 박을 유지함"></textarea>
+   </label>
+   <div class="record-actions">
+    <button type="button" id="makeRecord">관찰 근거로 초안 작성</button>
+    <button type="button" id="copyRecord" class="secondary" disabled>초안 복사</button>
+   </div>
+   <label for="recordDraft">교사 검토용 생활기록부 초안
+    <textarea id="recordDraft" readonly placeholder="학생과 관찰 근거를 선택하면 초안이 여기에 나타납니다."></textarea>
+   </label>
+   <p class="record-status" id="recordStatus" role="status" aria-live="polite">아직 작성하지 않았습니다.</p>
+   <p class="record-help">이 화면은 초안·관찰 메모를 자동 저장하거나 Google Sheets에 기록하지 않습니다. 문장 내용·사실관계·생활기록부 작성지침 준수 여부는 교사가 최종 검토하세요.</p>
+  </div>
+ </section>
  <div class="status" id="status" role="status" aria-live="polite">본인 Google 계정으로 원본의 학급별 집계를 조회하고 있습니다.</div>
  <footer>학생 이름·번호·점수·평가상태는 교사 전용 Apps Script 화면에서만 조회합니다. 결시 사유 등 자유기술 메모는 조회하지 않습니다. 공유·배포 설정은 반드시 ‘나만’으로 유지하세요.</footer>
 </main>
@@ -108,6 +170,128 @@
   var $=function(id){return document.getElementById(id)};
   function node(tag,value,cls){var e=document.createElement(tag);if(value!==undefined)e.textContent=String(value);if(cls)e.className=cls;return e}
   function info(message,isError){var e=$("status");e.textContent=message;e.className="status"+(isError?" error":"")}
+
+  // BEGIN OWNER_ONLY_HOME_CORE — pure logic for independent regression tests.
+  function summarizePrivateHome_(classes, grade) {
+    if (!Array.isArray(classes) || (grade!==2 && grade!==3)) throw new Error("올바른 학년별 집계가 필요합니다.");
+    var rows=classes.filter(function(c){return c.grade===grade});
+    var expected=grade===2?9:6;
+    if(rows.length!==expected) throw new Error("대상 학급 수 불일치: "+grade+"학년");
+    var assessments=[0,1,2,3].map(function(i) {
+      return {index:i+1,missing:rows.reduce(function(sum,c){return sum+c.missing[i]},0),
+        classes:rows.filter(function(c){return c.missing[i]>0}).length,
+        semester:grade===3 && i<2?"1학기 참고":"2학기"};
+    });
+    var attention=rows.map(function(c) {
+      var total=c.missing.reduce(function(a,n){return a+n},0);
+      return {id:c.id,total:total,notice:c.notice,urgent:c.notice==="긴급"};
+    }).filter(function(c){return c.total>0 || c.notice!=="없음"})
+      .sort(function(a,b){return Number(b.urgent)-Number(a.urgent)||b.total-a.total||a.id.localeCompare(b.id)})
+      .slice(0,7);
+    return {grade:grade,classCount:rows.length,
+      missing:assessments.reduce(function(sum,a){return sum+a.missing},0),
+      assessments:assessments,attention:attention};
+  }
+  function buildRecordDraft_(activity,observed,change) {
+    function clean(value){return String(value||"").replace(/\s+/g," ").trim()}
+    function sentence(value){var s=clean(value);return !s?"":/[.!?。]$/.test(s)?s:s+"."}
+    var a=clean(activity),o=clean(observed),c=clean(change);
+    if(!a) return {text:"",error:"먼저 실제 활동·수행평가명을 입력하세요."};
+    if(o.length<8) return {text:"",error:"교사가 직접 관찰한 구체적인 사실을 8자 이상 입력해야 합니다."};
+    if(o.length>1000||c.length>800||a.length>100) return {text:"",error:"허용된 관찰 근거 길이를 초과했습니다."};
+    // Do not infer capability, attitude, rankings or improvement from scores.
+    var draft=a+" 활동에서 "+sentence(o)+(c?" "+sentence(c):"");
+    return {text:draft,error:""};
+  }
+  // END OWNER_ONLY_HOME_CORE
+  function renderActions() {
+    if(!latest)return;
+    var summary=summarizePrivateHome_(latest.classes,activeGrade);
+    var target=$("assessmentSummary");target.replaceChildren();
+    summary.assessments.forEach(function(a) {
+      var card=node("div",undefined,"assess-item");
+      card.setAttribute("role","listitem");
+      card.appendChild(node("b",a.index+"차 수행평가 · "+a.semester));
+      card.appendChild(node("strong",a.missing+"명"));
+      card.appendChild(node("span","미채점 기록 · "+a.classes+"개 반"));
+      target.appendChild(card);
+    });
+    $("actionAt").textContent=activeGrade+"학년 "+summary.classCount+"개 반 / 원본 조회 "+latest.readAt;
+    var list=$("attentionList");list.replaceChildren();
+    if(!summary.attention.length) {
+      list.appendChild(node("li","원본 집계상 미채점·점검 표시가 없습니다. 실시·보충·확정 여부는 별도 확인하세요.","attention-empty"));
+    }
+    summary.attention.forEach(function(c) {
+      var li=node("li");
+      li.appendChild(node("strong",c.id+"반"+(c.urgent?" · 원본 긴급 표시":c.notice==="없음"?"":" · 확인 표시")));
+      li.appendChild(node("span","평가별 미채점 합계 "+c.total+"건"));
+      list.appendChild(li);
+    });
+  }
+  var studentCache=[];
+  function resetRecordView() {
+    studentCache=[];
+    var select=$("recordStudent");select.replaceChildren();
+    var option=node("option","먼저 해당 반 학생을 조회하세요");option.value="";
+    select.appendChild(option);select.disabled=true;
+    $("recordEvidence").textContent="학생 명렬을 조회한 뒤 선택하면 원본 점수와 상태를 근거 확인용으로 표시합니다.";
+    ["recordActivity","recordObserved","recordChange","recordDraft"].forEach(function(id){$(id).value=""});
+    $("copyRecord").disabled=true;
+    $("recordStatus").textContent="학생 조회와 관찰 근거 입력이 필요합니다.";
+    $("recordStatus").className="record-status";
+  }
+  function populateRecordStudents(result) {
+    studentCache=result.students.slice();
+    var picker=$("recordStudent");picker.replaceChildren();
+    var empty=node("option","학생을 선택하세요");empty.value="";picker.appendChild(empty);
+    studentCache.forEach(function(s){
+      var option=node("option",s.number+"번 · "+s.name);
+      option.value=String(s.number);picker.appendChild(option);
+    });
+    picker.disabled=false;
+    $("recordEvidence").textContent=result.classId+" 학급을 조회했습니다. 학생을 선택하면 평가별 근거를 확인할 수 있습니다.";
+  }
+  function renderStudentEvidence() {
+    var s=studentCache.find(function(x){return String(x.number)===$("recordStudent").value});
+    $("recordDraft").value="";$("copyRecord").disabled=true;
+    if(!s){$("recordEvidence").textContent="학생을 선택해야 채점원본 근거를 확인할 수 있습니다.";return}
+    var bits=s.scores.map(function(score,i){
+      return (i+1)+"차 "+(score===null?"점수 미기록":score+"점")+
+        (s.statuses[i]?" ("+s.statuses[i]+")":"");
+    });
+    $("recordEvidence").textContent="원본 조회 근거 · "+bits.join(" / ")+
+      ". 점수만으로 개인의 역량·태도·성장 여부를 추정해서는 안 됩니다.";
+  }
+  function makeRecordDraft() {
+    var student=studentCache.find(function(x){return String(x.number)===$("recordStudent").value});
+    var status=$("recordStatus");
+    if(!student){
+      status.textContent="학생을 선택하고 실제 관찰 사실을 입력하세요.";
+      status.className="record-status error";return;
+    }
+    var draft=buildRecordDraft_($("recordActivity").value,$("recordObserved").value,$("recordChange").value);
+    if(draft.error){
+      $("recordDraft").value="";$("copyRecord").disabled=true;
+      status.textContent=draft.error;status.className="record-status error";return;
+    }
+    $("recordDraft").value=draft.text;$("copyRecord").disabled=false;
+    status.textContent="교사 검토용 초안입니다. 원본 관찰기록과 일치하는지 검토 후 사용하세요.";
+    status.className="record-status";
+  }
+  function copyRecordDraft() {
+    var text=$("recordDraft").value;if(!text)return;
+    var done=function(){ $("recordStatus").textContent="초안을 복사했습니다. 실제 관찰 근거와 학교생활기록부 지침을 확인한 후 사용하세요."; };
+    var fallback=function(){
+      $("recordDraft").focus();$("recordDraft").select();
+      if(document.execCommand("copy"))done();
+      else $("recordStatus").textContent="자동 복사가 불가능합니다. 초안 영역에서 직접 복사하세요.";
+    };
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done,fallback);
+      } else fallback();
+    }catch(e){fallback()}
+  }
   function refresh(){
     if(loading)return;
     if(!window.google||!google.script||!google.script.run){info("Apps Script 웹앱 환경에서만 실행할 수 있습니다.",true);return}
@@ -120,6 +304,7 @@
   }
   function clearStudentView(){
     studentSeq++;
+    resetRecordView();
     $("loadStudents").disabled=false;
     $("studentRows").replaceChildren();
     var row=node("tr"),cell=node("td","조회할 반을 선택하세요.");
@@ -140,6 +325,7 @@
     var room=Number($("studentClass").value),grade=activeGrade;
     if(!room||!latest){$("studentStatus").textContent="먼저 원본 집계를 읽어주세요.";return}
     var seq=++studentSeq;
+    resetRecordView();
     var button=$("loadStudents");button.disabled=true;
     $("studentStatus").textContent=grade+"학년 "+room+"반 학생별 점수를 읽는 중입니다.";
     google.script.run
@@ -164,6 +350,7 @@
           });
           body.appendChild(tr);
         });
+        populateRecordStudents(result);
         $("studentStatus").textContent=result.classId+" · "+result.studentCount+"명 · 원본 조회 "+result.readAt;
         $("studentStatus").className="student-status";
       })
@@ -185,6 +372,7 @@
     $("semesterNote").textContent=activeGrade===2?latest.semesterNotes.grade2:latest.semesterNotes.grade3;
     $("caution").textContent=latest.caution;
     $("readAt").textContent="원본 "+latest.readAtType+": "+latest.readAt;
+    renderActions();
     var header=activeGrade===2?["학급","1차","2차","3차","4차","점검"]:["학급","1차(1학기)","2차(1학기)","3차(2학기)","4차(2학기)","점검"];
     $("headerRow").replaceChildren();
     header.forEach(function(v){$("headerRow").appendChild(node("th",v))});
@@ -202,6 +390,9 @@
     document.querySelectorAll("[data-grade]").forEach(function(b){b.setAttribute("aria-selected",String(Number(b.dataset.grade)===activeGrade))});
     render();
   })});
+  $("recordStudent").addEventListener("change",renderStudentEvidence);
+  $("makeRecord").addEventListener("click",makeRecordDraft);
+  $("copyRecord").addEventListener("click",copyRecordDraft);
   $("refresh").addEventListener("click",refresh);
   $("loadStudents").addEventListener("click",loadStudents);
   refresh();

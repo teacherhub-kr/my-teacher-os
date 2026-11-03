@@ -63,7 +63,7 @@ function dashboard(){
     table.innerHTML='<thead><tr><th>평가·업무</th><th>관련 학급</th><th>일정</th><th>진행</th></tr></thead><tbody></tbody>';
     const tbody=table.querySelector('tbody');
     if(!existing.length){
-      tbody.innerHTML='<tr><td colspan="4" class="t51-no-private-data"><span class="t51-record-circle">♫</span>OS에 등록된 평가·업무 기록이 없습니다.<small>Google 성적 원본은 교사 전용 화면에서 별도로 확인합니다.</small><button type="button" class="t49-action" data-teacher56="open">교사 전용 수행평가 열기 ↗</button></td></tr>';
+      tbody.innerHTML='<tr><td colspan="4" class="t51-no-private-data"><span class="t51-record-circle">♫</span>OS에 등록된 평가·업무 기록이 없습니다.<small>Google 성적 원본은 교사 전용 화면에서 별도로 확인합니다.</small><button type="button" class="t49-action" data-t49-to="assessment">OS 평가 기록 관리 →</button></td></tr>';
     }else{
       [...existing].slice(0,4).forEach(el=>{
         const title=el.querySelector('b')?.textContent||'등록 평가',target=el.querySelector('small')?.textContent||'학급 확인',due=el.querySelector('.t49-when')?.textContent||'미정';
@@ -115,6 +115,7 @@ function apply(){
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-t51-open]');if(b){document.querySelector('#nav button[data-view="'+b.dataset.t51Open+'"]')?.click();}
   if(e.target.closest('[data-t51-music]'))location.href='lessons/';
+  const nav=e.target.closest('[data-t49-to]');if(nav){document.querySelector('#nav button[data-view="'+nav.dataset.t49To+'"]')?.click();}
 });
 setTimeout(apply,350);setTimeout(apply,1700);setTimeout(apply,4500);
 setInterval(apply,2500);

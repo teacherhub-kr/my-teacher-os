@@ -111,9 +111,9 @@
       '<div class="t49-hero"><div class="t49-hero-copy"><span class="t49-eyebrow">좋은 수업, 더 나은 기록</span>'+
       '<h2>오늘, 음악수업과 평가를<br><span>한눈에</span> 관리합니다.</h2>'+
       '<p>수업 준비부터 수행평가와 생활기록부까지. 기존 Teacher OS와 Google Sheets를 지키면서 필요한 업무를 명확하게 보여드립니다.</p>'+
-      '<div class="t49-hero-actions"><button type="button" class="t49-action" data-teacher56="open">교사 전용 성적·현황 열기 ↗</button>'+ 
+      '<div class="t49-hero-actions"><button type="button" class="t49-action" data-t49-to="calendar">수업 일정 확인 →</button>'+ 
       '<button type="button" class="t49-action alt" data-t49-to="assessment">OS에 등록된 평가 →</button>'+
-      '<button type="button" class="t49-action alt" data-t49-to="t49-records">생활기록부 근거 →</button></div></div>'+
+      '<button type="button" class="t49-action alt" data-t49-to="projects">행정업무 →</button></div></div>'+
       '<div class="t49-art" aria-hidden="true"><div class="t49-halo"></div><div class="t49-float">오늘도, 좋은 음악수업! ♫</div>'+
       '<div class="t49-notes">♪ ♬</div><div class="t49-paper"><div class="t49-paper-head"><b>♫</b> MY MUSIC CLASS</div>'+
       '<div class="t49-line"></div><div class="t49-line short"></div><div class="t49-line"></div><div class="t49-line short"></div></div><div class="t49-pencil">✎</div></div></div>'+
@@ -239,9 +239,7 @@
         (y?'OS 미완료 할 일 기록 없음':'OS 학년도 업무 미설정')+
         '</b><small>실제 학교업무의 완료 여부를 뜻하지 않습니다.</small></span><span class="t49-when">OS 기준</span></div>');
     }
-    items.push('<div class="t49-list-item"><span class="t49-circle">♫</span><span><b>실제 수행평가 미채점 확인</b>'+
-      '<small>Google 교사 전용 원본에서 최신 상태 조회</small></span>'+
-      '<button type="button" class="t49-action" data-teacher56="open">열기 ↗</button></div>');
+    // Private performance alerts have one separate home entry, not a repeated link.
     el.innerHTML=items.join('');
   }
   function fillSavedSheet(){
