@@ -2,7 +2,7 @@
 const assert=require('assert'),fs=require('fs'),vm=require('vm'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const ui=fs.readFileSync(path.join(root,'apps-script/music-dashboard/Index.html'),'utf8');
-const source=ui.match(/\/\/ BEGIN OWNER_ONLY_HOME_CORE([\s\S]*?)\/\/ END OWNER_ONLY_HOME_CORE/);
+const source=ui.match(/\/\/ BEGIN OWNER_ONLY_HOME_CORE[^\n]*\n([\s\S]*?)\/\/ END OWNER_ONLY_HOME_CORE/);
 assert(source,'Private home pure logic must be testable');
 const ctx={};
 vm.runInNewContext(source[1],ctx);
