@@ -54,7 +54,7 @@ jobs:
           for size in 1672,941 390,844; do
             if ! timeout 50s "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
               --no-first-run --disable-extensions --window-size="$size" --virtual-time-budget=16000 \
-              --dump-dom "http://127.0.0.1:8564/tests/unified-ui-v64-smoke.html?ci=true" \
+              --dump-dom "http://127.0.0.1:8564/tests/unified-ui-v64-smoke.html" \
               >"/tmp/teacher-v64-${size}.html" 2>"/tmp/teacher-v64-${size}.log"; then
               echo "Browser did not complete at $size"; tail -70 "/tmp/teacher-v64-${size}.log";
               tail -c 1500 "/tmp/teacher-v64-${size}.html"; exit 1;
