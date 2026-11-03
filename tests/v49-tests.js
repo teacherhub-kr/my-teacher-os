@@ -13,7 +13,9 @@ assert(css.includes('prefers-reduced-motion'), 'reduced-motion support missing')
 assert(css.includes('@media(max-width:820px)'), 'tablet layout missing');
 assert(css.includes('@media(max-width:480px)'), 'mobile layout missing');
 assert(app.includes('학생 이름, 성적, 예외사항'), 'privacy notice missing');
-assert(app.includes('원본 확인'), 'non-fabricated progress state missing');
+assert(!app.includes('원본 확인'), 'public home must not show repeated fabricated per-class progress statuses');
+assert(app.includes('Google 교사 전용 평가 현황 열기'), 'private progress CTA missing from public home');
+assert(app.includes('OS 등록 평가'), 'local records must not be mislabeled as source grades');
 assert(app.includes('TeacherOSComcigan14?.verifiedSlots'), 'home must select verified live timetable');
 assert(!app.includes('y.timetable.filter'), 'home must not show stale legacy timetable');
 assert(!app.includes('최윤우') && !app.includes('이우주'), 'student names must never enter public code');
