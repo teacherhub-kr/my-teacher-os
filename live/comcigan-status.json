@@ -1,1 +1,1 @@
-{"status":"error","category":"network","detail":"collector-init","failureKinds":"connection"}
+{"status":"error","category":"collector","detail":"collector-init","failureKinds":"exception-error"}
