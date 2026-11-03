@@ -170,6 +170,128 @@
   var $=function(id){return document.getElementById(id)};
   function node(tag,value,cls){var e=document.createElement(tag);if(value!==undefined)e.textContent=String(value);if(cls)e.className=cls;return e}
   function info(message,isError){var e=$("status");e.textContent=message;e.className="status"+(isError?" error":"")}
+
+  // BEGIN OWNER_ONLY_HOME_CORE — pure logic for independent regression tests.
+  function summarizePrivateHome_(classes, grade) {
+    if (!Array.isArray(classes) || (grade!==2 && grade!==3)) throw new Error("올바른 학년별 집계가 필요합니다.");
+    var rows=classes.filter(function(c){return c.grade===grade});
+    var expected=grade===2?9:6;
+    if(rows.length!==expected) throw new Error("대상 학급 수 불일치: "+grade+"학년");
+    var assessments=[0,1,2,3].map(function(i) {
+      return {index:i+1,missing:rows.reduce(function(sum,c){return sum+c.missing[i]},0),
+        classes:rows.filter(function(c){return c.missing[i]>0}).length,
+        semester:grade===3 && i<2?"1학기 참고":"2학기"};
+    });
+    var attention=rows.map(function(c) {
+      var total=c.missing.reduce(function(a,n){return a+n},0);
+      return {id:c.id,total:total,notice:c.notice,urgent:c.notice==="긴급"};
+    }).filter(function(c){return c.total>0 || c.notice!=="없음"})
+      .sort(function(a,b){return Number(b.urgent)-Number(a.urgent)||b.total-a.total||a.id.localeCompare(b.id)})
+      .slice(0,7);
+    return {grade:grade,classCount:rows.length,
+      missing:assessments.reduce(function(sum,a){return sum+a.missing},0),
+      assessments:assessments,attention:attention};
+  }
+  function buildRecordDraft_(activity,observed,change) {
+    function clean(value){return String(value||"").replace(/\s+/g," ").trim()}
+    function sentence(value){var s=clean(value);return !s?"":/[.!?。]$/.test(s)?s:s+"."}
+    var a=clean(activity),o=clean(observed),c=clean(change);
+    if(!a) return {text:"",error:"먼저 실제 활동·수행평가명을 입력하세요."};
+    if(o.length<8) return {text:"",error:"교사가 직접 관찰한 구체적인 사실을 8자 이상 입력해야 합니다."};
+    if(o.length>1000||c.length>800||a.length>100) return {text:"",error:"허용된 관찰 근거 길이를 초과했습니다."};
+    // Do not infer capability, attitude, rankings or improvement from scores.
+    var draft=a+" 활동에서 "+sentence(o)+(c?" "+sentence(c):"");
+    return {text:draft,error:""};
+  }
+  // END OWNER_ONLY_HOME_CORE
+  function renderActions() {
+    if(!latest)return;
+    var summary=summarizePrivateHome_(latest.classes,activeGrade);
+    var target=$("assessmentSummary");target.replaceChildren();
+    summary.assessments.forEach(function(a) {
+      var card=node("div",undefined,"assess-item");
+      card.setAttribute("role","listitem");
+      card.appendChild(node("b",a.index+"차 수행평가 · "+a.semester));
+      card.appendChild(node("strong",a.missing+"명"));
+      card.appendChild(node("span","미채점 기록 · "+a.classes+"개 반"));
+      target.appendChild(card);
+    });
+    $("actionAt").textContent=activeGrade+"학년 "+summary.classCount+"개 반 / 원본 조회 "+latest.readAt;
+    var list=$("attentionList");list.replaceChildren();
+    if(!summary.attention.length) {
+      list.appendChild(node("li","원본 집계상 미채점·점검 표시가 없습니다. 실시·보충·확정 여부는 별도 확인하세요.","attention-empty"));
+    }
+    summary.attention.forEach(function(c) {
+      var li=node("li");
+      li.appendChild(node("strong",c.id+"반"+(c.urgent?" · 원본 긴급 표시":c.notice==="없음"?"":" · 확인 표시")));
+      li.appendChild(node("span","평가별 미채점 합계 "+c.total+"건"));
+      list.appendChild(li);
+    });
+  }
+  var studentCache=[];
+  function resetRecordView() {
+    studentCache=[];
+    var select=$("recordStudent");select.replaceChildren();
+    var option=node("option","먼저 해당 반 학생을 조회하세요");option.value="";
+    select.appendChild(option);select.disabled=true;
+    $("recordEvidence").textContent="학생 명렬을 조회한 뒤 선택하면 원본 점수와 상태를 근거 확인용으로 표시합니다.";
+    ["recordActivity","recordObserved","recordChange","recordDraft"].forEach(function(id){$(id).value=""});
+    $("copyRecord").disabled=true;
+    $("recordStatus").textContent="학생 조회와 관찰 근거 입력이 필요합니다.";
+    $("recordStatus").className="record-status";
+  }
+  function populateRecordStudents(result) {
+    studentCache=result.students.slice();
+    var picker=$("recordStudent");picker.replaceChildren();
+    var empty=node("option","학생을 선택하세요");empty.value="";picker.appendChild(empty);
+    studentCache.forEach(function(s){
+      var option=node("option",s.number+"번 · "+s.name);
+      option.value=String(s.number);picker.appendChild(option);
+    });
+    picker.disabled=false;
+    $("recordEvidence").textContent=result.classId+" 학급을 조회했습니다. 학생을 선택하면 평가별 근거를 확인할 수 있습니다.";
+  }
+  function renderStudentEvidence() {
+    var s=studentCache.find(function(x){return String(x.number)===$("recordStudent").value});
+    $("recordDraft").value="";$("copyRecord").disabled=true;
+    if(!s){$("recordEvidence").textContent="학생을 선택해야 채점원본 근거를 확인할 수 있습니다.";return}
+    var bits=s.scores.map(function(score,i){
+      return (i+1)+"차 "+(score===null?"점수 미기록":score+"점")+
+        (s.statuses[i]?" ("+s.statuses[i]+")":"");
+    });
+    $("recordEvidence").textContent="원본 조회 근거 · "+bits.join(" / ")+
+      ". 점수만으로 개인의 역량·태도·성장 여부를 추정해서는 안 됩니다.";
+  }
+  function makeRecordDraft() {
+    var student=studentCache.find(function(x){return String(x.number)===$("recordStudent").value});
+    var status=$("recordStatus");
+    if(!student){
+      status.textContent="학생을 선택하고 실제 관찰 사실을 입력하세요.";
+      status.className="record-status error";return;
+    }
+    var draft=buildRecordDraft_($("recordActivity").value,$("recordObserved").value,$("recordChange").value);
+    if(draft.error){
+      $("recordDraft").value="";$("copyRecord").disabled=true;
+      status.textContent=draft.error;status.className="record-status error";return;
+    }
+    $("recordDraft").value=draft.text;$("copyRecord").disabled=false;
+    status.textContent="교사 검토용 초안입니다. 원본 관찰기록과 일치하는지 검토 후 사용하세요.";
+    status.className="record-status";
+  }
+  function copyRecordDraft() {
+    var text=$("recordDraft").value;if(!text)return;
+    var done=function(){ $("recordStatus").textContent="초안을 복사했습니다. 실제 관찰 근거와 학교생활기록부 지침을 확인한 후 사용하세요."; };
+    var fallback=function(){
+      $("recordDraft").focus();$("recordDraft").select();
+      if(document.execCommand("copy"))done();
+      else $("recordStatus").textContent="자동 복사가 불가능합니다. 초안 영역에서 직접 복사하세요.";
+    };
+    try{
+      if(navigator.clipboard&&navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done,fallback);
+      } else fallback();
+    }catch(e){fallback()}
+  }
   function refresh(){
     if(loading)return;
     if(!window.google||!google.script||!google.script.run){info("Apps Script 웹앱 환경에서만 실행할 수 있습니다.",true);return}
@@ -182,6 +304,7 @@
   }
   function clearStudentView(){
     studentSeq++;
+    resetRecordView();
     $("loadStudents").disabled=false;
     $("studentRows").replaceChildren();
     var row=node("tr"),cell=node("td","조회할 반을 선택하세요.");
@@ -202,6 +325,7 @@
     var room=Number($("studentClass").value),grade=activeGrade;
     if(!room||!latest){$("studentStatus").textContent="먼저 원본 집계를 읽어주세요.";return}
     var seq=++studentSeq;
+    resetRecordView();
     var button=$("loadStudents");button.disabled=true;
     $("studentStatus").textContent=grade+"학년 "+room+"반 학생별 점수를 읽는 중입니다.";
     google.script.run
@@ -226,6 +350,7 @@
           });
           body.appendChild(tr);
         });
+        populateRecordStudents(result);
         $("studentStatus").textContent=result.classId+" · "+result.studentCount+"명 · 원본 조회 "+result.readAt;
         $("studentStatus").className="student-status";
       })
@@ -247,6 +372,7 @@
     $("semesterNote").textContent=activeGrade===2?latest.semesterNotes.grade2:latest.semesterNotes.grade3;
     $("caution").textContent=latest.caution;
     $("readAt").textContent="원본 "+latest.readAtType+": "+latest.readAt;
+    renderActions();
     var header=activeGrade===2?["학급","1차","2차","3차","4차","점검"]:["학급","1차(1학기)","2차(1학기)","3차(2학기)","4차(2학기)","점검"];
     $("headerRow").replaceChildren();
     header.forEach(function(v){$("headerRow").appendChild(node("th",v))});
@@ -264,6 +390,9 @@
     document.querySelectorAll("[data-grade]").forEach(function(b){b.setAttribute("aria-selected",String(Number(b.dataset.grade)===activeGrade))});
     render();
   })});
+  $("recordStudent").addEventListener("change",renderStudentEvidence);
+  $("makeRecord").addEventListener("click",makeRecordDraft);
+  $("copyRecord").addEventListener("click",copyRecordDraft);
   $("refresh").addEventListener("click",refresh);
   $("loadStudents").addEventListener("click",loadStudents);
   refresh();
