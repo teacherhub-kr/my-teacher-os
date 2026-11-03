@@ -29,7 +29,7 @@ function mount(){
       '<button type="button" data-teacher56="save">주소 저장</button>'+
       '<button type="button" class="teacher56-ghost" data-teacher56="clear">주소 삭제</button></div></details>'+
       '<a class="teacher56-guide" href="https://github.com/teacherhub-kr/my-teacher-os/tree/main/apps-script/music-dashboard" target="_blank" rel="noopener noreferrer">최초 설정 안내 ↗</a></div>'+
-      '<p id="teacher56Status" role="status" aria-live="polite" class="teacher56-status">교사용 웹앱은 아직 이 브라우저에 등록되지 않았습니다. 먼저 Google Sheets에서 나만 접근 웹앱으로 배포하세요.</p>'+
+      '<p id="teacher56Status" role="status" aria-live="polite" class="teacher56-status">웹앱 연결 상태를 확인하고 있습니다.</p>'+
       '<p class="teacher56-security">구글 Cloud OAuth 클라이언트 ID는 필요하지 않습니다. 단, Google Apps Script 최초 실행 권한 승인은 필요합니다. 웹앱은 반드시 <b>나로 실행 · 나만 접근</b>으로 배포하세요. 링크 등록은 접속·권한 검증이 아닙니다.</p>';
     // Connection settings belong on the Settings screen, never as a repeated home card.
     if(settings)settings.appendChild(el);
@@ -37,8 +37,19 @@ function mount(){
   }
   var url=q("#teacher56Url");
   if(url&&document.activeElement!==url)url.value=getLink();
+  var linked=!!getLink();
   var badge=q("#teacher56Badge");
-  if(badge)badge.textContent=getLink()?"주소 등록됨 · 접근 미확인":"설정 필요";
+  if(badge)badge.textContent=linked?"주소 등록됨 · 접근 확인 필요":"설정 필요";
+  // Registration is a local URL state; only Google can confirm owner access.
+  // Update notices when the registration state changes, not on every timed mount,
+  // so click feedback is not erased after a successful save/open/clear action.
+  var status=q("#teacher56Status"),linkState=linked?"registered":"missing";
+  if(status&&status.dataset.linkState!==linkState){
+    status.dataset.linkState=linkState;
+    tell(linked
+      ?"웹앱 주소가 등록되어 있습니다. 실제 접근은 Google 교사 계정에서 확인해야 합니다."
+      :"웹앱 주소가 등록되지 않았습니다. 나만 접근 웹앱을 배포한 뒤 주소를 등록하세요.",false);
+  }
   var older=q("#music54Panel");
   if(older&&!older.dataset.teacher56Adapted){
     older.dataset.teacher56Adapted="1";
