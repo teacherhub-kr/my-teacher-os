@@ -12,9 +12,11 @@
     return match?'https://script.google.com/macros/s/'+match[1]+'/exec':'';
   }
   function start(){
-    // Explicitly requested public tools do not claim to be authenticated.
+    // The public Teacher OS home must stay usable. A teacher deliberately
+    // chooses the protected Google dashboard via button or ?mode=private.
+    // Redirecting everyone with a locally saved address hides the actual OS.
     var params=new URLSearchParams(window.location.search);
-    if(params.get('mode')==='tools')return false;
+    if(params.get('mode')!=='private')return false;
     var target='';
     try{target=canonicalLink(window.localStorage.getItem(KEY));}
     catch(err){return false;}

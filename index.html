@@ -12,12 +12,12 @@
 </head>
 <body>
 <div class="boot"><div><b>MY TEACHER OS</b><span>최신 화면을 불러오는 중입니다.</span></div></div>
-<script src="teacher-owner-entry-v58.js?v=58.0-owner-first"></script>
+<script src="teacher-owner-entry-v58.js?v=59.0-explicit-private"></script>
 <script>
 (async()=>{
   try{
-    // If a teacher has already linked the owner-only Google web app, enter it first.
-    // Google authenticates the user; this public page never receives private grades.
+    // Teacher OS tools open by default. Only an explicit ?mode=private request
+    // enters the owner-only Google dashboard. No student data are read here.
     if(globalThis.TeacherOSEntry58?.start?.()===true)return;
     const stamp=Date.now();
     let h=await fetch('./app-v05.html?v=46.0-student-privacy&ts='+stamp,{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('기본 앱을 불러오지 못했습니다.');return r.text()});
@@ -29,7 +29,7 @@
     h=h.replace('</head>','<link rel="stylesheet" href="teacher-connections-v53.css?v=53.0-connection-truth"></head>');
     h=h.replace('</head>','<link rel="stylesheet" href="music-summary-v54.css?v=54.0-music"></head>');
     h=h.replace('</head>','<link rel="stylesheet" href="teacher-private-music-v56.css?v=56.0-owner-only"></head>');
-    h=h.replace('</body>','<script src="teacher-dashboard-v49.js?v=61.0-live-view"><\/script></body>');
+    h=h.replace('</body>','<script src="teacher-dashboard-v49.js?v=61.0-live-view-honest-home-20261103"><\/script></body>');
     h=h.replace('</body>','<script src="teacher-design-v51.js?v=51.0-reference-parity"><\/script></body>');
     h=h.replace('</body>','<script src="teacher-connections-v53.js?v=55.0-health"><\/script></body>');
     h=h.replace('</body>','<script src="music-summary-core-v54.js?v=55.0-csv"><\/script><script src="music-summary-v54.js?v=55.0-csv"><\/script></body>');

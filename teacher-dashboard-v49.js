@@ -111,7 +111,8 @@
       '<div class="t49-hero"><div class="t49-hero-copy"><span class="t49-eyebrow">좋은 수업, 더 나은 기록</span>'+
       '<h2>오늘, 음악수업과 평가를<br><span>한눈에</span> 관리합니다.</h2>'+
       '<p>수업 준비부터 수행평가와 생활기록부까지. 기존 Teacher OS와 Google Sheets를 지키면서 필요한 업무를 명확하게 보여드립니다.</p>'+
-      '<div class="t49-hero-actions"><button type="button" class="t49-action" data-t49-to="assessment">수행평가 열기 →</button>'+
+      '<div class="t49-hero-actions"><button type="button" class="t49-action" data-teacher56="open">교사 전용 성적·현황 열기 ↗</button>'+ 
+      '<button type="button" class="t49-action alt" data-t49-to="assessment">OS에 등록된 평가 →</button>'+
       '<button type="button" class="t49-action alt" data-t49-to="t49-records">생활기록부 근거 →</button></div></div>'+
       '<div class="t49-art" aria-hidden="true"><div class="t49-halo"></div><div class="t49-float">오늘도, 좋은 음악수업! ♫</div>'+
       '<div class="t49-notes">♪ ♬</div><div class="t49-paper"><div class="t49-paper-head"><b>♫</b> MY MUSIC CLASS</div>'+
@@ -184,16 +185,18 @@
     var asses=y&&Array.isArray(y.assessments)?y.assessments:[];
     var tasks=y&&Array.isArray(y.tasks)?y.tasks.filter(function(x){return !x.done}):[];
     el.innerHTML=showMetric('오늘 수업',slots?slots.length:'—','검증된 이번 주 컴시간 기준','▣','timetable')+
-      showMetric('등록 평가',y?asses.length:'—','현재 학년도에 등록된 평가','▥','assessment')+
+      showMetric('OS 등록 평가',y?asses.length:'—','이 브라우저의 OS에 입력된 평가만 계산 · 실제 성적과 별개','▥','assessment')+
       showMetric('확인할 일',y?tasks.length:'—','미완료로 기록한 업무','△','projects')+
       showMetric('미채점 현황','—','교사용 원본에서 확인','✎','t49-classes');
   }
   function renderProgress(){
     var el=q('#t49Progress');if(!el)return;
-    var cl=state.grade===2?[1,2,3,4,5,6,7,8,9]:[4,5,6,7,8,9];
-    var header='<table class="t49-table"><thead><tr><th>학급</th><th>1차</th><th>2차</th><th>3차</th><th>4차</th></tr></thead><tbody>';
-    var rows=cl.map(function(n){return '<tr><td>'+state.grade+'학년 '+n+'반</td>'+[1,2,3,4].map(function(){return '<td><span class="t49-chip">원본 확인</span></td>'}).join('')+'</tr>'}).join('');
-    el.innerHTML=header+rows+'</tbody></table>';
+    // Do not fabricate 60 per-assessment status cells when the public shell
+    // cannot read authenticated student or marking data. An explicitly loaded
+    // local CSV can still replace this prompt via the existing v54 renderer.
+    el.innerHTML='<div class="t49-empty" role="note">'+
+      '<b>'+state.grade+'학년 실제 수행평가 현황은 교사 인증 후 확인할 수 있습니다.</b><p>이 공개 화면은 미채점 인원을 자동 조회하지 않습니다. 임의의 진행 상태나 0건을 표시하지 않습니다.</p>'+
+      '<button type="button" class="t49-action" data-teacher56="open">Google 교사 전용 평가 현황 열기 ↗</button></div>';
     document.querySelectorAll('[data-t49-grade]').forEach(function(b){b.setAttribute('aria-selected',String(Number(b.dataset.t49Grade)===state.grade))});
   }
   function renderToday(y){
