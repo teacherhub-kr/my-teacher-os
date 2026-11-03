@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><title>Teacher OS unified design smoke</title>
+<style>html,body{margin:0;width:100%;height:100%;font-family:system-ui}iframe{border:0;width:100%;height:100%}pre{position:fixed;top:0;right:0;background:rgba(255,255,255,.96);z-index:999999;font-size:9px;max-width:500px;max-height:150px;overflow:auto;padding:6px;white-space:pre-wrap}</style>
+</head><body><iframe id="teacher-os" src="../?mode=tools" title="Teacher OS UI"></iframe><pre id="audit" data-status="PENDING">LOADING</pre>
+<script>
+(function(){
+var attempts=0,once=false;
+function verify(){
+  if(once)return;
+  var frame=document.getElementById('teacher-os'),d;
+  try{d=frame.contentDocument}catch(e){return}
+  if(!d||!d.body||!d.body.classList.contains('teacher51-mode')||!d.getElementById('t49Workspace')){
+    if(++attempts>150){document.getElementById('audit').textContent='FAIL: app did not initialize modern interface';document.getElementById('audit').dataset.status='FAIL'}
+    return;
+  }
+  once=true;
+  var errors=[],trace=[];
+  function check(ok,message){if(!ok)errors.push(message);trace.push((ok?'OK ':'FAIL ')+message)}
+  var expected=['dashboard','importer','calendar','timetable','assessment','clubs','projects','policy','documents','memory','settings','t49-classes','t49-exceptions','t49-records'];
+  var b=d.body,css=frame.contentWindow.getComputedStyle.bind(frame.contentWindow);
+  check(b.classList.contains('teacher51-mode'),'Current design initialized');
+  check(!!d.querySelector('link[href*="teacher-unified-v64.css"]'),'Unified design stylesheet loaded');
+  check(!d.getElementById('t49Legacy'),'Legacy collapsed tools removed');
+  for(var i=0;i<expected.length;i++){
+    var button=d.querySelector('#nav button[data-view="'+expected[i]+'"]');
+    check(!!button&&css(button).display!=='none'&&button.getBoundingClientRect().height>0,'Menu visible: '+expected[i]);
+  }
+  var workspace=d.getElementById('t49Workspace');
+  for(var j=0,ids=['nextList','agentRun','todayTimetable','flowList','taskList','taskInput','taskAdd','mEnv','mCal','mTT','mAss','mClub','mProj'];j<ids.length;j++){
+    var node=d.getElementById(ids[j]);
+    check(!!node&&workspace.contains(node),'Original live widget integrated: '+ids[j]);
+  }
+  var agent=d.querySelector('.t49-workspace .agent');
+  if(agent){
+    check(css(agent).backgroundColor==='rgb(255, 255, 255)','Old green agent card replaced by white');
+    check(css(agent).color!=='rgb(239, 248, 244)','Old white-on-green text removed');
+  }
+  for(var k=0;k<expected.length;k++){
+    if(expected[k]==='dashboard')continue;
+    var btn=d.querySelector('#nav button[data-view="'+expected[k]+'"]');
+    if(!btn)continue;
+    btn.click();
+    var section=d.getElementById(expected[k]);
+    check(!!section&&section.classList.contains('active')&&css(section).display!=='none','Navigable page: '+expected[k]);
+    if(section&&section.querySelector('.section-intro')){
+      var intro=section.querySelector('.section-intro');
+      check(css(intro).backgroundImage!=='none','Current header styling: '+expected[k]);
+    }
+  }
+  d.querySelector('#nav button[data-view="dashboard"]').click();
+  var home=d.getElementById('dashboard');
+  check(home.classList.contains('active'),'Return to unified home');
+  var labels=['확인할 일','생활기록부','시간표'];
+  check(!!d.querySelector('.top-actions')&&css(d.querySelector('.top-actions')).display!=='none','Original year controls remain accessible');
+  var output=document.getElementById('audit');
+  output.dataset.status=errors.length?'FAIL':'PASS';
+  output.textContent=(errors.length?'FAIL: '+errors.length+'\n':'PASS: '+trace.length+' checks\n')+trace.join('\n');
+}
+setInterval(verify,300);setTimeout(verify,2200);
+})();
+</script></body></html>
