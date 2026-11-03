@@ -3,7 +3,7 @@ const assert=require('assert'),fs=require('fs'),path=require('path');
 const root=path.resolve(__dirname,'..');
 const read=p=>fs.readFileSync(path.join(root,p),'utf8');
 const index=read('index.html'),app=read('teacher-dashboard-v49.js'),css=read('teacher-dashboard-v49.css'),html=read('app-v05.html');
-assert(index.includes('body:not(.teacher51-mode):not(.teacher-os-fallback) .shell{visibility:hidden!important}'),'The old UI must remain hidden until the current design is ready');
+assert(index.includes('body:not(.teacher65-mode):not(.teacher-os-fallback) .shell{visibility:hidden!important}'),'The old UI must remain hidden until the focused current design is ready');
 assert(index.includes('teacher-os-fallback'),'If modern style fails, app must remain usable');
 assert(index.includes('teacher-dashboard-v49.js?v=61.0-live-view-honest-home-20261103-activity-private-home-integrated-v63'),'Versioned asset must force new code');
 assert(index.includes('teacher-dashboard-v49.css?v=50.0-layout-fix-integrated-v63'),'Versioned asset must force new CSS');

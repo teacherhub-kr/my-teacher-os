@@ -30,6 +30,8 @@ jobs:
           set -euo pipefail
           test -f index.html
           test -f teacher-unified-v64.css
+          test -f teacher-focused-v65.js
+          test -f teacher-focused-v65.css
           test -f agent-core-v33.js
           test -f integration-core-v34.js
           test -f neis-core-v35.js
@@ -89,6 +91,8 @@ jobs:
           node tests/private-teacher-home-v62.test.js
           node tests/integrated-workspace-v63.test.js
           node tests/unified-design-v64.test.js
+          node --check teacher-focused-v65.js
+          node tests/focused-workflow-v65.test.js
           for f in $(find tests -maxdepth 1 -name 'v*-tests.js' | sort -V); do
             echo "== $f =="
             node "$f"

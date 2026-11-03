@@ -1,57 +1,89 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><title>Teacher OS unified design smoke</title>
-<style>html,body{margin:0;width:100%;height:100%;font-family:system-ui}iframe{border:0;width:100%;height:100%}pre{position:fixed;top:0;right:0;background:rgba(255,255,255,.96);z-index:999999;font-size:9px;max-width:500px;max-height:150px;overflow:auto;padding:6px;white-space:pre-wrap}</style>
+<html lang="ko"><head><meta charset="utf-8"><title>Teacher OS focused UX browser audit</title>
+<style>html,body{margin:0;width:100%;height:100%;font-family:system-ui}iframe{border:0;width:100%;height:100%}pre{position:fixed;top:0;right:0;background:rgba(255,255,255,.96);z-index:999999;font-size:9px;max-width:520px;max-height:160px;overflow:auto;padding:6px;white-space:pre-wrap}</style>
 </head><body><iframe id="teacher-os" src="../?mode=tools" title="Teacher OS UI"></iframe><pre id="audit" data-status="PENDING">LOADING</pre>
 <script>
 (function(){
 var attempts=0,once=false;
 function verify(){
   if(once)return;
-  var frame=document.getElementById('teacher-os'),d;
-  try{d=frame.contentDocument}catch(e){return}
-  if(!d||!d.body||!d.body.classList.contains('teacher51-mode')||!d.getElementById('t49Workspace')){
-    if(++attempts>150){document.getElementById('audit').textContent='FAIL: app did not initialize modern interface';document.getElementById('audit').dataset.status='FAIL'}
+  var frame=document.getElementById('teacher-os'),d,w;
+  try{d=frame.contentDocument;w=frame.contentWindow}catch(e){return}
+  if(!d||!d.body||!d.body.classList.contains('teacher65-mode')||!d.getElementById('os65Home')){
+    if(++attempts>150){document.getElementById('audit').textContent='FAIL: modern focused view was not ready';document.getElementById('audit').dataset.status='FAIL'}
     return;
   }
   once=true;
-  var errors=[],trace=[];
+  var errors=[],trace=[],style=w.getComputedStyle.bind(w);
   function check(ok,message){if(!ok)errors.push(message);trace.push((ok?'OK ':'FAIL ')+message)}
-  var expected=['dashboard','importer','calendar','timetable','assessment','clubs','projects','policy','documents','memory','settings','t49-classes','t49-exceptions','t49-records'];
-  var b=d.body,css=frame.contentWindow.getComputedStyle.bind(frame.contentWindow);
-  check(b.classList.contains('teacher51-mode'),'Current design initialized');
-  check(!!d.querySelector('link[href*="teacher-unified-v64.css"]'),'Unified design stylesheet loaded');
-  check(!d.getElementById('t49Legacy'),'Legacy collapsed tools removed');
-  for(var i=0;i<expected.length;i++){
-    var button=d.querySelector('#nav button[data-view="'+expected[i]+'"]');
-    check(!!button&&css(button).display!=='none'&&button.getBoundingClientRect().height>0,'Menu visible: '+expected[i]);
-  }
-  var workspace=d.getElementById('t49Workspace');
-  for(var j=0,ids=['nextList','agentRun','todayTimetable','flowList','taskList','taskInput','taskAdd','mEnv','mCal','mTT','mAss','mClub','mProj'];j<ids.length;j++){
-    var node=d.getElementById(ids[j]);
-    check(!!node&&workspace.contains(node),'Original live widget integrated: '+ids[j]);
-  }
-  var agent=d.querySelector('.t49-workspace .agent');
-  if(agent){
-    check(css(agent).backgroundColor==='rgb(255, 255, 255)','Old green agent card replaced by white');
-    check(css(agent).color!=='rgb(239, 248, 244)','Old white-on-green text removed');
-  }
-  for(var k=0;k<expected.length;k++){
-    if(expected[k]==='dashboard')continue;
-    var btn=d.querySelector('#nav button[data-view="'+expected[k]+'"]');
-    if(!btn)continue;
-    btn.click();
-    var section=d.getElementById(expected[k]);
-    check(!!section&&section.classList.contains('active')&&css(section).display!=='none','Navigable page: '+expected[k]);
-    if(section&&section.querySelector('.section-intro')){
-      var intro=section.querySelector('.section-intro');
-      check(css(intro).backgroundImage!=='none','Current header styling: '+expected[k]);
+  try{
+    var menus=['dashboard','os65-detail','importer','calendar','timetable','assessment','clubs','projects','policy','documents','memory','settings','t49-classes','t49-exceptions','t49-records'];
+    var groups=['home','lesson','record','work','tools'];
+    check(d.body.classList.contains('teacher51-mode'),'Existing unified theme initialized');
+    check(!!d.querySelector('link[href*="teacher-focused-v65.css"]'),'Focused style loaded');
+    check(!!d.querySelector('link[href*="teacher-unified-v64.css"]'),'Existing stylesheet retained');
+    check(!d.getElementById('t49Legacy'),'Old collapsible interface removed');
+    check(d.querySelectorAll('#nav>.os65-group').length===5,'Exactly five primary workflow groups');
+    groups.forEach(function(g){
+      var header=d.getElementById('os65-toggle-'+g),list=d.getElementById('os65-group-'+g);
+      check(!!header&&!!list&&header.getBoundingClientRect().height>0,'Primary workflow group visible: '+g);
+    });
+    var home=d.getElementById('os65Home'),detail=d.getElementById('os65-detail');
+    check(!!home&&d.getElementById('dashboard').contains(home),'Focused home is the real dashboard');
+    check(!!detail&&detail.contains(d.getElementById('dashboardBody')),'Original app engine preserved as a first-class detail view');
+    check(!d.getElementById('dashboard').contains(d.getElementById('t49Workspace')),'Old giant dashboard removed from first page');
+    check(d.querySelectorAll('#os65Home .os65-quick-card').length===4,'Home has only four primary tasks');
+    check(d.querySelectorAll('#os65Home [data-teacher56="open"]').length===1,'Only one secure grade link on focused home');
+    check(!!d.getElementById('os65PendingItems')&&!!d.getElementById('os65UpcomingItems'),'Pending work and upcoming deadlines visible');
+    var workspace=d.getElementById('t49Workspace');
+    for(var j=0,ids=['nextList','agentRun','todayTimetable','flowList','taskList','taskInput','taskAdd','mEnv','mCal','mTT','mAss','mClub','mProj'];j<ids.length;j++){
+      var widget=d.getElementById(ids[j]);
+      check(!!widget&&workspace.contains(widget),'Original live widget preserved: '+ids[j]);
     }
-  }
-  d.querySelector('#nav button[data-view="dashboard"]').click();
-  var home=d.getElementById('dashboard');
-  check(home.classList.contains('active'),'Return to unified home');
-  var labels=['확인할 일','생활기록부','시간표'];
-  check(!!d.querySelector('.top-actions')&&css(d.querySelector('.top-actions')).display!=='none','Original year controls remain accessible');
+    for(var i=0;i<menus.length;i++){
+      var view=menus[i],button=d.querySelector('#nav button[data-view="'+view+'"]');
+      check(!!button&&!!button.closest('.os65-group'),'Workflow remains in navigation: '+view);
+      if(!button)continue;
+      var parent=button.closest('.os65-group');
+      var toggle=parent.querySelector('button[data-os65-group]');
+      if(toggle.getAttribute('aria-expanded')!=='true')toggle.click();
+      if(view!=='dashboard')check(button.getBoundingClientRect().height>0,'Workflow can be revealed: '+view);
+      button.click();
+      var section=d.getElementById(view);
+      check(!!section&&section.classList.contains('active')&&style(section).display!=='none','Workflow navigates correctly: '+view);
+    }
+    var agent=d.querySelector('.t49-workspace .agent');
+    if(agent)check(style(agent).backgroundColor==='rgb(255, 255, 255)','Old green agent card replaced');
+    d.querySelector('#os65-toggle-home').click();
+    check(d.getElementById('dashboard').classList.contains('active'),'Return to focused home');
+    check(style(d.querySelector('.top-actions')).display!=='none','Academic year actions still accessible');
+    // Synthetic write tests run ONLY on isolated localhost with explicit CI opt-in.
+    // Opening the published smoke page must never change the teacher's records.
+    if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).get('ci')==='true'){
+    var newYear=d.getElementById('newYear');
+    newYear.click();
+    check(d.getElementById('yearDlg').open,'Original academic year form works');
+    d.getElementById('yYear').value='2026';
+    d.getElementById('yearForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+    var raw=JSON.parse(w.localStorage.getItem('myTeacherOS.v01')||'{}');
+    check(!!(raw.years&&raw.years['2026']),'Original year record saved to same localStorage key');
+    var homeInput=d.getElementById('os65NewTask');
+    homeInput.value='가상 업무 검증';
+    d.getElementById('os65TaskForm').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));
+    raw=JSON.parse(w.localStorage.getItem('myTeacherOS.v01')||'{}');
+    var tasks=raw.years&&raw.years['2026']&&raw.years['2026'].tasks||[];
+    check(tasks.some(function(t){return t.text==='가상 업무 검증'&&!t.done}),'Focused task form uses the original save handler');
+    var checkbox=d.querySelector('#os65PendingItems [data-os65-complete]');
+    check(!!checkbox,'Saved task is visible on the focused home');
+    if(checkbox){
+      checkbox.click();
+      raw=JSON.parse(w.localStorage.getItem('myTeacherOS.v01')||'{}');
+      tasks=raw.years&&raw.years['2026']&&raw.years['2026'].tasks||[];
+      check(tasks.some(function(t){return t.text==='가상 업무 검증'&&t.done}),'Task completion persists through original data handler');
+    }
+    }
+    check(style(d.querySelector('.os65-focus-grid')).display==='grid','Focused task panels use the new design');
+  }catch(err){errors.push('EXCEPTION: '+(err&&err.stack||err));trace.push('FAIL: '+String(err))}
   var output=document.getElementById('audit');
   output.dataset.status=errors.length?'FAIL':'PASS';
   output.textContent=(errors.length?'FAIL: '+errors.length+'\n':'PASS: '+trace.length+' checks\n')+trace.join('\n');

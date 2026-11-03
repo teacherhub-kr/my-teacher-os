@@ -93,7 +93,9 @@
     var foot=q('.side-foot');if(foot)foot.textContent='수업 · 평가 · 기록을 한곳에서';
     // Keep every established workflow in the current design, not behind CSS.
     // The underlying nav handlers and year-scoped data stores remain untouched.
-    NAV.forEach(function(item){
+    // v65 stores these existing buttons in five first-class workflow groups.
+    // Reordering them on each render would pull them back out of the groups.
+    if(nav.dataset.os65Grouped!=='1')NAV.forEach(function(item){
       var view=item.view;
       var button=nav.querySelector('button[data-view="'+view+'"]');
       if(button)nav.appendChild(button);
