@@ -45,7 +45,8 @@ function verify(){
       check(!!button&&!!button.closest('.os65-group'),'Workflow remains in navigation: '+view);
       if(!button)continue;
       var parent=button.closest('.os65-group');
-      parent.querySelector('button[data-os65-group]').click();
+      var toggle=parent.querySelector('button[data-os65-group]');
+      if(toggle.getAttribute('aria-expanded')!=='true')toggle.click();
       if(view!=='dashboard')check(button.getBoundingClientRect().height>0,'Workflow can be revealed: '+view);
       button.click();
       var section=d.getElementById(view);
