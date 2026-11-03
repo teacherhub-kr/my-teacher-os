@@ -21,8 +21,11 @@ function setup(stored,search,fail){
 }
 let t=setup(secretFreeUrl+'?utm_source=other','?utm_source=chatgpt.com');
 assert.equal(t.api.canonicalLink(secretFreeUrl+'#fragment'),secretFreeUrl);
-assert.equal(t.api.start(),true,'Linked owner must enter Google authentication on opening home');
-assert.deepStrictEqual(t.navigation,[secretFreeUrl],'Redirect must strip query and fragment');
+assert.equal(t.api.start(),false,'Home must remain usable even if owner link was saved');
+assert.deepStrictEqual(t.navigation,[],'No forced redirection of public teacher tools');
+t=setup(secretFreeUrl+'?utm_source=other','?mode=private');
+assert.equal(t.api.start(),true,'Explicit private access must enter Google authentication');
+assert.deepStrictEqual(t.navigation,[secretFreeUrl],'Private redirect must strip query and fragment');
 assert(t.span.textContent.includes('Google 인증'));
 for(const bad of [
   'javascript:alert(1)','https://script.google.com.evil.example/macros/s/AKfycbxIDabcdefghijklmnopqrstuvwxyz0123456789/exec',
@@ -42,11 +45,11 @@ assert.equal(t.api.start(),false,'Fresh browser must preserve prior registration
 t=setup(secretFreeUrl,'',true);
 assert.equal(t.api.start(),false,'Blocked navigation must fail back to existing tools');
 assert(t.span.textContent.includes('실패'));
-assert(index.includes('teacher-owner-entry-v58.js?v=58.0-owner-first'));
+assert(index.includes('teacher-owner-entry-v58.js?v=59.0-explicit-private'));
 assert(index.includes('TeacherOSEntry58?.start?.()===true'));
 assert(index.includes('teacher-private-music-v56.js'));
 assert(!index.includes(secretFreeUrl),'No private deployment URL in public index');
 assert(!src.includes(secretFreeUrl),'Never hardcode an actual /exec URL in published JS');
 assert(!src.includes('getStudentDetail')&&!src.includes('getDashboardData'),'No private data APIs in public entry');
 assert(!src.includes('fetch(')&&!src.includes('postMessage'),'No data/URL beacon from entry script');
-console.log('v58 owner-first private redirect, URL safety, explicit tools bypass, first-use fallback PASS');
+console.log('v59 explicit owner-authenticated access, honest default home, URL safety and fallback PASS');
