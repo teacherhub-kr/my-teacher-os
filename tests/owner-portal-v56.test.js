@@ -29,7 +29,7 @@ for(const bad of [
 store.set('myTeacherOS.music56.ownerOnlyWebAppUrl',good);
 assert.equal(api.getLink(),good);
 assert(events.click&&events.visibilitychange);
-assert(index.includes('teacher-private-music-v56.js?v=56.0-owner-only'));
+assert(index.includes('teacher-private-music-v56.js?v=56.1-link-state'));
 assert(index.includes('teacher-private-music-v56.css?v=56.0-owner-only'));
 assert(!index.includes('accounts.google.com/gsi/client'));
 assert(ui.includes('이 브라우저에 웹앱 주소')&&ui.includes('접근 확인 필요'));
