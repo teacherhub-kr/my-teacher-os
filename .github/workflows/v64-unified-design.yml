@@ -52,10 +52,13 @@ jobs:
           trap 'kill "$server" 2>/dev/null || true' EXIT
           sleep 2
           for size in 1672,941 390,844; do
-            "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
-              --no-first-run --disable-extensions --window-size="$size" --virtual-time-budget=22000 \
-              --dump-dom http://127.0.0.1:8564/tests/unified-ui-v64-smoke.html \
-              >"/tmp/teacher-v64-${size}.html" 2>"/tmp/teacher-v64-${size}.log"
+            if ! timeout 50s "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
+              --no-first-run --disable-extensions --window-size="$size" --virtual-time-budget=16000 \
+              --dump-dom "http://127.0.0.1:8564/tests/unified-ui-v64-smoke.html?ci=true" \
+              >"/tmp/teacher-v64-${size}.html" 2>"/tmp/teacher-v64-${size}.log"; then
+              echo "Browser did not complete at $size"; tail -70 "/tmp/teacher-v64-${size}.log";
+              tail -c 1500 "/tmp/teacher-v64-${size}.html"; exit 1;
+            fi
             python3 - "$size" <<'PY'
           import sys,re,html
           size=sys.argv[1]
@@ -68,8 +71,8 @@ jobs:
           assert marker.group(1)=='PASS','Visual/interaction regression at '+size+': '+content[:1200]
           PY
           done
-          "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
-            --window-size=1672,941 --virtual-time-budget=18000 \
+          timeout 50s "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --window-size=1672,941 --virtual-time-budget=12000 \
             --screenshot=teacher-os-v64-desktop.png http://127.0.0.1:8564/tests/unified-ui-v64-smoke.html \
             >/tmp/teacher-v64-shot.log 2>&1
       - uses: actions/upload-artifact@v4
