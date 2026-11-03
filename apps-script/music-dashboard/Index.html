@@ -3,7 +3,7 @@
   <base target="_top">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>MY MUSIC CLASS · 교사 전용</title>
+  <title>MY TEACHER OS · 교사 전용 평가·기록</title>
   <style>
     :root {color-scheme:light;--navy:#17365f;--ink:#1c3155;--blue:#2565e8;--muted:#7385a1;--line:#e4eaf4;--bg:#f5f8ff}
     *{box-sizing:border-box}body{margin:0;background:var(--bg);font:14px/1.6 "Noto Sans KR",Arial,sans-serif;color:var(--ink)}
@@ -84,9 +84,9 @@
 </head><body>
 <main class="wrap">
  <header>
-  <div><span class="eyebrow">TEACHER ONLY · MUSIC DASHBOARD</span>
-  <h1>음악수업과 평가를<br>한눈에 관리합니다.</h1>
-  <p class="lede">기존 가변형 스케줄표의 반별 집계를 읽는 교사 전용 화면입니다.</p></div>
+  <div><span class="eyebrow">TEACHER ONLY · MY TEACHER OS</span>
+  <h1>실제 수행평가와 기록을<br>한눈에 관리합니다.</h1>
+  <p class="lede">15개 반의 실제 미채점 집계·확인할 학급·생활기록부 근거 초안을 Google 본인 인증 화면에서 관리합니다.</p></div>
   <div class="symbol" aria-hidden="true">♫ ♪</div>
  </header>
  <div class="toolbar">
@@ -94,7 +94,7 @@
    <button type="button" role="tab" aria-selected="true" data-grade="2">2학년</button>
    <button type="button" role="tab" aria-selected="false" data-grade="3">3학년</button>
   </div><div id="semesterNote" class="subtitle">2학년 2학기 1~4차 수행평가</div></div>
-  <button id="refresh" type="button" class="refresh">↻ 원본 다시 읽기</button>
+  <div class="record-actions"><a class="refresh" href="https://teacherhub-kr.github.io/my-teacher-os/?mode=tools" target="_blank" rel="noopener noreferrer" style="text-decoration:none;display:inline-flex;align-items:center">수업·시간표·업무도구 ↗</a><button id="refresh" type="button" class="refresh">↻ 원본 다시 읽기</button></div>
  </div>
  <section class="cards" aria-label="현재 학년 요약">
   <div class="card"><small>대상 학급</small><strong id="classes">—</strong><span>반별 집계 수</span></div>
