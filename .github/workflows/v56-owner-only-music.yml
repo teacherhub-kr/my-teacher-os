@@ -37,6 +37,7 @@ jobs:
           node tests/owner-entry-v58.test.js
           node tests/teacher-activity-home-v61.test.js
           node tests/private-teacher-home-v62.test.js
+          node tests/workflow-v66.test.js
           node tests/integrated-workspace-v63.test.js
       - name: Existing Teacher OS smoke tests
         run: |
