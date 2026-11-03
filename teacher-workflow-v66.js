@@ -8,7 +8,7 @@ var CATEGORIES=[
  {id:'home',label:'홈',primary:'dashboard',views:[['dashboard','오늘의 업무']]},
  {id:'lesson',label:'수업 관리',primary:'timetable',views:[['timetable','시간표'],['calendar','학사일정'],['lessonlog','수업 기록'],['policy','교육과정·지침'],['lessons/','음악 수업자료실']]},
  {id:'assessment',label:'수행평가',primary:'assessment',views:[['assessment','평가계획'],['t49-classes','반별 현황'],['t49-exceptions','미채점·예외']]},
- {id:'student',label:'학생·생활기록부',primary:'studentrecords',views:[['studentrecords','학생 관찰 기록'],['t49-records','생활기록부 근거']]},
+ {id:'student',label:'학생·생활기록부',primary:'studentrecords',views:[['studentrecords','학생 관찰 기록'],['t49-records','생활기록부 근거'],['seteuk','음악 교과세특 작성 ↗']]},
  {id:'work',label:'학교업무',primary:'projects',views:[['projects','행정업무'],['clubs','동아리'],['memory','업무기억']]}
 ];
 var UTIL=[['settings','설정·백업'],['documents','자료함'],['importer','학교자료 자동세팅']];
@@ -167,6 +167,13 @@ function tabsFor(view){
    var a=element('a','os66-tab','수업자료실');
    a.href='lessons/';a.setAttribute('aria-label','음악 수업자료실 열기');
    tabs.appendChild(a);return;
+  }
+  if(x[0]==='seteuk'){
+   // Opens the owner-only Google Apps Script workroom; no student data enters this page.
+   var s=element('button','os66-tab os66-tab-private',x[1]);s.type='button';
+   s.dataset.teacher56='open';s.dataset.teacher56View='seteuk';
+   s.setAttribute('aria-label','음악 교과세특 작성실을 교사 전용 Google 화면에서 열기');
+   tabs.appendChild(s);return;
   }
   if(!q('#nav button[data-view="'+x[0]+'"]')||!q('#'+x[0]))return;
   var b=element('button','os66-tab',x[1]);b.type='button';

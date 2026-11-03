@@ -65,7 +65,8 @@ function mount(){
   }
   return true;
 }
-function openPrivate(){
+var VIEWS={seteuk:"seteuk"}; // Allow-listed screen hints only; never student data.
+function openPrivate(view){
   var url=getLink();
   if(!url){
     tell("아직 웹앱 주소가 없습니다. 먼저 Google Sheets에서 Apps Script를 배포하고 주소를 등록하세요.",true);
@@ -75,13 +76,14 @@ function openPrivate(){
     q("#teacher56Url")?.focus();return;
   }
   // The owner-only Apps Script login and all student/class details remain on Google's origin.
-  var tab=window.open(url,"_blank","noopener,noreferrer");
+  var target=VIEWS[view]?url+"?view="+VIEWS[view]:url;
+  var tab=window.open(target,"_blank","noopener,noreferrer");
   tell("Google 교사 전용 화면을 새 탭에서 열도록 요청했습니다. Google 계정으로 실제 접근 가능한지 확인하세요.",false);
 }
 document.addEventListener("click",function(e){
   var item=e.target.closest("[data-teacher56]");if(!item)return;
   var action=item.dataset.teacher56;
-  if(action==="open"){openPrivate();return}
+  if(action==="open"){openPrivate(item.dataset.teacher56View);return}
   if(action==="save"){
     var input=q("#teacher56Url");var url=linkOK(input?.value);
     if(!url){tell("유효한 Apps Script 웹앱 /exec 주소만 등록할 수 있습니다.",true);input?.focus();return}
