@@ -56,7 +56,9 @@ function verify(){
     d.querySelector('#os65-toggle-home').click();
     check(d.getElementById('dashboard').classList.contains('active'),'Return to focused home');
     check(style(d.querySelector('.top-actions')).display!=='none','Academic year actions still accessible');
-    // Perform one real user workflow through the unchanged v05 data engine.
+    // Synthetic write tests run ONLY on isolated localhost with explicit CI opt-in.
+    // Opening the published smoke page must never change the teacher's records.
+    if(location.hostname==='127.0.0.1'&&new URLSearchParams(location.search).get('ci')==='true'){
     var newYear=d.getElementById('newYear');
     newYear.click();
     check(d.getElementById('yearDlg').open,'Original academic year form works');
@@ -77,6 +79,7 @@ function verify(){
       raw=JSON.parse(w.localStorage.getItem('myTeacherOS.v01')||'{}');
       tasks=raw.years&&raw.years['2026']&&raw.years['2026'].tasks||[];
       check(tasks.some(function(t){return t.text==='가상 업무 검증'&&t.done}),'Task completion persists through original data handler');
+    }
     }
     check(style(d.querySelector('.os65-focus-grid')).display==='grid','Focused task panels use the new design');
   }catch(err){errors.push('EXCEPTION: '+(err&&err.stack||err));trace.push('FAIL: '+String(err))}
