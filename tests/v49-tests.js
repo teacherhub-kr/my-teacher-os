@@ -8,7 +8,7 @@ const index = fs.readFileSync(path.join(base, 'index.html'), 'utf8');
 const app = fs.readFileSync(path.join(base, 'teacher-dashboard-v49.js'), 'utf8');
 const css = fs.readFileSync(path.join(base, 'teacher-dashboard-v49.css'), 'utf8');
 assert(index.includes('teacher-dashboard-v49.css?v=50.0-layout-fix'), 'premium stylesheet missing from loader');
-assert(index.includes('teacher-dashboard-v49.js?v=62.0-honest-home'), 'premium JS missing from loader');
+assert(index.includes('teacher-dashboard-v49.js?v=61.0-live-view-honest-home-20261103'), 'premium JS missing from loader');
 assert(css.includes('prefers-reduced-motion'), 'reduced-motion support missing');
 assert(css.includes('@media(max-width:820px)'), 'tablet layout missing');
 assert(css.includes('@media(max-width:480px)'), 'mobile layout missing');
