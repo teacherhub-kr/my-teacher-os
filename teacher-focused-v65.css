@@ -129,13 +129,13 @@ body.teacher65-mode.premium-ui .os65-quick-icon{
   background:#edf4ff;color:#2568d7;margin-bottom:8px;
 }
 body.teacher65-mode.premium-ui .os65-quick-name{
-  font-size:12px;font-weight:790;color:#4d6890;
+  font-size:13px;font-weight:790;color:#4d6890;
 }
 body.teacher65-mode.premium-ui .os65-quick strong{
   font-size:21px;font-weight:850;letter-spacing:-.035em;color:#1a376a;line-height:1.45;
 }
 body.teacher65-mode.premium-ui .os65-quick small{
-  font-size:10px;color:#8a99af;line-height:1.6;
+  font-size:12px;color:#7a8ba6;line-height:1.6;
 }
 body.teacher65-mode.premium-ui .os65-focus-grid{
   display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;
@@ -166,7 +166,7 @@ body.teacher65-mode.premium-ui .os65-task-row,
 body.teacher65-mode.premium-ui .os65-upcoming-row{
   display:flex;align-items:center;gap:10px;
   min-width:0;padding:13px 3px;border-bottom:1px solid #edf1f8;
-  color:#344d75;font-size:12px;line-height:1.5;
+  color:#344d75;font-size:14px;line-height:1.5;
 }
 body.teacher65-mode.premium-ui .os65-task-row input{
   width:17px;height:17px;accent-color:#226ce3;flex:0 0 auto;cursor:pointer;
@@ -389,7 +389,7 @@ body.teacher66-mode.premium-ui .os65-home-header{
  box-shadow:none!important;
 }
 body.teacher66-mode.premium-ui .os65-home-header h2{font-size:27px!important}
-body.teacher66-mode.premium-ui .os65-home-desc{font-size:11px!important}
+body.teacher66-mode.premium-ui .os65-home-desc{font-size:13px!important}
 body.teacher66-mode.premium-ui .os65-secondary{display:none!important}
 body.teacher66-mode.premium-ui .os65-focus-grid{gap:12px!important}
 body.teacher66-mode.premium-ui .os66-setup[hidden]{display:none!important}
@@ -503,4 +503,24 @@ body.teacher66-mode.premium-ui #settings .summary>.metric{
 }
 @media(max-width:410px){
  body.teacher66-mode.premium-ui #nav .os66-category-name{font-size:9px!important}
+}
+
+/* Primary record shortcut leads to the protected Google workroom, not a public data view. */
+body.teacher65-mode.premium-ui .os65-privacy-note{
+  max-width:245px;color:#6d7f99;font-size:12px;line-height:1.65;
+  text-align:right;
+}
+body.teacher65-mode.premium-ui .os65-quick-card.os65-private-card{
+  border-color:#cbdcf6;background:#f8fbff;
+}
+body.teacher65-mode.premium-ui .os65-quick-card.os65-private-card:hover{
+  border-color:#87afea;background:#f1f7ff;
+}
+body.teacher65-mode.premium-ui .os65-quick-card.os65-private-card:focus-visible{
+  outline:3px solid #8cb8f5;outline-offset:2px;
+}
+@media(max-width:820px){
+  body.teacher65-mode.premium-ui .os65-privacy-note{
+    max-width:none;text-align:left;
+  }
 }
