@@ -57,14 +57,20 @@ try{
  console.log("LESSON: link, guide toggle, audio path, back link PASS");
 
  await page.goto(origin+"/",{waitUntil:"domcontentloaded",timeout:20000});
- await page.locator('.nav .musicLibraryLink').waitFor({timeout:16000});
- check(await page.locator(".musicLibraryFeaturedCTA").count()===1,"Dashboard music library shortcut missing");
- const navUrl=await page.locator(".musicLibraryLink").getAttribute("href");
+ // v66 keeps legacy sidebar links hidden; the current teacher-facing path is
+ // 수업 관리 > 수업자료실, preserving the original lesson URL and page.
+ const lessonCategory=page.locator('#nav button[data-os66-category="lesson"]');
+ await lessonCategory.waitFor({state:"visible",timeout:16000});
+ await lessonCategory.click();
+ const libraryLink=page.locator('#os66Tabs a.os66-tab[href="lessons/"]');
+ await libraryLink.waitFor({state:"visible",timeout:6000});
+ check(await page.locator(".musicLibraryFeaturedCTA").count()===1,"Music library featured action missing");
+ const navUrl=await libraryLink.getAttribute("href");
  check(navUrl==="lessons/","OS library link incorrect");
- await page.locator(".musicLibraryLink").click();
+ await libraryLink.click();
  await page.getByText("오케스트라 악기의 음색",{exact:true}).waitFor({timeout:10000});
- check(new URL(page.url()).pathname.endsWith("/lessons/"),"Teacher OS sidebar library navigation broken");
- console.log("TEACHER_OS: sidebar entry, dashboard CTA, navigation PASS");
+ check(new URL(page.url()).pathname.endsWith("/lessons/"),"Teacher OS lesson tab navigation broken");
+ console.log("TEACHER_OS: current lesson tab, featured CTA, navigation PASS");
 
  check(errors.length===0,"Lesson JavaScript errors: "+JSON.stringify(errors));
  console.log(JSON.stringify({VERDICT:"PASS",catalog:1,search:"PASS",grade:"PASS",category:"PASS",images:3,teacherGuide:"PASS",lessonLink:"PASS",returnLink:"PASS",teacherOsMenu:"PASS",teacherOsDashboard:"PASS"}));
