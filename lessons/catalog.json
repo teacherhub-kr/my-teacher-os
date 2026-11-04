@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-11-04",
   "title": "MY MUSIC CLASS · 음악 수업자료실",
   "lessons": [
     {
@@ -32,6 +32,36 @@
       ],
       "verifiedAt": "2026-10-23",
       "note": "실제 사진 14장, 실제 음원 14종, 9개 장면, 교사용 해설 토글 검증. 영상은 플랫폼·학교망에 따라 재생 제한 가능."
+    },
+    {
+      "id": "rhythm-lab",
+      "status": "published",
+      "title": "4박 리듬 실험실: 쉼으로 만드는 그루브",
+      "summary": "4박 두 마디의 소리·쉼 패턴을 직접 편집하고 합성 클릭음으로 들어 보는 45분 창작 수업.",
+      "grade": 2,
+      "gradeLabel": "중학교 2학년",
+      "curriculum": "2022 개정 교육과정 · 성취기준 코드 대조 필요",
+      "category": "창작",
+      "durationMinutes": 45,
+      "steps": 10,
+      "path": "rhythm-lab/",
+      "image": "orchestra-timbre/assets/timpani.jpg",
+      "teacherGuide": true,
+      "media": {
+        "photos": 0,
+        "audios": 0,
+        "videoEmbed": false
+      },
+      "tags": [
+        "리듬",
+        "4박",
+        "쉼",
+        "창작",
+        "퀴즈",
+        "합성음"
+      ],
+      "verifiedAt": "2026-11-04",
+      "note": "학생용 10장면, 교사용 인쇄 지도안. 합성 클릭음(Web Audio API); 실제 악기 음원 아님. 기존 팀파니 사진을 자료실 썸네일로 사용. 공식 성취기준 코드 확인 전."
     }
   ]
 }
