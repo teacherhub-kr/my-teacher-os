@@ -1,5 +1,42 @@
 <!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>4박 리듬 실험실 | MY TEACHER OS</title><style>
 :root{font-family:system-ui,"Malgun Gothic",sans-serif;color:#eaf5ff;background:#081627}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#21436a,#081627 50%);min-height:100vh}button,a{font:inherit}button{cursor:pointer;border:1px solid #53718c;border-radius:12px;background:#183451;color:white;padding:12px 17px}button:hover,button:focus-visible{outline:2px solid #57d8ce}button.active,.primary{background:#0d978d;border-color:#38d9c9;color:white}a{color:#83e9df}.wrap{max-width:1250px;margin:auto;padding:22px}.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}.eyebrow{color:#7adfd8;font-size:14px;font-weight:800}h1{font-size:clamp(30px,5vw,54px);margin:9px 0}p{line-height:1.7}.muted{color:#b2c6d8}.layout{display:grid;grid-template-columns:220px 1fr;gap:18px;margin-top:20px}.nav{display:grid;align-content:start;gap:7px}.nav button{text-align:left}.stage{border:1px solid #385c78;background:#11263e;border-radius:24px;padding:clamp(18px,4vw,36px);min-height:520px}.stage h2{font-size:clamp(26px,4vw,40px)}.chips{display:flex;flex-wrap:wrap;gap:10px}.chip{border-radius:99px;padding:6px 12px;background:#21445b}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:25px 0}.beat{min-height:108px;font-size:25px;font-weight:900;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:7px}.beat small{font-size:13px}.beat.on{background:#14a89c;color:#051c26}.beat.off{background:#29384a}.actions{display:flex;gap:10px;flex-wrap:wrap}.answer{display:block;text-align:left;width:100%;margin:9px 0}.feedback{padding:14px;border-left:4px solid #5de0cd;background:#204259;border-radius:8px;margin:14px 0}.guide{margin-top:16px;background:#203b53;padding:18px;border-radius:14px}.bottom{display:flex;justify-content:space-between;gap:10px;margin-top:20px}.bar{height:7px;background:#31536a;border-radius:99px;overflow:hidden;margin-top:14px}.bar span{display:block;height:100%;background:#55e0ce}.footer{font-size:13px;color:#a4bed0;margin:25px 0}.hidden{display:none}.quiz button.correct{background:#168d72}.quiz button.wrong{background:#8d4254}input[type=range]{width:200px} @media(max-width:750px){.layout{grid-template-columns:1fr}.nav{display:flex;overflow-x:auto}.nav button{white-space:nowrap}.grid{gap:6px}.beat{min-height:85px;padding:7px}}@media print{body{background:white;color:black}.nav,.actions,.bottom,.top button{display:none}.stage{border:0;color:black}}
+</style><style id="orchestra-classroom-quality-v2">
+:root{font-family:system-ui,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;color:#17344e;background:#f0f9ff}
+body{background:linear-gradient(180deg,#e8f7ff 0%,#f8fcff 48%,#effaf6 100%);color:#17344e;font-size:21px}
+.wrap{max-width:1650px;padding:24px}
+.top{background:#fff;border:1px solid #c7e5f1;border-bottom:5px solid #3ecdb4;border-radius:26px;padding:24px 32px;box-shadow:0 10px 28px #246c9714}
+.eyebrow{color:#047e78;font-size:17px}.top h1{color:#154d78;font-size:clamp(36px,4vw,58px)}
+.muted{color:#41677e}.top a{display:inline-flex;align-items:center;background:#eaf6ff;color:#165782;text-decoration:none;border:2px solid #c0ddec;border-radius:15px;padding:12px 16px;font-weight:800}
+button{background:linear-gradient(110deg,#287be9,#2dc5b5);color:#fff;border:0;border-radius:16px;min-height:58px;font-size:20px;font-weight:750;padding:13px 19px}
+button:hover,button:focus-visible{outline:3px solid #8bd7ce;filter:brightness(1.05)}
+button.active,.primary{background:linear-gradient(100deg,#087d9e,#159d84);color:#fff}
+.layout{grid-template-columns:265px minmax(0,1fr);gap:24px;margin-top:24px}
+.nav{background:#fff;border:1px solid #c8e5f4;border-radius:24px;padding:14px;box-shadow:0 8px 24px #1a63831a}
+.nav button{width:100%;background:#fff;color:#204f70;border:0;text-align:left;font-size:19px;padding:14px 16px;border-radius:13px;min-height:57px}
+.nav button.active{background:linear-gradient(100deg,#d7ecff,#daf9ee);color:#096a78;border-left:5px solid #168b74}
+.nav button small{font-size:14px;color:#557e8e}
+.stage{background:#fff;border:1px solid #c9e6f5;border-radius:30px;padding:clamp(24px,3vw,45px);box-shadow:0 15px 45px #1a63831a;min-height:720px}
+.stage h2{color:#144d78;font-size:clamp(35px,3.5vw,52px);line-height:1.2;margin:28px 0 18px}
+.stage p{font-size:25px;color:#315771;line-height:1.65}
+.chip{background:#dffaf2;color:#047769;border:1px solid #b9ebdd;font-size:18px;font-weight:850;padding:8px 16px}
+.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.beat{min-height:170px;border:2px solid #c7dce9;border-radius:23px;box-shadow:0 8px 20px #235f8614;font-size:54px}
+.beat small{font-size:19px}.beat.on{background:linear-gradient(145deg,#d8f9ee,#9cebdc);color:#07584f;border-color:#4cbfac}.beat.off{background:#f0f5fa;color:#617b92;border-style:dashed}
+.beat:hover{transform:translateY(-2px)}
+.actions{gap:12px;margin:16px 0}.actions button{min-width:165px}
+.guide{background:linear-gradient(150deg,#f7f2ff,#f0f8ff);border:2px solid #bea9ef;color:#304767;padding:24px;border-radius:24px}
+.guide h3{color:#553990}.guide p{color:#304767;font-size:21px}
+.answer{background:#eff7ff;color:#1b5278;border:2px solid #bed9e8;font-size:21px;text-align:left}
+.feedback{background:#e2f9ef;border-left:6px solid #26a77f;color:#175948;font-size:21px}
+.quiz .guide{background:#f5faff;border-color:#c7e5f4}
+.quiz strong{color:#194e74;font-size:23px}
+.quiz button.correct{background:#c9f4d7;color:#075a2b}.quiz button.wrong{background:#ffe4e5;color:#8a1f2c}
+.bottom{border-top:2px solid #dcecf3;padding-top:24px;margin-top:40px;align-items:center}
+.bottom strong{color:#34637c}
+.bar{height:9px;background:#cde8ec;margin:20px 0}.bar span{background:linear-gradient(90deg,#287be9,#2dc5b5)}
+.footer{color:#496e83;font-size:16px}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.nav{display:flex;overflow-x:auto;gap:7px}.nav button{min-width:165px}.grid{gap:10px}}
+@media(max-width:650px){.wrap{padding:12px}.top{padding:18px}.stage{padding:18px;min-height:500px}.stage p{font-size:20px}.beat{min-height:110px;font-size:35px}.beat small{font-size:13px}.grid{gap:5px}.actions button{min-width:0}.nav button{font-size:16px;min-width:135px}}
 </style></head><body><div class="wrap"><header class="top"><div><div class="eyebrow">MY TEACHER OS · 중학교 2학년 · 2022 개정 · 45분</div><h1>🥁 4박 리듬 실험실</h1><div class="muted">쉼으로 만드는 그루브 · 창작과 표현</div></div><div class="actions"><a href="../">수업자료실</a><a href="teacher.html" target="_blank" rel="noopener">교사용 지도안 ↗</a><button id="teacherBtn" aria-expanded="false">교사 설명 보기</button><button id="fullBtn">전체화면</button></div></header><div class="bar"><span id="progress"></span></div><div class="layout"><nav class="nav" id="nav" aria-label="수업 장면"></nav><main class="stage"><div class="chips"><span class="chip" id="sceneTime"></span><span class="chip" id="elapsed">수업 타이머 00:00</span><button id="timerBtn">타이머 시작</button></div><section id="content" aria-live="polite"></section><aside id="guide" class="guide" hidden></aside><div class="bottom"><button id="prev">← 이전</button><strong id="counter"></strong><button id="next" class="primary">다음 →</button></div></main></div><div class="footer">브라우저에서 합성 클릭음을 생성합니다. 실제 악기 녹음이 아닙니다. 로그인·학생정보 수집·저장·전송 없음. 소리가 나지 않으면 '소리 켜기'를 누르세요.</div></div><script>
 "use strict";
 const scenes=[
