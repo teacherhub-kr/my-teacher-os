@@ -86,7 +86,7 @@ function homeMarkup(){
       '<div><span class="os65-eyebrow">MY TEACHER OS · TODAY</span>'+
       '<p class="os65-today" id="os65Date"></p><h2>오늘 필요한 업무만</h2>'+
       '<p class="os65-home-desc">수업과 업무는 여기에서 확인하고, 상세 기능은 왼쪽 메뉴에서 바로 사용하세요.</p></div>'+
-      '<button type="button" class="os65-private" data-teacher56="open">교사 전용 평가 원본 <span aria-hidden="true">↗</span></button>'+
+      '<span class="os65-privacy-note">학생 성적은 Google 교사 전용 화면에서만 열립니다.</span>'+
     '</header>'+
     '<div class="os65-quick" aria-label="자주 사용하는 업무">'+
       '<button type="button" class="os65-quick-card" data-os65-view="timetable"><span class="os65-quick-icon">▣</span>'+
@@ -95,8 +95,8 @@ function homeMarkup(){
         '<span class="os65-quick-name">수행평가</span><strong id="os65AssessmentValue">확인 중</strong><small>이 브라우저의 OS 등록 평가</small></button>'+
       '<button type="button" class="os65-quick-card" data-os65-view="projects"><span class="os65-quick-icon">☑</span>'+
         '<span class="os65-quick-name">처리할 업무</span><strong id="os65PendingValue">확인 중</strong><small>OS에 등록된 미완료 할 일</small></button>'+
-      '<button type="button" class="os65-quick-card" data-os65-view="t49-records"><span class="os65-quick-icon">✎</span>'+
-        '<span class="os65-quick-name">생활기록부</span><strong>근거 확인</strong><small>교사 관찰 사실 기반</small></button>'+
+      '<button type="button" class="os65-quick-card os65-private-card" data-teacher56="open" data-teacher56-view="seteuk" aria-label="교사 전용 음악 교과세특 작성실 열기"><span class="os65-quick-icon">✎</span>'+
+        '<span class="os65-quick-name">교과세특</span><strong>작성실 열기 ↗</strong><small id="os65PrivateState">연결 상태 확인 중</small></button>'+
     '</div>'+
     '<div class="os65-focus-grid">'+
       '<section class="os65-focus-panel" aria-labelledby="os65PendingHeading">'+
@@ -204,7 +204,8 @@ function renderHome(){
   }catch(e){}
   var a=y&&Array.isArray(y.assessments)?y.assessments:[];
   var tasks=y&&Array.isArray(y.tasks)?y.tasks.filter(function(t){return !t.done}):[];
-  var signature=JSON.stringify({date:fmtDate(new Date()),year:y&&y.year||'none',lesson:slots&&slots.length,
+  var privateUrlSet=!!globalThis.TeacherOSPrivateMusic56?.getLink?.();
+   var signature=JSON.stringify({date:fmtDate(new Date()),year:y&&y.year||'none',privateLink:privateUrlSet,lesson:slots&&slots.length,
     assess:a.map(function(x){return x.id||x.name}),tasks:tasks.map(function(x){return [x.id,x.text,x.done]}),
     upcoming:y?[y.calendarEvents,y.assessments,y.projects]:null});
   if(signature===lastSnapshot)return;lastSnapshot=signature;
@@ -213,6 +214,7 @@ function renderHome(){
   writeText('os65LessonNote',slots?'검증된 컴시간 기준':'검증된 시간표 미연결');
   writeText('os65AssessmentValue',!y?'미설정':a.length+'개');
   writeText('os65PendingValue',!y?'미설정':tasks.length+'건');
+  writeText('os65PrivateState',privateUrlSet?'주소 등록됨 · Google에서 열기':'웹앱 주소 등록 필요');
   renderTasks(y);renderUpcoming(y);
 }
 function goto(view){
