@@ -5,7 +5,7 @@ const html=read('app-v05.html'),loader=read('index.html'),js=read('teacher-workf
 const css=read('teacher-focused-v65.css'),legacy=read('teacher-focused-v65.js'),v49=read('teacher-dashboard-v49.js');
 assert(loader.includes('teacher-workflow-v66.js?v=66.1-seteuk-entry'),'Missing v66 runtime');
 assert(loader.includes('body:not(.teacher66-mode):not(.teacher-os-fallback) .shell'),'Must suppress old home until v66 ready');
-assert(loader.includes('teacher-focused-v65.css?v=65.0-focused-home-v66-workflow'),'v66 style must bust cache');
+assert(loader.includes('teacher-focused-v65.css?v=65.1-private-shortcut'),'v66 style must bust cache');
 assert(loader.lastIndexOf('teacher-workflow-v66.js')>loader.lastIndexOf('teacher-focused-v65.js'),'v66 must initialize after retained v65 model helpers');
 assert(legacy.includes('if(globalThis.TeacherOSV66Active)return'),'Obsolete v65 menu must never mount');
 assert(legacy.includes('homeMarkup:homeMarkup'),'Original compact home markup reused without cloning data engine');
