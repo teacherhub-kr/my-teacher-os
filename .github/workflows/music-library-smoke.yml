@@ -1,5 +1,10 @@
 name: Music Library Integration Smoke
 on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'tests/music-library-smoke.mjs'
+      - '.github/workflows/music-library-smoke.yml'
   push:
     branches: [main]
     paths:
@@ -31,6 +36,7 @@ jobs:
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/music-library-http.log 2>&1 &
           node tests/music-library-smoke.mjs
       - name: Verify published GitHub Pages website
+        if: github.event_name == 'push'
         env:
           MUSIC_LIB_BASE_URL: https://teacherhub-kr.github.io/my-teacher-os
         run: node tests/music-library-smoke.mjs
