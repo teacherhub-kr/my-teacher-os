@@ -9,6 +9,9 @@ on:
       - 'teacher-connections-v53.js'
       - 'apps-script/music-dashboard/**'
       - 'tests/owner-*.test.js'
+      - 'tests/seteuk-*.test.js'
+      - 'tests/e2e/**'
+      - 'teacher-workflow-v66.js'
       - '.github/workflows/v56-owner-only-music.yml'
   push:
     branches: [main]
@@ -19,6 +22,9 @@ on:
       - 'teacher-connections-v53.js'
       - 'apps-script/music-dashboard/**'
       - 'tests/owner-*.test.js'
+      - 'tests/seteuk-*.test.js'
+      - 'tests/e2e/**'
+      - 'teacher-workflow-v66.js'
       - '.github/workflows/v56-owner-only-music.yml'
 permissions:
   contents: read
@@ -37,8 +43,15 @@ jobs:
           node tests/owner-entry-v58.test.js
           node tests/teacher-activity-home-v61.test.js
           node tests/private-teacher-home-v62.test.js
+          node tests/seteuk-room-v67.test.js
           node tests/workflow-v66.test.js
           node tests/integrated-workspace-v63.test.js
+      - name: v67 세특 workroom real-browser scenarios (fictional students, emulated Google)
+        run: |
+          set -euo pipefail
+          python3 -m venv /tmp/teacheros-seteuk-venv
+          /tmp/teacheros-seteuk-venv/bin/python -m pip install --quiet playwright==1.63.0
+          /tmp/teacheros-seteuk-venv/bin/python -I tests/e2e/seteuk-v67-browser.py "$GITHUB_WORKSPACE"
       - name: Existing Teacher OS smoke tests
         run: |
           set -euo pipefail
