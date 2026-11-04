@@ -25,7 +25,7 @@ assert.match(home, /id="os65PrivateState"/, 'Private shortcut has a grounded con
 assert.match(home, /privateLink:privateUrlSet/, 'Private connection status changes invalidate home cache');
 assert.match(home, /privateUrlSet\?'주소 등록됨 · Google에서 열기':'웹앱 주소 등록 필요'/, 'Address registration must not be presented as verified Google access');
 assert.match(privatePortal, /var LINK_KEY="myTeacherOS\.music56\.ownerOnlyWebAppUrl"/, 'Original owner-only destination remains browser private');
-assert.match(privatePortal, /window\.open\(target,"_blank","noopener,noreferrer"\)/, 'Protected app stays on Google's origin');
+assert(privatePortal.includes('window.open(target,"_blank","noopener,noreferrer")'), "Protected app stays on Google's origin");
 assert.match(workflow, /s\.dataset\.teacher56View='seteuk'/, 'Existing contextual private navigation remains available');
 assert.doesNotMatch(home, /getStudentDetail|sheets\.googleapis\.com|IMPORTRANGE|studentCache/, 'Public home must not request private student data');
 for (const marker of ['teacher-focused-v65.js?v=65.1-private-shortcut','teacher-focused-v65.css?v=65.1-private-shortcut','app-v05.js?v=46.1-safe-year-carry']) {
