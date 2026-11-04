@@ -76,7 +76,7 @@ function render(){
  renderPolicy(y);renderNext(y);renderCalendar(y);renderTimetable(y);renderFlow(y);renderAssess(y);renderClubs(y);renderProjects(y);renderSources(y);renderMemory(y);renderTasks(y);renderHealth(y);
 }
 function openYear(mode='new'){
- const y=cur(),base=mode==='first'?null:y;const proposed=mode==='new'?(y?Number(y.year)+1:new Date().getFullYear()):(y?.year||new Date().getFullYear());$('#yYear').value=proposed;$('#yLevel').value=base?.schoolLevel||'중학교';$('#yOffice').innerHTML=Object.keys(OFFICES).map(o=>`<option ${o===(base?.educationOffice||'경기도교육청')?'selected':''}>${esc(o)}</option>`).join('');$('#ySchool').value=base?.schoolName||'';$('#carryPrev').checked=true;openDlg('#yearDlg')
+ const y=cur(),base=mode==='first'?null:y;const proposed=mode==='new'?(y?Number(y.year)+1:new Date().getFullYear()):(y?.year||new Date().getFullYear());$('#yYear').value=proposed;$('#yLevel').value=base?.schoolLevel||'중학교';$('#yOffice').innerHTML=Object.keys(OFFICES).map(o=>`<option ${o===(base?.educationOffice||'경기도교육청')?'selected':''}>${esc(o)}</option>`).join('');$('#ySchool').value=base?.schoolName||'';$('#carryPrev').checked=false;openDlg('#yearDlg')
 }
 function cloneCarry(prev){return{clubs:arr(prev?.clubs).map(c=>({id:uid(),name:c.name,type:c.type,goal:c.goal||'',due:'',activities:[]})),memories:arr(prev?.memories).map(m=>({...m,id:uid(),carried:true}))}}
 function conflictMessages(y){
