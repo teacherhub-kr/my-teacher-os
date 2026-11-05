@@ -157,6 +157,11 @@
     const y=y21(),sid=selectedStudentId21();if(!y||!sid||!area21||!selectedVariant21)return;const ta=q21(`[data-v21-text="${selectedVariant21}"]`),text=ta?.value.trim();if(!text)return alert('저장할 초안 내용이 없습니다.');
     const variants={};['A','B','C'].forEach(k=>variants[k]=q21(`[data-v21-text="${k}"]`)?.value.trim()||'');
     const prev=currentDraft21(sid,area21,y)||{},gridIds=(q21('#v21DraftGrid')?.dataset.evidenceIds||'').split(',').filter(Boolean),evidenceIds=gridIds.length?gridIds:(Array.isArray(prev.evidenceIds)?prev.evidenceIds:[]),history=Array.isArray(prev.history)?prev.history.slice(-9):[];if(prev.text)history.push({text:prev.text,selectedVariant:prev.selectedVariant||'',evidenceIds:prev.evidenceIds||[],savedAt:prev.updatedAt||new Date().toISOString()});
+    // A saved draft cannot silently keep evidence references deleted from the roster.
+    const linked=evidence21(sid,area21,y).filter(r=>evidenceIds.includes(r.id));
+    if(!evidenceIds.length||linked.length!==evidenceIds.length){
+      return alert('근거가 삭제되었거나 연결되지 않았습니다. 관찰 근거를 다시 선택해 초안을 생성하세요.');
+    }
     y.studentDrafts[sid]=y.studentDrafts[sid]||{};y.studentDrafts[sid][area21]={...prev,text,selectedVariant:selectedVariant21,variants,evidenceIds,updatedAt:new Date().toISOString(),history};save21();q21('#v21DraftStatus').textContent='선택한 초안을 저장했습니다. 원문 근거와 연결도 함께 보존됩니다.';updateSavebar21(y.studentDrafts[sid][area21]);
   }
   function bind21(){
