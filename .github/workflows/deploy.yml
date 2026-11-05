@@ -86,6 +86,7 @@ jobs:
         run: |
           set -euo pipefail
           node tests/core-tests.js
+          node tests/live-loader-assets.test.js
           node --check teacher-owner-entry-v58.js
           node tests/owner-entry-v58.test.js
           node tests/teacher-activity-home-v61.test.js
