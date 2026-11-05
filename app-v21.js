@@ -41,7 +41,6 @@
   // Variants only reorder, combine or shorten the teacher's observed facts.
   function makeVariants21(rows,area){
     const facts=rows.map(r=>cleanFact21(r.text)).filter(Boolean).slice(-10);if(!facts.length)return null;
-    const first=facts[0],last=facts[facts.length-1],middle=facts.slice(1,-1);
     // Do not infer a sequence ("이후", "최근") or lasting trait from undated facts.
     const a=facts.map(punct21).join(' ');
     const process=[...facts].sort((x,y)=>{
@@ -94,12 +93,12 @@
   }
   function saveQuickEvidence21(){
     const y=y21(),sid=selectedStudentId21(),date=q21('#v21QuickDate')?.value||'',
-      raw=q21('#v21QuickFact')?.value||'',fact=raw.replace(/\\s+/g,' ').trim(),
+      raw=q21('#v21QuickFact')?.value||'',fact=raw.replace(/\s+/g,' ').trim(),
       confirmed=q21('#v21QuickConfirmed')?.checked,status=q21('#v21QuickStatus');
     const fail=message=>{if(status)status.textContent=message;return false};
     if(!y||!sid||!availableAreas21(y).includes(area21))return fail('먼저 학생과 작성 항목을 선택하세요.');
     if(!selectedFocus21)return fail('실제 관찰한 항목을 하나 선택하세요.');
-    if(!/^20\\d{2}-\\d{2}-\\d{2}$/.test(date)||date>koreanToday21())return fail('실제 관찰 날짜를 확인하세요.');
+    if(!/^20\d{2}-\d{2}-\d{2}$/.test(date)||date>koreanToday21())return fail('실제 관찰 날짜를 확인하세요.');
     if(fact.length<15)return fail('학생의 구체적 행동이나 결과를 15자 이상 기록하세요.');
     if(fact.length>700)return fail('근거가 너무 깁니다. 구체적 사실 700자 이내로 정리하세요.');
     if(SENSITIVE_RE21.test(fact))return fail('민감정보가 포함된 것으로 보입니다. 제외한 후 다시 확인하세요.');
