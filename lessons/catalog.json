@@ -72,7 +72,7 @@
       "summary": "p·mp·mf·f와 점점 세게·여리게를 합성 선율로 비교하고 4마디 셈여림을 개별 편곡하는 45분 수업.",
       "grade": 2,
       "gradeLabel": "중학교 2학년",
-      "curriculum": "2022 개정 교육과정 · 성취기준 코드 공식 원문 대조 필요",
+      "curriculum": "2022 개정 음악과 교육과정 · [9음03-01], [9음02-01]",
       "category": "창작",
       "durationMinutes": 45,
       "steps": 10,
@@ -94,7 +94,7 @@
         "교사 설명"
       ],
       "verifiedAt": "2026-11-05",
-      "note": "Web Audio API 자체 합성 선율. 외부 음원 없음. 브라우저 실제 실행 검증 전."
+      "note": "Web Audio API 자체 합성 선율. 외부 음원 없음. 공식 성취기준 원문 확인. 브라우저 실행 및 GitHub Pages 실제 배포 검증 전."
     }
   ]
 }
