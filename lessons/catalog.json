@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-04",
+  "updatedAt": "2026-11-05",
   "title": "MY MUSIC CLASS · 음악 수업자료실",
   "lessons": [
     {
@@ -64,6 +64,37 @@
       ],
       "verifiedAt": "2026-11-04",
       "note": "구글 드라이브 리듬 청음 연습·리듬감 향상·바디퍼커션 2차시 참고 재구성. 외부 자료 원본 미공개. 합성 타격음이며 실제 녹음 아님. 브라우저 현장 검증 필요."
+    },
+    {
+      "id": "dynamics-expression",
+      "status": "published",
+      "title": "셈여림 표현 실험실: 같은 선율, 다른 감정",
+      "summary": "p·mp·mf·f와 점점 세게·여리게를 합성 선율로 비교하고 4마디 셈여림을 개별 편곡하는 45분 수업.",
+      "grade": 2,
+      "gradeLabel": "중학교 2학년",
+      "curriculum": "2022 개정 교육과정 · 성취기준 코드 공식 원문 대조 필요",
+      "category": "창작",
+      "durationMinutes": 45,
+      "steps": 10,
+      "path": "dynamics-expression/",
+      "image": "orchestra-timbre/assets/violin.jpg",
+      "teacherGuide": true,
+      "media": {
+        "photos": 0,
+        "audios": 0,
+        "videoEmbed": false
+      },
+      "tags": [
+        "셈여림",
+        "크레셴도",
+        "데크레셴도",
+        "음악적 표현",
+        "합성 선율",
+        "개별 창작",
+        "교사 설명"
+      ],
+      "verifiedAt": "2026-11-05",
+      "note": "Web Audio API 자체 합성 선율. 외부 음원 없음. 브라우저 실제 실행 검증 전."
     }
   ]
 }
