@@ -146,6 +146,23 @@ jobs:
           grep -q 'myTeacherOS.deviceStorageSelfTest.v1' app-v32.js
           grep -q 'opt.disabled=!passed' app-v32.js
 
+      - name: Install pinned Chromium browser smoke dependencies
+        run: |
+          npm install --no-save --package-lock=false @playwright/test@1.55.0
+          npx playwright install --with-deps chromium
+
+      - name: Require public Teacher OS browser boot and workflow navigation
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/teacher-os-smoke.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" || true' EXIT
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
+            sleep 1
+          done
+          npx playwright test tests/current-public-browser.spec.cjs --reporter=line --workers=1
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
