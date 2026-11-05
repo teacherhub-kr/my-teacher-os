@@ -15,4 +15,5 @@ if(!css.includes('.v21-draft-grid'))throw new Error('draft grid CSS missing');
 if(!css.includes('@media(max-width:680px)'))throw new Error('mobile draft CSS missing');
 if(!index.includes('app-v21.js'))throw new Error('index does not load v21 JS');
 if(!index.includes('app-v21.css'))throw new Error('index does not load v21 CSS');
+require('./v21-direct-evidence.test.js');
 console.log('v0.21 evidence-based three-draft studio tests passed');
