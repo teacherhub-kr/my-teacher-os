@@ -16,6 +16,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Verify public loader references
         run: node tests/live-loader-assets.test.js
+      - name: Verify teacher-confirmed evidence model before browser smoke
+        run: node tests/v21-tests.js
       - name: Install pinned Playwright test runner and Chromium
         run: |
           npm install --no-save --package-lock=false @playwright/test@1.55.0
