@@ -85,13 +85,13 @@ html{scroll-behavior:smooth}.hero{grid-template-columns:1.2fr .8fr}.hero h1{font
 <script>
 (function(){
 "use strict";
-var all=[],grade="all",area="all",topic="all",search="",favOnly=false,areaNames=["연주","감상","창작"],favorites={};
+var all=[],grade="all",area="all",topic="all",search="",favOnly=false,areaNames=["연주","감상","창작"];
 var q=function(s){return document.querySelector(s)};
 function el(tag,cls,content){var x=document.createElement(tag);if(cls)x.className=cls;if(content!==undefined)x.textContent=String(content);return x}
 function readFavorites(){try{var v=JSON.parse(localStorage.getItem("my-music-class-favorites-v1")||"[]");return new Set(Array.isArray(v)?v.filter(x=>typeof x==="string"):[])}catch(e){return new Set()}}
 var favSet=readFavorites();
 function saveFavorites(){try{localStorage.setItem("my-music-class-favorites-v1",JSON.stringify(Array.from(favSet)))}catch(e){}}
-function valid(x){return x&&x.status==="published"&&typeof x.id==="string"&&/^[a-z0-9-]+$/.test(x.id)&&typeof x.title==="string"&&typeof x.topic==="string"&&x.topic.length>0&&/^[a-z0-9-]+\/$/.test(x.path)&&x.path===x.id+"/"&&/^[a-z][a-z0-9-]*$/.test(x.coverTheme)&&(!x.image||/^[a-z0-9-]+\/assets\/[a-z0-9-]+\.(?:jpg|png|webp)$/.test(x.image))&&Array.isArray(x.areas)&&x.areas.every(a=>areaNames.includes(a))&&Number.isInteger(x.grade)&&x.grade>=1&&x.grade<=3}
+function valid(x){return x&&x.status==="published"&&typeof x.id==="string"&&/^[a-z0-9-]+$/.test(x.id)&&typeof x.title==="string"&&typeof x.topic==="string"&&x.topic.length>0&&/^[a-z0-9-]+\/$/.test(x.path)&&x.path===x.id+"/"&&typeof x.coverTheme==="string"&&/^[a-z][a-z0-9-]*$/.test(x.coverTheme)&&(!x.image||/^[a-z0-9-]+\/assets\/[a-z0-9-]+\.(?:jpg|png|webp)$/.test(x.image))&&Array.isArray(x.areas)&&x.areas.length>0&&x.areas.every(a=>areaNames.includes(a))&&x.areas.includes(x.category)&&Number.isInteger(x.grade)&&x.grade>=1&&x.grade<=3}
 function setArea(v){area=v;q("#categoryFilter").value=v;drawIndices();render()}
 function setTopic(v){topic=v;q("#topicFilter").value=v;drawIndices();render()}
 function drawIndices(){
@@ -101,7 +101,7 @@ function drawIndices(){
  var topics=Array.from(new Set(all.map(x=>x.topic)));var idx=q("#topicIndex");idx.replaceChildren();var options=q("#topicFilter");options.replaceChildren();function addTopic(value,text){var o=el("option","",text);o.value=value;options.append(o);var b=el("button","topicBtn",text);b.type="button";b.dataset.topic=value;b.setAttribute("aria-pressed",String(topic===value));idx.append(b)}
  addTopic("all","모든 주제");topics.forEach(t=>addTopic(t,t+" · "+all.filter(x=>x.topic===t).length+"개"));options.value=topic;
 }
-function cover(x){var a=el("a","cover cover-"+x.coverTheme);a.href=x.path;a.setAttribute("aria-label",x.title+" 열기");if(x.image){var im=el("img");im.src=x.image;im.alt="오케스트라 바이올린 대표 사진";im.loading="lazy";a.append(im);return a}var art=el("div","coverIllustration");art.append(el("span","coverIcon",x.coverSymbol||"🎵"));if(x.coverTheme==="rhythm"){var row=el("div","beatRow");["1","2","3","4"].forEach(v=>row.append(el("span","beatDot",v)));art.append(row)}else if(x.coverTheme==="dynamics"){art.append(el("div","dynamicTrack","p　↗　mf　↗　f"))}art.append(el("span","coverText",x.topic),el("span","coverCaption",x.coverCaption||"중학교 음악수업"));a.append(art);return a}
+function cover(x){var a=el("a","cover cover-"+x.coverTheme);a.href=x.path;a.setAttribute("aria-label",x.title+" 열기");if(x.image){var im=el("img");im.src=x.image;im.alt=x.title+" 대표 사진";im.loading="lazy";a.append(im);return a}var art=el("div","coverIllustration");art.append(el("span","coverIcon",x.coverSymbol||"🎵"));if(x.coverTheme==="rhythm"){var row=el("div","beatRow");["1","2","3","4"].forEach(v=>row.append(el("span","beatDot",v)));art.append(row)}else if(x.coverTheme==="dynamics"){art.append(el("div","dynamicTrack","p　↗　mf　↗　f"))}art.append(el("span","coverText",x.topic),el("span","coverCaption",x.coverCaption||"중학교 음악수업"));a.append(art);return a}
 function card(x){var a=el("article","card");a.append(cover(x));var body=el("div","cardBody"),tags=el("div","tags");[[x.gradeLabel,"blue"],[x.category,""],[x.durationMinutes+"분","yellow"]].forEach(function(v){tags.append(el("span","tag "+v[1],v[0]))});body.append(tags,el("div","topicBadge","▣ "+x.topic),el("h3","",x.title),el("p","",x.summary));
  var feat=el("div","features");feat.textContent=["총 "+x.steps+"장면",x.teacherGuide?"교사 설명":null,(x.media&&x.media.audios)?"음원 "+x.media.audios+"종"+(x.id==="orchestra-timbre"?"":" · 외부 연결 필요"):null,(x.media&&x.media.photos)?"사진 "+x.media.photos+"장":null].filter(Boolean).join(" · ");body.append(feat);
  var actions=el("div","cardActions"),play=el("a","launch","▶ 이 수업 실행");play.href=x.path;
