@@ -43,4 +43,5 @@ jobs:
         env:
           MUSIC_LIB_BASE_URL: https://teacherhub-kr.github.io/my-teacher-os
           MUSIC_LIB_REQUIRE_MEDIA: '1'
+          MUSIC_LIB_EXPECTED_SHA: ${{ github.sha }}
         run: node tests/music-library-smoke.mjs
