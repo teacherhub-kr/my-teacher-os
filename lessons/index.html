@@ -106,7 +106,7 @@ function card(x){var a=el("article","card");a.append(cover(x));var body=el("div"
  var feat=el("div","features");feat.textContent=["총 "+x.steps+"장면",x.teacherGuide?"교사 설명":null,(x.media&&x.media.audios)?"음원 "+x.media.audios+"종"+(x.id==="orchestra-timbre"?"":" · 외부 연결 필요"):null,(x.media&&x.media.photos)?"사진 "+x.media.photos+"장":null].filter(Boolean).join(" · ");body.append(feat);
  var actions=el("div","cardActions"),play=el("a","launch","▶ 이 수업 실행");play.href=x.path;
  var fav=el("button","favoriteButton",favSet.has(x.id)?"★":"☆");fav.type="button";fav.dataset.favorite=x.id;fav.setAttribute("aria-label",x.title+" 즐겨찾기");fav.setAttribute("aria-pressed",String(favSet.has(x.id)));actions.append(play,fav);body.append(actions);
- if(x.id==="rhythm-lab"){var teacher=el("a","teacherLaunch","📝 전체 교사용 지도안");teacher.href="rhythm-lab/teacher.html";body.append(teacher)}
+ if(x.teacherGuide===true){var teacher=el("a","teacherLaunch","📝 교사용 지도안");teacher.href=x.path+"teacher.html";teacher.setAttribute("aria-label",x.title+" 교사용 지도안 열기");body.append(teacher)}
  a.append(body);return a}
 function render(){
  var term=search.trim().toLowerCase(), list=all.filter(function(x){var txt=[x.title,x.summary,x.curriculum,x.gradeLabel,x.category,x.topic].concat(x.areas||[],x.format||[],x.tags||[]).join(" ").toLowerCase();return (collection==="all"||collectionOf(x)===collection)&&(grade==="all"||String(x.grade)===grade)&&(area==="all"||x.areas.includes(area))&&(topic==="all"||x.topic===topic)&&(!favOnly||favSet.has(x.id))&&(!term||txt.includes(term))});
