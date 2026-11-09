@@ -43,7 +43,8 @@
       ],
       "coverTheme": "orchestra",
       "coverSymbol": "🎻",
-      "coverCaption": "현악·목관·금관·타악 음색 탐험"
+      "coverCaption": "현악·목관·금관·타악 음색 탐험",
+      "collection": "instrument"
     },
     {
       "id": "rhythm-lab",
@@ -89,7 +90,8 @@
       ],
       "coverTheme": "rhythm",
       "coverSymbol": "🥁",
-      "coverCaption": "타 · 티티 · 쉿 / 나만의 8박"
+      "coverCaption": "타 · 티티 · 쉿 / 나만의 8박",
+      "collection": "creative"
     },
     {
       "id": "dynamics-expression",
@@ -139,7 +141,8 @@
       ],
       "coverTheme": "dynamics",
       "coverSymbol": "🎹",
-      "coverCaption": "p · crescendo · f / 감정의 흐름"
+      "coverCaption": "p · crescendo · f / 감정의 흐름",
+      "collection": "creative"
     }
   ],
   "library": {
