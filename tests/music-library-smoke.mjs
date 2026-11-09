@@ -39,7 +39,7 @@ async function cardCount(){return page.locator("#lessonGroups .card").count()}
 try{
  await waitForDeployedLesson();
  await go("/lessons/?smoke="+Date.now());
- await page.waitForFunction(()=>document.querySelector("#resultCount")?.textContent?.includes("등록된 독립 수업"),null,{timeout:15000});
+ await page.waitForFunction(()=>document.querySelector("#resultCount")?.textContent?.includes("전체 공개 수업"),null,{timeout:15000});
  const response=await page.request.get(origin+"/lessons/catalog.json?smoke="+Date.now(),{timeout:20000});
  check(response.ok(),"Catalog HTTP "+response.status());
  const data=await response.json();
@@ -50,11 +50,13 @@ try{
  check(new Set(ids).size===ids.length,"Duplicate lesson id in catalog");
  for(const id of mustHave)check(ids.includes(id),"Missing previously published lesson: "+id);
  await page.waitForFunction(
-   n=>document.querySelector("#resultCount")?.textContent?.includes("등록된 독립 수업 "+n+"개"),
+   n=>document.querySelector("#resultCount")?.textContent?.includes("전체 공개 수업 "+n+"개"),
    published.length,{timeout:15000}
  );
  check(await cardCount()===published.length,"Cards count mismatch: "+await cardCount()+" vs "+published.length);
  check(await page.locator("#sixCollections button[data-collection]").count()===6,"Six categories not available");
+ check(await page.locator("#showAllLessons").isVisible(),"All lessons button is missing");
+ check((await page.locator("#heroPublishedCount").textContent()).includes(String(published.length)),"Hero published count does not match catalog");
  console.log("CATALOG: "+published.length+" published lessons, 6 category buttons");
 
  await page.locator("#lessonSearch").fill("가믈란");
@@ -75,9 +77,13 @@ try{
  await page.locator('#sixCollections [data-collection="world"]').click();
  check(await cardCount()===1,"World music collection should contain Bali lesson");
  check((await page.locator("#lessonGroups .card .launch").getAttribute("href"))==="bali-gamelan-archive/","World music card launch path");
- await page.locator('#sixCollections [data-collection="world"]').click();
- check(await cardCount()===published.length,"Category toggle did not restore all lessons");
- console.log("FILTERS: search, empty, grade, area, world PASS");
+ await page.locator("#lessonSearch").fill("발리");
+ await page.locator("#showAllLessons").click();
+ check(await cardCount()===published.length,"Show all button did not restore all lessons");
+ check(await page.locator("#lessonSearch").inputValue()==="","Show all did not clear search");
+ check(await page.locator("#categoryFilter").inputValue()==="all","Show all did not clear area filter");
+ check((await page.locator("#resultCount").textContent()).includes("전체 공개 수업 "+published.length+"개"),"Visible total is incorrect");
+ console.log("FILTERS: search, empty, grade, area, world and show-all reset PASS");
 
  const guideCount=published.filter(x=>x.teacherGuide===true).length;
  check(await page.locator("#lessonGroups .teacherLaunch").count()===guideCount,"Teacher-guide card links missing");
