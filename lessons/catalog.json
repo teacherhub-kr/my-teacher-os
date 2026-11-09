@@ -61,7 +61,7 @@
       "image": null,
       "teacherGuide": true,
       "media": {
-        "photos": 0,
+        "photos": 2,
         "audios": 8,
         "videoEmbed": true
       },
@@ -76,7 +76,7 @@
         "교사 설명"
       ],
       "verifiedAt": "2026-11-04",
-      "note": "타·티티·쉿 청음, 8박 리듬 창작, 바디퍼커션. LinnDrum LM-2 외부 WAV 8종 로딩 구조(로컬 파일 0개), 외부 영상 1개. 실제 교실 브라우저 소리·영상 재생은 검증 필요.",
+      "note": "드럼 세트·공연자 사진 2종(Paul Harrison, Agbebiyi Adekunle Tadek CC BY-SA4.0)을 첫 화면에 배치하고 실제 타격음 도구로 연결. 개별 리듬 제작 기능은 보존.",
       "topic": "리듬·박자",
       "areas": [
         "창작",
@@ -108,7 +108,7 @@
       "image": null,
       "teacherGuide": true,
       "media": {
-        "photos": 0,
+        "photos": 2,
         "audios": 3,
         "videoEmbed": false
       },
@@ -128,7 +128,7 @@
         "새로운 음악 레퍼토리"
       ],
       "verifiedAt": "2026-11-05",
-      "note": "오케스트라 음원 미사용, 별도 피아노·기타 레퍼토리 사용. Wikimedia Commons 실제 피아노 녹음 2곡(Constantin Stephan, CC BY-SA 4.0)과 어쿠스틱 기타 녹음 1종(RyGuy, 퍼블릭 도메인). 녹음 서버 외부 연결 필요; 교실 브라우저 실재생 확인 전. 음량 조절은 웹에서 적용되며 원곡 연주자 본래의 셈여림과 구분.",
+      "note": "지휘자·오케스트라 공연 사진 2종(Jonjobaker CC BY-SA4.0, MoTabChoir01 Public Domain) 추가. 기존 실제 셈여림 감상 음원 및 표현 실험 기능 보존.",
       "topic": "셈여림·표현",
       "areas": [
         "창작",
@@ -148,7 +148,7 @@
       "id": "gayageum-observation",
       "status": "published",
       "title": "가야금 소리의 결: 실제 연주로 듣는 음색과 여운",
-      "summary": "가야금 실제 연주를 듣고 음색·여운·시김새를 관찰하며 소리 근거를 개별 기록하는 45분 수업.",
+      "summary": "가야금 실연 영상과 연주 사진으로 줄을 뜯고 누르는 손의 역할을 배우고, 시김새를 허밍·몸짓으로 표현하는 45분 수업.",
       "grade": 2,
       "gradeLabel": "중학교 2학년",
       "curriculum": "2022 개정 음악과 · [9음02-01] 중심, [9음02-02] 보조",
@@ -158,12 +158,12 @@
         "연주"
       ],
       "durationMinutes": 45,
-      "steps": 10,
+      "steps": 4,
       "path": "gayageum-observation/",
       "image": null,
       "teacherGuide": true,
       "media": {
-        "photos": 0,
+        "photos": 2,
         "audios": 0,
         "videoEmbed": true
       },
@@ -178,16 +178,16 @@
       ],
       "topic": "국악·가야금",
       "format": [
-        "실연 영상 감상",
-        "관찰 기록",
-        "연주 동작 탐구",
-        "4문항 퀴즈"
+        "45초 가야금 실연 감상",
+        "양손 연주 동작 모방",
+        "시김새 허밍",
+        "8박 표현 실연"
       ],
       "coverTheme": "traditional",
       "coverSymbol": "🎶",
       "coverCaption": "가야금 소리와 여운",
       "collection": "traditional",
-      "note": "Wikimedia Commons Xia의 실제 가야금 실연 45초 OGG/Theora 영상, CC BY-SA 4.0. 원본 출처·라이선스 확인, 학생용 JS 구문/10장면·45분 검증. 외부 영상 재생은 학교망·브라우저 지원에 따라 달라질 수 있으며 실제 교실 기기 검증은 미완료. 재생 실패 시 원본 Wikimedia 페이지 링크 사용."
+      "note": "2026-11-09 4단계 음악활동 중심 재설계. Xia 연주 45초, Paul Walk(CC BY 4.0) 사진, KOCIS(CC BY-SA 2.0) 사진 2종 출처 연결. 5+15+15+10분. 학교 브라우저 직접 재생은 별도 확인."
     },
     {
       "id": "vocal-breath-phrasing",
@@ -240,7 +240,7 @@
       "id": "bali-gamelan-archive",
       "status": "published",
       "title": "1931, 발리의 두 소리: 가믈란 기록 보관소",
-      "summary": "1931년 발행된 발리 가믈란의 의식·궁정 음반을 듣고 역사적 사실과 음악적 관찰을 구분해 전시 해설문을 만드는 45분 수업.",
+      "summary": "1931년 발리 가믈란 녹음 두 곡과 실연 사진을 듣고 보며, 맞물리는 리듬을 손뼉·무릎치기로 재현하는 45분 수업.",
       "grade": 2,
       "gradeLabel": "중학교 2학년",
       "curriculum": "2022 개정 음악과 · [9음02-02], [9음02-03]",
@@ -249,12 +249,12 @@
         "감상"
       ],
       "durationMinutes": 45,
-      "steps": 10,
+      "steps": 4,
       "path": "bali-gamelan-archive/",
       "image": null,
       "teacherGuide": true,
       "media": {
-        "photos": 0,
+        "photos": 2,
         "audios": 2,
         "videoEmbed": false
       },
@@ -272,18 +272,17 @@
       ],
       "topic": "세계음악·음악사",
       "format": [
-        "1931년 기록음원 비교",
-        "소리 근거 기록",
-        "역사 자료 분석",
-        "박물관 전시 라벨 작성",
-        "개별 형성평가"
+        "1931 가믈란 두 음원 감상",
+        "맞물리는 4박 몸리듬",
+        "반복·타격·겹침 청음",
+        "8박 가믈란 표현"
       ],
       "coverTheme": "world",
       "coverSymbol": "🌏",
       "coverCaption": "1931년 발리 가믈란 · 의식과 궁정의 기록",
       "collection": "world",
       "verifiedAt": "2026-11-09",
-      "note": "1931년 음반 2곡, Wikimedia Commons Public Domain 표기. 출처·원본 파일 경로와 코드/45분 합계 검증, 외부 OGG/Vorbis 음원 2개 의존. 실제 학교 브라우저/네트워크 실재생은 환경별 차이가 있으며 별도 확인 필요. 저작권은 지역별 법률 확인 필요."
+      "note": "2026-11-09 4단계 음악활동 중심 재설계. Commons 1931년 녹음 2개, Eka Purna Sumeika/Andika Panendra CC BY-SA 4.0 사진 2종. 교실용 응용 리듬과 원음 정확 전사 구별. 5+15+15+10분."
     },
     {
       "id": "arirang-vocal",
@@ -316,7 +315,7 @@
       "collection": "vocal",
       "teacherGuide": true,
       "media": {
-        "photos": 0,
+        "photos": 2,
         "audios": 1,
         "videoEmbed": false
       },
@@ -331,7 +330,7 @@
         "전통 노래"
       ],
       "verifiedAt": "2026-11-09",
-      "note": "2005 U.S. Army Chorus와 테너 솔리스트의 실제 아리랑 녹음, Wikimedia Commons Arirang.ogg(1:29), 미국 연방정부 공식 업무 저작물로 미국 내 Public Domain. 한국 등 다른 법역의 저작인접권 상태는 다를 수 있음. 외부 Wikimedia 스트리밍, 학교망에 따라 재생 제한 가능. 공식 2022 개정 연주 성취기준 대조. 새 페이지 E2E 재생 검증은 배포 후 시행."
+      "note": "KOCIS 국악 실연 사진 2종(Jeon Han CC BY-SA2.0)을 가창 수업 첫 화면에 배치. U.S. Army Chorus 2005년 녹음은 외부 Commons 원본 링크. 10장면 가창 활동 구조는 후속 교육적 재설계 검토 필요."
     }
   ],
   "library": {
