@@ -287,8 +287,8 @@
     {
       "id": "arirang-vocal",
       "status": "published",
-      "title": "아리랑, 나의 목소리로: 실제 가창 녹음과 프레이징",
-      "summary": "미 육군 합창단의 실제 아리랑 녹음을 듣고 독창·합창의 표현을 비교하며, 가사·호흡을 살린 개별 가창 설계 및 자기 피드백을 진행하는 45분 수업.",
+      "title": "아리랑, 나의 목소리로: 국립국악원 공연과 세마치 가창",
+      "summary": "국립국악원이 직접 촬영한 아리랑 공연 영상을 듣고 가사의 네 부분을 따라 부르며 세 박 리듬과 숨표 A/B를 비교하는 45분 수업.",
       "grade": 2,
       "gradeLabel": "중학교 2학년",
       "curriculum": "2022 개정 음악과 · [9음01-01], [9음01-02]",
@@ -299,14 +299,15 @@
       ],
       "topic": "가창·아리랑",
       "format": [
-        "실제 합창·독창 녹음 감상",
-        "아리랑 가사 해석",
-        "개별 가창·허밍",
-        "프레이즈 설계",
-        "자기 피드백"
+        "국립국악원 아리랑 전문 가창 공연",
+        "가락 따라 부르기",
+        "메기고 받기",
+        "세마치 3박 몸리듬",
+        "숨표 A/B 비교",
+        "개별 가창"
       ],
       "durationMinutes": 45,
-      "steps": 10,
+      "steps": 4,
       "path": "arirang-vocal/",
       "image": null,
       "coverTheme": "vocal",
@@ -316,8 +317,8 @@
       "teacherGuide": true,
       "media": {
         "photos": 2,
-        "audios": 1,
-        "videoEmbed": false
+        "audios": 0,
+        "videoEmbed": true
       },
       "tags": [
         "아리랑",
@@ -330,7 +331,7 @@
         "전통 노래"
       ],
       "verifiedAt": "2026-11-09",
-      "note": "KOCIS 국악 실연 사진 2종(Jeon Han CC BY-SA2.0)을 가창 수업 첫 화면에 배치. U.S. Army Chorus 2005년 녹음은 외부 Commons 원본 링크. 10장면 가창 활동 구조는 후속 교육적 재설계 검토 필요."
+      "note": "2026-11-09 공식 국립국악원 토요명품공연 아리랑 영상 Cf-fe9N7f-k 주 자료(YouTube 공식 임베드·원본), 4단계 5+15+15+10분 음악실연. 국립국악원 표준악보집은 교사 PC 별도 링크 제시. 과거 U.S. Army Chorus Arirang.ogg는 선택적 출처 링크만 유지하며 외부 CDN 간헐 ORB 차단으로 필수 재생 의존 제거."
     }
   ],
   "library": {

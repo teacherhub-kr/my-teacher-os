@@ -201,30 +201,29 @@ try{
   check(media.every(x=>x.ok&&x.duration>150),"Bali external audio not browser-playable: "+JSON.stringify(media));
  }
  await go("/lessons/arirang-vocal/");
- check(await page.locator(".scene").count()===10,"Arirang must contain ten stages");
- check(await page.locator("#menu button").count()===10,"Arirang navigation missing");
- check(await page.locator("#recording").count()===1,"Arirang actual vocal recording missing");
- check((await page.locator("#recording").getAttribute("src"))?.includes("Arirang.ogg"),"Arirang original recording link changed");
- await page.locator("#next").click();
- check((await page.locator("#where").textContent())==="2 / 10","Arirang next scene broken");
- if(requireMedia){
-  const result=await page.evaluate(async()=>{
-   const a=document.getElementById("recording");
-   return await new Promise(resolve=>{
-    let finished=false;
-    const done=info=>{if(finished)return;finished=true;clearTimeout(t);a.removeEventListener("loadedmetadata",ok);a.removeEventListener("error",err);resolve(info)};
-    const ok=()=>done({ok:true,duration:a.duration,readyState:a.readyState});
-    const err=()=>done({ok:false,errorCode:a.error?.code||null,src:a.currentSrc});
-    const t=setTimeout(()=>done({ok:false,reason:"Arirang 30s media timeout",src:a.currentSrc}),30000);
-    a.addEventListener("loadedmetadata",ok);a.addEventListener("error",err);a.preload="metadata";a.load();if(a.readyState>=1)ok();
-   });
-  });
-  console.log("ARIRANG MEDIA: "+JSON.stringify(result));
-  check(result.ok&&result.duration>80&&result.duration<100,"Arirang vocal recording not playable: "+JSON.stringify(result));
- }
+ check(await page.locator("#tabs button[data-step]").count()===4,"Arirang should use four meaningful music stages");
+ check(await page.locator("#playOfficial").count()===1,"Official National Gugak Center Arirang video missing");
+ await page.locator("#playOfficial").click();
+ check((await page.locator("#officialArirang iframe").getAttribute("src"))?.includes("Cf-fe9N7f-k"),"Official Arirang performer iframe invalid");
+ check(await page.locator('a[href*="youtube.com/watch?v=Cf-fe9N7f-k"]').count()>=1,"Official Arirang video original URL missing");
+ await page.locator('#tabs button[data-step="1"]').click();
+ check(await page.locator("#mainActivity [data-phrase]").count()===4,"Arirang sing-along phrase guide missing");
+ await page.locator('#mainActivity [data-phrase="2"]').click();
+ check((await page.locator('#mainActivity [data-phrase="2"]').getAttribute("class"))?.includes("mark"),"Arirang singalong phrase selection failed");
+ await page.locator('#tabs button[data-step="2"]').click();
+ check(await page.locator("#beat button").count()===3,"Arirang three-beat exercise missing");
+ await page.locator('[data-breath="B"]').click();
+ check((await page.locator('[data-breath="B"]').getAttribute("class"))?.includes("active"),"Arirang A/B breath comparison failed");
+ await page.locator('#tabs button[data-step="3"]').click();
+ check((await page.locator("#mainActivity").textContent()).includes("합창"),"Arirang choir performance finale missing");
+ console.log("ARIRANG OFFICIAL: National Gugak Center recorded concert linked, four vocal stages and semachi/phrasing interactions PASS");
+ // Legacy Wikimedia OGG is now an OPTIONAL comparison source, because the
+ // same external CDN intermittently returned Chromium ERR_BLOCKED_BY_ORB.
+ // The original external recording is linked, not republished or hidden.
+ check(await page.locator('a[href*="commons.wikimedia.org/wiki/File:Arirang.ogg"]').count()>=1,"Optional original Arirang choir source missing");
  check(errors.length===0,"Arirang page errors: "+JSON.stringify(errors));
- console.log("ARIRANG UI: 10 scenes, navigation, original real human vocal audio PASS");
- console.log(JSON.stringify({VERDICT:"PASS",origin,published:published.length,categories:6,links:"PASS",lessons:ids,guideLinks:guideCount,bali:"PASS",arirang:"PASS",audioMetadata:requireMedia?"PASS":"NOT_CHECKED_LOCAL"}));
+ 
+ console.log(JSON.stringify({VERDICT:"PASS",origin,published:published.length,categories:6,links:"PASS",lessons:ids,guideLinks:guideCount,bali:"PASS",arirang:"PASS",audioMetadata:requireMedia?"BALI_2_FILES_LOADED__ARIRANG_OFFICIAL_YOUTUBE_LINK_ONLY":"NOT_CHECKED_LOCAL"}));
 }catch(err){
  console.error("FAIL: "+(err.stack||String(err)));
  console.error("EXTERNAL_MEDIA_DIAGNOSTICS: "+JSON.stringify(externalMediaErrors));
