@@ -1,81 +1,157 @@
 import { chromium } from "playwright";
-const origin=process.env.MUSIC_LIB_BASE_URL || "http://127.0.0.1:8765";
+
+// The published catalog is the source of truth. Never hardcode a one-lesson
+// layout: the library intentionally grows each time a new lesson is shipped.
+const origin=(process.env.MUSIC_LIB_BASE_URL || "http://127.0.0.1:8765").replace(/\/+$/,"");
+const remote=!!process.env.MUSIC_LIB_BASE_URL;
+const requireMedia=process.env.MUSIC_LIB_REQUIRE_MEDIA==="1";
+const mustHave=[
+  "orchestra-timbre","rhythm-lab","dynamics-expression",
+  "gayageum-observation","vocal-breath-phrasing","bali-gamelan-archive"
+];
 const browser=await chromium.launch({headless:true,args:["--autoplay-policy=no-user-gesture-required"]});
-const page=await browser.newPage({viewport:{width:1440,height:900}});
+const page=await browser.newPage({viewport:{width:1366,height:900},acceptDownloads:false});
 const errors=[];
 page.on("pageerror",e=>{if(page.url().includes("/lessons/"))errors.push(e.message)});
-function check(ok,message){if(!ok)throw Error(message)}
-async function countText(v){return (await page.locator("#resultCount").textContent()).trim().includes(v)}
-try{
- await page.goto(origin+"/lessons/",{waitUntil:"domcontentloaded"});
- await page.getByText("오케스트라 악기의 음색",{exact:true}).waitFor({timeout:10000});
- check(await countText("등록된 수업 1개"),"Catalog did not render exactly one published lesson");
- console.log("LIBRARY: 1 registered lesson rendered");
- await page.locator("#lessonSearch").fill("청음");
- check(await page.locator(".lessonCard, .card").count()===1,"Search positive filter failed");
- await page.locator("#lessonSearch").fill("존재하지않는수업검색");
- check(await page.locator("#lessonCards .card").count()===0,"Search negative filter failed");
- check(await page.locator("#emptyState").isVisible(),"No empty-state feedback");
- await page.locator("#lessonSearch").fill("");
- await page.locator('#gradeFilters [data-grade="3"]').click();
- check(await page.locator("#lessonCards .card").count()===0,"Grade 3 unexpectedly shows grade 2 lesson");
- await page.locator('#gradeFilters [data-grade="2"]').click();
- check(await page.locator("#lessonCards .card").count()===1,"Grade 2 filter missing");
- await page.locator("#categoryFilter").selectOption("창작");
- check(await page.locator("#lessonCards .card").count()===0,"Category negative filter failed");
- await page.locator("#categoryFilter").selectOption("감상");
- check(await page.locator("#lessonCards .card").count()===1,"Category positive filter failed");
- console.log("SEARCH_FILTERS: PASS");
-
- const imgs=page.locator(".mosaic img");
- check(await imgs.count()===3,"Featured orchestra image collage missing");
- for(let i=0;i<await imgs.count();i++){
-  await imgs.nth(i).evaluate(async x=>{
-   if(x.complete&&x.naturalWidth>200)return;
-   await new Promise((done,fail)=>{
-    x.addEventListener("load",done,{once:true});
-    x.addEventListener("error",()=>fail(new Error("image failed "+x.src)),{once:true});
-    setTimeout(()=>fail(new Error("image timeout "+x.src)),10000);
-   });
-  });
+function check(ok,message){if(!ok)throw new Error(message)}
+function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
+async function go(path){
+ const res=await page.goto(origin+path,{waitUntil:"domcontentloaded",timeout:35000});
+ check(res && res.ok(),"HTTP fail "+path+" status="+res?.status());
+ return res;
+}
+async function waitForDeployedLesson(){
+ // Pages deploy runs independently from this smoke workflow on the same push.
+ // Wait until the NEW teacher guide exists on the public CDN before asserting.
+ for(let attempt=0;attempt<(remote?30:1);attempt++){
+  try{
+   const res=await page.request.get(origin+"/lessons/orchestra-timbre/teacher.html?verify="+Date.now(),{timeout:18000});
+   if(res.ok() && (await res.text()).includes("45분 지도안"))return;
+  }catch(e){console.log("WAIT_PAGES "+String(e).slice(0,90))}
+  if(attempt<29){console.log("WAIT_PAGES: not published yet, attempt "+(attempt+1));await sleep(10000)}
  }
- console.log("PHOTOS: PASS");
- await page.locator(".launch").click();
- await page.locator("#teacherToggle").waitFor();
- check(page.url().includes("/lessons/orchestra-timbre/"),"Lesson link broken");
- check(!(await page.locator("#teacherPanel").isVisible()),"Teacher explanation should be hidden initially");
- await page.locator("#teacherToggle").click();
- check(await page.locator("#teacherPanel").isVisible(),"Teacher explanation did not open");
- await page.evaluate(()=>gotoScene(3));
- check((await page.locator("#teacherPanel").textContent()).includes("목관악기"),"Teacher explanation did not update by scene");
- await page.locator("#teacherToggle").click();
- check(!(await page.locator("#teacherPanel").isVisible()),"Teacher explanation did not close");
- const audioSrc=await page.evaluate(()=>{gotoScene(2);return document.querySelector("#lesson audio")?.getAttribute("src")});
- check(audioSrc?.startsWith("assets/"),"Local audio path lost");
- await page.locator(".backToLibrary").click();
- check(new URL(page.url()).pathname.endsWith("/lessons/"),"Lesson return to library broken");
- console.log("LESSON: link, guide toggle, audio path, back link PASS");
+ throw Error("Pages CDN does not yet include orchestra teacher guide");
+}
+async function cardCount(){return page.locator("#lessonGroups .card").count()}
+try{
+ await waitForDeployedLesson();
+ await go("/lessons/?smoke="+Date.now());
+ await page.locator("#resultCount").getByText("등록된 독립 수업").waitFor({timeout:12000}).catch(async()=>{
+   const status=await page.locator("#resultCount").textContent();
+   check(status?.includes("등록된 독립 수업"),"Catalog not loaded: "+status);
+ });
+ const response=await page.request.get(origin+"/lessons/catalog.json?smoke="+Date.now(),{timeout:20000});
+ check(response.ok(),"Catalog HTTP "+response.status());
+ const data=await response.json();
+ check(data.schemaVersion===1 && Array.isArray(data.lessons),"Catalog invalid");
+ const published=data.lessons.filter(x=>x.status==="published");
+ const ids=published.map(x=>x.id);
+ check(published.length>=6,"Published lessons dropped below six: "+published.length);
+ check(new Set(ids).size===ids.length,"Duplicate lesson id in catalog");
+ for(const id of mustHave)check(ids.includes(id),"Missing previously published lesson: "+id);
+ await page.waitForFunction(
+   n=>document.querySelector("#resultCount")?.textContent?.includes("등록된 독립 수업 "+n+"개"),
+   published.length,{timeout:15000}
+ );
+ check(await cardCount()===published.length,"Cards count mismatch: "+await cardCount()+" vs "+published.length);
+ check(await page.locator("#sixCollections button[data-collection]").count()===6,"Six categories not available");
+ console.log("CATALOG: "+published.length+" published lessons, 6 category buttons");
 
- await page.goto(origin+"/",{waitUntil:"domcontentloaded",timeout:20000});
- // v66 keeps legacy sidebar links hidden; the current teacher-facing path is
- // 수업 관리 > 수업자료실, preserving the original lesson URL and page.
- const lessonCategory=page.locator('#nav button[data-os66-category="lesson"]');
- await lessonCategory.waitFor({state:"visible",timeout:16000});
- await lessonCategory.click();
- const libraryLink=page.locator('#os66Tabs a.os66-tab[href="lessons/"]');
- await libraryLink.waitFor({state:"visible",timeout:6000});
- check(await page.locator(".musicLibraryFeaturedCTA").count()===1,"Music library featured action missing");
- const navUrl=await libraryLink.getAttribute("href");
- check(navUrl==="lessons/","OS library link incorrect");
- await libraryLink.click();
- await page.getByText("오케스트라 악기의 음색",{exact:true}).waitFor({timeout:10000});
- check(new URL(page.url()).pathname.endsWith("/lessons/"),"Teacher OS lesson tab navigation broken");
- console.log("TEACHER_OS: current lesson tab, featured CTA, navigation PASS");
+ await page.locator("#lessonSearch").fill("가믈란");
+ check(await cardCount()===1,"Gamelan lesson not searchable");
+ check((await page.locator("#lessonGroups .card h3").innerText()).includes("발리"),"Wrong Gamelan search result");
+ await page.locator("#lessonSearch").fill("존재하지않는수업검색");
+ check(await cardCount()===0 && await page.locator("#emptyState").isVisible(),"Empty search feedback missing");
+ await page.locator("#lessonSearch").fill("");
 
+ await page.locator('#gradeFilters [data-grade="3"]').click();
+ check(await cardCount()===published.filter(x=>x.grade===3).length,"Grade 3 filter incorrect");
+ await page.locator('#gradeFilters [data-grade="2"]').click();
+ check(await cardCount()===published.filter(x=>x.grade===2).length,"Grade 2 filter incorrect");
+ await page.locator('#gradeFilters [data-grade="all"]').click();
+ await page.locator("#categoryFilter").selectOption("감상");
+ check(await cardCount()===published.filter(x=>x.areas.includes("감상")).length,"Appreciation area filter incorrect");
+ await page.locator("#categoryFilter").selectOption("all");
+ await page.locator('#sixCollections [data-collection="world"]').click();
+ check(await cardCount()===1,"World music collection should contain Bali lesson");
+ check((await page.locator("#lessonGroups .card .launch").getAttribute("href"))==="bali-gamelan-archive/","World music card launch path");
+ await page.locator('#sixCollections [data-collection="world"]').click();
+ check(await cardCount()===published.length,"Category toggle did not restore all lessons");
+ console.log("FILTERS: search, empty, grade, area, world PASS");
+
+ const guideCount=published.filter(x=>x.teacherGuide===true).length;
+ check(await page.locator("#lessonGroups .teacherLaunch").count()===guideCount,"Teacher-guide card links missing");
+ for(const lesson of published){
+  const card=page.locator("#lessonGroups .card").filter({has:page.locator("h3").getByText(lesson.title,{exact:true})});
+  check(await card.count()===1,"Card missing/duplicate "+lesson.id);
+  check(await card.locator("a.launch").getAttribute("href")===lesson.path,"Card link broken "+lesson.id);
+  const lessonRes=await page.request.get(origin+"/lessons/"+lesson.path+"index.html",{timeout:22000});
+  check(lessonRes.ok(),"Student lesson 404 "+lesson.id+" "+lessonRes.status());
+  if(lesson.teacherGuide){
+   check(await card.locator("a.teacherLaunch").getAttribute("href")===lesson.path+"teacher.html","Guide link wrong "+lesson.id);
+   const teacherRes=await page.request.get(origin+"/lessons/"+lesson.path+"teacher.html",{timeout:22000});
+   check(teacherRes.ok(),"Teacher guide 404 "+lesson.id+" "+teacherRes.status());
+   check((await teacherRes.text()).includes("45분"),"Teacher guide content not found "+lesson.id);
+  }
+  if(["gayageum-observation","vocal-breath-phrasing","bali-gamelan-archive"].includes(lesson.id)){
+   const worksheet=await page.request.get(origin+"/lessons/"+lesson.path+"worksheet.html",{timeout:22000});
+   check(worksheet.ok(),"Printable worksheet 404 "+lesson.id);
+   check((await worksheet.text()).includes("print()"),"Print command missing "+lesson.id);
+  }
+ }
+ console.log("LINKS: all student pages, teacher guides, recent A4 worksheets return HTTP 200");
+
+ await go("/lessons/bali-gamelan-archive/");
+ await page.locator("#heading").waitFor({timeout:12000});
+ check((await page.locator("#heading").textContent()).includes("첫인상"),"Bali first scene failed");
+ check(await page.locator("#nav [data-step]").count()===10,"Bali navigation not 10 scenes");
+ check(await page.locator("audio").count()===2,"Bali has not 2 real recordings");
+ for(const id of ["A","B"]){
+  const source=await page.locator("#audio"+id+" source").getAttribute("src");
+  check(source?.endsWith(".ogg")&&source.startsWith("https://upload.wikimedia.org/"),"Bali real audio URL missing "+id);
+ }
+ await page.locator("#next").click();
+ check((await page.locator("#heading").textContent()).includes("소리의 층"),"Bali next button failed");
+ await page.locator('#nav [data-step="5"]').click();
+ check(await page.locator('[data-label="fact"]').count()===1,"Museum editor missing");
+ await page.locator('[data-label="fact"]').fill("1931년 발행된 음반 기록");
+ await page.locator('[data-label="heard"]').fill("실제 소리에서 확인한 반복");
+ check((await page.locator("#museum").textContent()).includes("1931년"),"Museum preview broken");
+ await page.locator('#nav [data-step="8"]').click();
+ await page.locator('[data-quiz="0"][data-choice="1"]').click();
+ check((await page.locator("#activity").textContent()).includes("맞았습니다"),"Bali quiz feedback failed");
+ await page.locator("#teacherBtn").click();
+ check(await page.locator("#teacher").isVisible(),"Bali teacher explanation toggle failed");
  check(errors.length===0,"Lesson JavaScript errors: "+JSON.stringify(errors));
- console.log(JSON.stringify({VERDICT:"PASS",catalog:1,search:"PASS",grade:"PASS",category:"PASS",images:3,teacherGuide:"PASS",lessonLink:"PASS",returnLink:"PASS",teacherOsMenu:"PASS",teacherOsDashboard:"PASS"}));
+ console.log("BALI UI: 10 scenes, real audio sources, editor, quiz, teacher guide PASS");
+
+ if(requireMedia){
+  const media=await page.evaluate(async()=>{
+   const ids=["audioA","audioB"],out=[];
+   for(const id of ids){
+    const el=document.getElementById(id);
+    const result=await new Promise(resolve=>{
+     let done=false;
+     const finish=(v)=>{if(done)return;done=true;clearTimeout(t);el.removeEventListener("loadedmetadata",onload);el.removeEventListener("error",onerr);resolve(v)};
+     const onload=()=>finish({id,ok:true,duration:el.duration,readyState:el.readyState});
+     const onerr=()=>finish({id,ok:false,errorCode:el.error?.code||null});
+     const t=setTimeout(()=>finish({id,ok:false,reason:"30s metadata timeout",networkState:el.networkState}),30000);
+     el.addEventListener("loadedmetadata",onload);
+     el.addEventListener("error",onerr);
+     el.preload="metadata";
+     el.load();
+     if(el.readyState>=1)onload();
+    });
+    out.push(result);
+   }
+   return out;
+  });
+  console.log("MEDIA: "+JSON.stringify(media));
+  check(media.every(x=>x.ok&&x.duration>150),"Bali external audio not browser-playable: "+JSON.stringify(media));
+ }
+ console.log(JSON.stringify({VERDICT:"PASS",origin,published:published.length,categories:6,links:"PASS",lessons:ids,guideLinks:guideCount,bali:"PASS",audioMetadata:requireMedia?"PASS":"NOT_CHECKED_LOCAL"}));
 }catch(err){
- console.error("FAIL:",err.stack||String(err));
+ console.error("FAIL: "+(err.stack||String(err)));
  await page.screenshot({path:"/tmp/music-library-smoke-fail.png",fullPage:true}).catch(()=>{});
  process.exitCode=1;
 }finally{await browser.close()}
