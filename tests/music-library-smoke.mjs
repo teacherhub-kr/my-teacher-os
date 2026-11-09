@@ -7,7 +7,7 @@ const remote=!!process.env.MUSIC_LIB_BASE_URL;
 const requireMedia=process.env.MUSIC_LIB_REQUIRE_MEDIA==="1";
 const mustHave=[
   "orchestra-timbre","rhythm-lab","dynamics-expression",
-  "gayageum-observation","vocal-breath-phrasing","bali-gamelan-archive"
+  "gayageum-observation","vocal-breath-phrasing","bali-gamelan-archive","arirang-vocal"
 ];
 const browser=await chromium.launch({headless:true,args:["--autoplay-policy=no-user-gesture-required"]});
 const page=await browser.newPage({viewport:{width:1366,height:900},acceptDownloads:false});
@@ -25,12 +25,12 @@ async function waitForDeployedLesson(){
  // Wait until the NEW teacher guide exists on the public CDN before asserting.
  for(let attempt=0;attempt<(remote?30:1);attempt++){
   try{
-   const res=await page.request.get(origin+"/lessons/orchestra-timbre/teacher.html?verify="+Date.now(),{timeout:18000});
-   if(res.ok() && (await res.text()).includes("45분 지도안"))return;
+   const res=await page.request.get(origin+"/lessons/arirang-vocal/teacher.html?verify="+Date.now(),{timeout:18000});
+   if(res.ok() && (await res.text()).includes("아리랑"))return;
   }catch(e){console.log("WAIT_PAGES "+String(e).slice(0,90))}
   if(attempt<29){console.log("WAIT_PAGES: not published yet, attempt "+(attempt+1));await sleep(10000)}
  }
- throw Error("Pages CDN does not yet include orchestra teacher guide");
+ throw Error("Pages CDN does not yet include Arirang teacher guide");
 }
 async function cardCount(){return page.locator("#lessonGroups .card").count()}
 try{
@@ -43,7 +43,7 @@ try{
  check(data.schemaVersion===1 && Array.isArray(data.lessons),"Catalog invalid");
  const published=data.lessons.filter(x=>x.status==="published");
  const ids=published.map(x=>x.id);
- check(published.length>=6,"Published lessons dropped below six: "+published.length);
+ check(published.length>=7,"Published lessons dropped below seven: "+published.length);
  check(new Set(ids).size===ids.length,"Duplicate lesson id in catalog");
  for(const id of mustHave)check(ids.includes(id),"Missing previously published lesson: "+id);
  await page.waitForFunction(
@@ -90,7 +90,7 @@ try{
    check(teacherRes.ok(),"Teacher guide 404 "+lesson.id+" "+teacherRes.status());
    check((await teacherRes.text()).includes("45분"),"Teacher guide content not found "+lesson.id);
   }
-  if(["gayageum-observation","vocal-breath-phrasing","bali-gamelan-archive"].includes(lesson.id)){
+  if(["gayageum-observation","vocal-breath-phrasing","bali-gamelan-archive","arirang-vocal"].includes(lesson.id)){
    const worksheet=await page.request.get(origin+"/lessons/"+lesson.path+"worksheet.html",{timeout:22000});
    check(worksheet.ok(),"Printable worksheet 404 "+lesson.id);
    check((await worksheet.text()).includes("print()"),"Print command missing "+lesson.id);
@@ -146,7 +146,31 @@ try{
   console.log("MEDIA: "+JSON.stringify(media));
   check(media.every(x=>x.ok&&x.duration>150),"Bali external audio not browser-playable: "+JSON.stringify(media));
  }
- console.log(JSON.stringify({VERDICT:"PASS",origin,published:published.length,categories:6,links:"PASS",lessons:ids,guideLinks:guideCount,bali:"PASS",audioMetadata:requireMedia?"PASS":"NOT_CHECKED_LOCAL"}));
+ await go("/lessons/arirang-vocal/");
+ check(await page.locator(".scene").count()===10,"Arirang must contain ten stages");
+ check(await page.locator("#menu button").count()===10,"Arirang navigation missing");
+ check(await page.locator("#recording").count()===1,"Arirang actual vocal recording missing");
+ check((await page.locator("#recording").getAttribute("src"))?.includes("Arirang.ogg"),"Arirang original recording link changed");
+ await page.locator("#next").click();
+ check((await page.locator("#where").textContent())==="2 / 10","Arirang next scene broken");
+ if(requireMedia){
+  const result=await page.evaluate(async()=>{
+   const a=document.getElementById("recording");
+   return await new Promise(resolve=>{
+    let finished=false;
+    const done=info=>{if(finished)return;finished=true;clearTimeout(t);a.removeEventListener("loadedmetadata",ok);a.removeEventListener("error",err);resolve(info)};
+    const ok=()=>done({ok:true,duration:a.duration,readyState:a.readyState});
+    const err=()=>done({ok:false,errorCode:a.error?.code||null,src:a.currentSrc});
+    const t=setTimeout(()=>done({ok:false,reason:"Arirang 30s media timeout",src:a.currentSrc}),30000);
+    a.addEventListener("loadedmetadata",ok);a.addEventListener("error",err);a.preload="metadata";a.load();if(a.readyState>=1)ok();
+   });
+  });
+  console.log("ARIRANG MEDIA: "+JSON.stringify(result));
+  check(result.ok&&result.duration>80&&result.duration<100,"Arirang vocal recording not playable: "+JSON.stringify(result));
+ }
+ check(errors.length===0,"Arirang page errors: "+JSON.stringify(errors));
+ console.log("ARIRANG UI: 10 scenes, navigation, original real human vocal audio PASS");
+ console.log(JSON.stringify({VERDICT:"PASS",origin,published:published.length,categories:6,links:"PASS",lessons:ids,guideLinks:guideCount,bali:"PASS",arirang:"PASS",audioMetadata:requireMedia?"PASS":"NOT_CHECKED_LOCAL"}));
 }catch(err){
  console.error("FAIL: "+(err.stack||String(err)));
  await page.screenshot({path:"/tmp/music-library-smoke-fail.png",fullPage:true}).catch(()=>{});

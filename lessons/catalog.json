@@ -284,6 +284,54 @@
       "collection": "world",
       "verifiedAt": "2026-11-09",
       "note": "1931년 음반 2곡, Wikimedia Commons Public Domain 표기. 출처·원본 파일 경로와 코드/45분 합계 검증, 외부 OGG/Vorbis 음원 2개 의존. 실제 학교 브라우저/네트워크 실재생은 환경별 차이가 있으며 별도 확인 필요. 저작권은 지역별 법률 확인 필요."
+    },
+    {
+      "id": "arirang-vocal",
+      "status": "published",
+      "title": "아리랑, 나의 목소리로: 실제 가창 녹음과 프레이징",
+      "summary": "미 육군 합창단의 실제 아리랑 녹음을 듣고 독창·합창의 표현을 비교하며, 가사·호흡을 살린 개별 가창 설계 및 자기 피드백을 진행하는 45분 수업.",
+      "grade": 2,
+      "gradeLabel": "중학교 2학년",
+      "curriculum": "2022 개정 음악과 · [9음01-01], [9음01-02]",
+      "category": "연주",
+      "areas": [
+        "연주",
+        "감상"
+      ],
+      "topic": "가창·아리랑",
+      "format": [
+        "실제 합창·독창 녹음 감상",
+        "아리랑 가사 해석",
+        "개별 가창·허밍",
+        "프레이즈 설계",
+        "자기 피드백"
+      ],
+      "durationMinutes": 45,
+      "steps": 10,
+      "path": "arirang-vocal/",
+      "image": null,
+      "coverTheme": "vocal",
+      "coverSymbol": "🎤",
+      "coverCaption": "아리랑 · 실연 합창 · 가창 표현",
+      "collection": "vocal",
+      "teacherGuide": true,
+      "media": {
+        "photos": 0,
+        "audios": 1,
+        "videoEmbed": false
+      },
+      "tags": [
+        "아리랑",
+        "가창",
+        "합창",
+        "독창",
+        "호흡",
+        "프레이즈",
+        "실제 녹음",
+        "전통 노래"
+      ],
+      "verifiedAt": "2026-11-09",
+      "note": "2005 U.S. Army Chorus와 테너 솔리스트의 실제 아리랑 녹음, Wikimedia Commons Arirang.ogg(1:29), 미국 연방정부 공식 업무 저작물로 미국 내 Public Domain. 한국 등 다른 법역의 저작인접권 상태는 다를 수 있음. 외부 Wikimedia 스트리밍, 학교망에 따라 재생 제한 가능. 공식 2022 개정 연주 성취기준 대조. 새 페이지 E2E 재생 검증은 배포 후 시행."
     }
   ],
   "library": {
@@ -299,9 +347,10 @@
       "셈여림·표현",
       "국악·가야금",
       "가창·발성",
-      "세계음악·음악사"
+      "세계음악·음악사",
+      "가창·아리랑"
     ],
     "uniqueLessonPolicy": "id·학습목표·수업활동·사용 음원·대표 카드로 차시를 구별; 같은 템플릿은 UI만 공통",
-    "registeredCount": 6
+    "registeredCount": 7
   }
 }
