@@ -133,12 +133,16 @@ try{
  await go("/lessons/gayageum-observation/");
  check(await page.locator("#tabs button[data-step]").count()===4,"Gayageum still split into ten writing prompts");
  check(await page.locator("#liveVideo").count()===1,"Gayageum performer video missing");
+ check(await page.locator("#officialGayageumPlay").count()===1,"Official National Gugak Center video missing");
+ await page.locator("#officialGayageumPlay").click();
+ check((await page.locator("#officialGayageum iframe").getAttribute("src"))?.includes("qEZNEk5fFno?start=46"),"Official gayageum sanjo performer embed invalid");
+ check((await page.locator('a[href*="youtube.com/watch?v=qEZNEk5fFno"]').count())>=1,"National Gugak Center original video link missing");
  check(await page.locator("#musicVisual figure img").count()===2,"Gayageum hand-position photographic references missing");
  await page.locator('#tabs button[data-step="1"]').click();
  check((await page.locator("#activity").textContent()).includes("뜯기"),"Gayageum hand gesture activity missing");
  await page.locator('#tabs button[data-step="2"]').click();
  check((await page.locator("#task").textContent()).includes("목소리"),"Gayageum vocal sigimsae imitation missing");
- console.log("GAYAGEUM QUALITY: 4 performing stages, 2 instrument photos, existing original live video PASS");
+ console.log("GAYAGEUM QUALITY: 4 performing stages, 2 instrument photos, National Gugak Center sanjo embed and original short live video PASS");
 
  for(const id of ["rhythm-lab","dynamics-expression","arirang-vocal"]){
   await go("/lessons/"+id+"/");
