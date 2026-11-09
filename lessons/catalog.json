@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-11-06",
+  "updatedAt": "2026-11-09",
   "title": "MY MUSIC CLASS · 음악 수업자료실",
   "lessons": [
     {
@@ -143,6 +143,51 @@
       "coverSymbol": "🎹",
       "coverCaption": "p · crescendo · f / 감정의 흐름",
       "collection": "creative"
+    },
+    {
+      "id": "gayageum-observation",
+      "status": "published",
+      "title": "가야금 소리의 결: 실제 연주로 듣는 음색과 여운",
+      "summary": "가야금 실제 연주를 듣고 음색·여운·시김새를 관찰하며 소리 근거를 개별 기록하는 45분 수업.",
+      "grade": 2,
+      "gradeLabel": "중학교 2학년",
+      "curriculum": "2022 개정 음악과 · [9음02-01] 중심, [9음02-02] 보조",
+      "category": "감상",
+      "areas": [
+        "감상",
+        "연주"
+      ],
+      "durationMinutes": 45,
+      "steps": 10,
+      "path": "gayageum-observation/",
+      "image": null,
+      "teacherGuide": true,
+      "media": {
+        "photos": 0,
+        "audios": 0,
+        "videoEmbed": true
+      },
+      "tags": [
+        "가야금",
+        "국악",
+        "음색",
+        "여운",
+        "시김새",
+        "실제 연주",
+        "형성평가"
+      ],
+      "topic": "국악·가야금",
+      "format": [
+        "실연 영상 감상",
+        "관찰 기록",
+        "연주 동작 탐구",
+        "4문항 퀴즈"
+      ],
+      "coverTheme": "traditional",
+      "coverSymbol": "🎶",
+      "coverCaption": "가야금 소리와 여운",
+      "collection": "traditional",
+      "note": "Wikimedia Commons Xia의 실제 가야금 실연 45초 OGG/Theora 영상, CC BY-SA 4.0. 원본 출처·라이선스 확인, 학생용 JS 구문/10장면·45분 검증. 외부 영상 재생은 학교망·브라우저 지원에 따라 달라질 수 있으며 실제 교실 기기 검증은 미완료. 재생 실패 시 원본 Wikimedia 페이지 링크 사용."
     }
   ],
   "library": {
@@ -155,9 +200,10 @@
     "topics": [
       "악기·음색",
       "리듬·박자",
-      "셈여림·표현"
+      "셈여림·표현",
+      "국악·가야금"
     ],
     "uniqueLessonPolicy": "id·학습목표·수업활동·사용 음원·대표 카드로 차시를 구별; 같은 템플릿은 UI만 공통",
-    "registeredCount": 3
+    "registeredCount": 4
   }
 }
