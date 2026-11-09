@@ -166,6 +166,11 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - name: Stamp deployed music lesson version
+        run: |
+          mkdir -p lessons
+          printf '%s\n' "$GITHUB_SHA" > lessons/deploy-sha.txt
+
       - name: Upload site
         uses: actions/upload-pages-artifact@v4
         with:
