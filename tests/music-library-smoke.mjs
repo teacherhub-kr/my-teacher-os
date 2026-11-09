@@ -13,6 +13,9 @@ const browser=await chromium.launch({headless:true,args:["--autoplay-policy=no-u
 const page=await browser.newPage({viewport:{width:1366,height:900},acceptDownloads:false});
 const errors=[];
 page.on("pageerror",e=>{if(page.url().includes("/lessons/"))errors.push(e.message)});
+const externalMediaErrors=[];
+page.on("requestfailed",req=>{if(req.url().includes("upload.wikimedia.org"))externalMediaErrors.push({url:req.url(),failure:req.failure()})});
+page.on("response",response=>{if(response.url().includes("upload.wikimedia.org") && response.status()>=400)externalMediaErrors.push({url:response.url(),status:response.status()})});
 function check(ok,message){if(!ok)throw new Error(message)}
 function sleep(ms){return new Promise(resolve=>setTimeout(resolve,ms))}
 async function go(path){
@@ -173,6 +176,7 @@ try{
  console.log(JSON.stringify({VERDICT:"PASS",origin,published:published.length,categories:6,links:"PASS",lessons:ids,guideLinks:guideCount,bali:"PASS",arirang:"PASS",audioMetadata:requireMedia?"PASS":"NOT_CHECKED_LOCAL"}));
 }catch(err){
  console.error("FAIL: "+(err.stack||String(err)));
+ console.error("EXTERNAL_MEDIA_DIAGNOSTICS: "+JSON.stringify(externalMediaErrors));
  await page.screenshot({path:"/tmp/music-library-smoke-fail.png",fullPage:true}).catch(()=>{});
  process.exitCode=1;
 }finally{await browser.close()}
