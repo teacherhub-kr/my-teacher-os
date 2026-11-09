@@ -3,16 +3,13 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'lessons/**'
       - 'tests/music-library-smoke.mjs'
       - '.github/workflows/music-library-smoke.yml'
   push:
     branches: [main]
     paths:
-      - 'lessons/index.html'
-      - 'lessons/catalog.json'
-      - 'lessons/orchestra-timbre/index.html'
-      - 'app-v05.html'
-      - 'app-v05.css'
+      - 'lessons/**'
       - 'tests/music-library-smoke.mjs'
       - '.github/workflows/music-library-smoke.yml'
   workflow_dispatch:
@@ -21,7 +18,7 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -34,9 +31,14 @@ jobs:
       - name: Start temporary site server and test OS, catalog, lesson
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/music-library-http.log 2>&1 &
+          for attempt in $(seq 1 20); do
+            if curl -fsS http://127.0.0.1:8765/lessons/catalog.json >/dev/null; then break; fi
+            sleep 1
+          done
           node tests/music-library-smoke.mjs
       - name: Verify published GitHub Pages website
         if: github.event_name == 'push'
         env:
           MUSIC_LIB_BASE_URL: https://teacherhub-kr.github.io/my-teacher-os
+          MUSIC_LIB_REQUIRE_MEDIA: '1'
         run: node tests/music-library-smoke.mjs
