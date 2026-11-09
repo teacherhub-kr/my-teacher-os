@@ -107,29 +107,67 @@ try{
  }
  console.log("LINKS: all student pages, teacher guides, recent A4 worksheets return HTTP 200");
 
+ // Quality design: the vocal pilot must show notation, licensed images,
+ // a linked official orchestra performance, and four non-identical activities.
+ await go("/lessons/vocal-breath-phrasing/");
+ check(await page.locator("#steps button[data-stage]").count()===4,"Vocal lesson still shows old ten-scene checklist");
+ check(await page.locator("#playOfficial").isVisible(),"Official professional orchestra opening is missing");
+ check(await page.locator("#stage .photo img").count()===1,"Beethoven image missing from opening");
+ await page.locator("#playOfficial").click();
+ check((await page.locator("#frame iframe").getAttribute("src"))?.includes("TYE11oVhbmI"),"Official orchestra video URL broken");
+ await page.locator('#steps button[data-stage="1"]').click();
+ check(await page.locator("#sheet svg ellipse").count()>=25,"Eight-bar notation is not rendered");
+ check(await page.locator("#measures button").count()===8,"Bar highlighting controls missing");
+ await page.locator('#measures button[data-measure="3"]').click();
+ check((await page.locator('#measures button[data-measure="3"]').getAttribute("class"))?.includes("selected"),"Score measure highlighting failed");
+ await page.locator('#steps button[data-stage="2"]').click();
+ await page.locator('[data-breath="B"]').click();
+ check((await page.locator("#breathLabel").textContent()).includes("2마디"),"Alternate breath phrasing control failed");
+ await page.locator('#steps button[data-stage="3"]').click();
+ check((await page.locator("#stage").textContent()).includes("합창"),"Vocal finale performance stage missing");
+ console.log("VOCAL QUALITY: 4 meaningful stages, score 8 bars, official linked performance, visual score interaction, breath A/B PASS");
+
+ await go("/lessons/gayageum-observation/");
+ check(await page.locator("#tabs button[data-step]").count()===4,"Gayageum still split into ten writing prompts");
+ check(await page.locator("#liveVideo").count()===1,"Gayageum performer video missing");
+ check(await page.locator("#musicVisual figure img").count()===2,"Gayageum hand-position photographic references missing");
+ await page.locator('#tabs button[data-step="1"]').click();
+ check((await page.locator("#activity").textContent()).includes("뜯기"),"Gayageum hand gesture activity missing");
+ await page.locator('#tabs button[data-step="2"]').click();
+ check((await page.locator("#task").textContent()).includes("목소리"),"Gayageum vocal sigimsae imitation missing");
+ console.log("GAYAGEUM QUALITY: 4 performing stages, 2 instrument photos, existing original live video PASS");
+
+ for(const id of ["rhythm-lab","dynamics-expression","arirang-vocal"]){
+  await go("/lessons/"+id+"/");
+  check(await page.locator("#musicVisual figure img").count()===2,"Licensed visual gallery missing for "+id);
+  check(await page.locator("#musicVisual .mvButtons button").count()>=1,"Fast sound access action missing for "+id);
+ }
+ console.log("VISUALS: rhythm, dynamics, arirang stage-photo galleries and fast audio access PASS");
+
  await go("/lessons/bali-gamelan-archive/");
  await page.locator("#heading").waitFor({timeout:12000});
  check((await page.locator("#heading").textContent()).includes("첫인상"),"Bali first scene failed");
- check(await page.locator("#nav [data-step]").count()===10,"Bali navigation not 10 scenes");
+ check(await page.locator("#nav [data-step]").count()===4,"Bali performance lesson should have four stages");
  check(await page.locator("audio").count()===2,"Bali has not 2 real recordings");
  for(const id of ["A","B"]){
   const source=await page.locator("#audio"+id+" source").getAttribute("src");
   check(source?.endsWith(".ogg")&&source.startsWith("https://upload.wikimedia.org/"),"Bali real audio URL missing "+id);
  }
  await page.locator("#next").click();
- check((await page.locator("#heading").textContent()).includes("소리의 층"),"Bali next button failed");
- await page.locator('#nav [data-step="5"]').click();
+ check((await page.locator("#heading").textContent()).includes("맞물리는"),"Bali rhythm stage failed");
+ check(await page.locator(".pulseGrid span").count()===8,"Bali interlocking 4-beat diagram missing");
+ await page.locator('#nav [data-step="2"]').click();
  check(await page.locator('[data-label="fact"]').count()===1,"Museum editor missing");
  await page.locator('[data-label="fact"]').fill("1931년 발행된 음반 기록");
  await page.locator('[data-label="heard"]').fill("실제 소리에서 확인한 반복");
  check((await page.locator("#museum").textContent()).includes("1931년"),"Museum preview broken");
- await page.locator('#nav [data-step="8"]').click();
+ await page.locator('#nav [data-step="3"]').click();
  await page.locator('[data-quiz="0"][data-choice="1"]').click();
  check((await page.locator("#activity").textContent()).includes("맞았습니다"),"Bali quiz feedback failed");
  await page.locator("#teacherBtn").click();
  check(await page.locator("#teacher").isVisible(),"Bali teacher explanation toggle failed");
  check(errors.length===0,"Lesson JavaScript errors: "+JSON.stringify(errors));
- console.log("BALI UI: 10 scenes, real audio sources, editor, quiz, teacher guide PASS");
+ console.log("BALI UI: 4 performance stages, real audio sources, 8-beat practice, editor, quiz, teacher guide PASS");
 
  if(requireMedia){
   const media=await page.evaluate(async()=>{
