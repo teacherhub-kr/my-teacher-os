@@ -143,6 +143,51 @@
       "coverSymbol": "🎹",
       "coverCaption": "p · crescendo · f / 감정의 흐름",
       "collection": "creative"
+    },
+    {
+      "id": "gayageum-observation",
+      "status": "draft",
+      "title": "가야금 소리의 결: 실제 연주로 듣는 음색과 여운",
+      "summary": "가야금 실제 연주를 듣고 음색·여운·시김새를 관찰하며 소리 근거를 개별 기록하는 45분 수업.",
+      "grade": 2,
+      "gradeLabel": "중학교 2학년",
+      "curriculum": "2022 개정 음악과 · [9음02-02] 원문 대조 필요",
+      "category": "감상",
+      "areas": [
+        "감상",
+        "연주"
+      ],
+      "durationMinutes": 45,
+      "steps": 10,
+      "path": "gayageum-observation/",
+      "image": null,
+      "teacherGuide": true,
+      "media": {
+        "photos": 0,
+        "audios": 0,
+        "videoEmbed": true
+      },
+      "tags": [
+        "가야금",
+        "국악",
+        "음색",
+        "여운",
+        "시김새",
+        "실제 연주",
+        "형성평가"
+      ],
+      "topic": "국악·가야금",
+      "format": [
+        "실연 영상 감상",
+        "관찰 기록",
+        "연주 동작 탐구",
+        "4문항 퀴즈"
+      ],
+      "coverTheme": "traditional",
+      "coverSymbol": "🎶",
+      "coverCaption": "가야금 소리와 여운",
+      "collection": "traditional",
+      "note": "Xia의 가야금 실제 연주 CC BY-SA 4.0 영상 외부 OGG. 공식 성취기준 원문 및 교실 브라우저 재생 검증 전 draft."
     }
   ],
   "library": {
