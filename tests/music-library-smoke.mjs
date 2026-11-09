@@ -24,16 +24,19 @@ async function go(path){
  return res;
 }
 async function waitForDeployedLesson(){
- // Pages deploy runs independently from this smoke workflow on the same push.
- // Wait until the NEW teacher guide exists on the public CDN before asserting.
- for(let attempt=0;attempt<(remote?30:1);attempt++){
+ if(!remote)return;
+ const expected=process.env.MUSIC_LIB_EXPECTED_SHA;
+ check(/^[a-f0-9]{40}$/.test(expected||""),"Missing expected Pages commit SHA");
+ for(let attempt=0;attempt<45;attempt++){
   try{
-   const res=await page.request.get(origin+"/lessons/arirang-vocal/teacher.html?verify="+Date.now(),{timeout:18000});
-   if(res.ok() && (await res.text()).includes("아리랑"))return;
-  }catch(e){console.log("WAIT_PAGES "+String(e).slice(0,90))}
-  if(attempt<29){console.log("WAIT_PAGES: not published yet, attempt "+(attempt+1));await sleep(10000)}
+   const res=await page.request.get(origin+"/lessons/deploy-sha.txt?verify="+Date.now(),{timeout:15000,headers:{"cache-control":"no-cache"}});
+   const current=res.ok()?(await res.text()).trim():"not-yet-deployed";
+   if(current===expected){console.log("PAGES_VERSION: "+current+" verified");return}
+   if(attempt%3===0)console.log("WAIT_PAGES: expected "+expected.slice(0,12)+", current "+current.slice(0,20)+", attempt "+(attempt+1));
+  }catch(e){console.log("WAIT_PAGES: "+String(e).slice(0,120))}
+  await sleep(10000);
  }
- throw Error("Pages CDN does not yet include Arirang teacher guide");
+ throw Error("GitHub Pages did not publish the exact tested SHA "+expected);
 }
 async function cardCount(){return page.locator("#lessonGroups .card").count()}
 try{
