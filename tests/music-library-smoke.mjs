@@ -36,10 +36,7 @@ async function cardCount(){return page.locator("#lessonGroups .card").count()}
 try{
  await waitForDeployedLesson();
  await go("/lessons/?smoke="+Date.now());
- await page.locator("#resultCount").getByText("등록된 독립 수업").waitFor({timeout:12000}).catch(async()=>{
-   const status=await page.locator("#resultCount").textContent();
-   check(status?.includes("등록된 독립 수업"),"Catalog not loaded: "+status);
- });
+ await page.waitForFunction(()=>document.querySelector("#resultCount")?.textContent?.includes("등록된 독립 수업"),null,{timeout:15000});
  const response=await page.request.get(origin+"/lessons/catalog.json?smoke="+Date.now(),{timeout:20000});
  check(response.ok(),"Catalog HTTP "+response.status());
  const data=await response.json();
