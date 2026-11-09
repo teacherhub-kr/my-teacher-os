@@ -119,7 +119,7 @@ try{
  check(await page.locator("#sheet svg ellipse").count()>=25,"Eight-bar notation is not rendered");
  check(await page.locator("#measures button").count()===8,"Bar highlighting controls missing");
  await page.locator('#measures button[data-measure="3"]').click();
- check(await page.locator('#measures button[data-measure="3"]').getAttribute("class")?.includes("selected"),"Score measure highlighting failed");
+ check((await page.locator('#measures button[data-measure="3"]').getAttribute("class"))?.includes("selected"),"Score measure highlighting failed");
  await page.locator('#steps button[data-stage="2"]').click();
  await page.locator('[data-breath="B"]').click();
  check((await page.locator("#breathLabel").textContent()).includes("2마디"),"Alternate breath phrasing control failed");
