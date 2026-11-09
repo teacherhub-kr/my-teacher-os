@@ -35,7 +35,7 @@ jobs:
             if curl -fsS http://127.0.0.1:8765/lessons/catalog.json >/dev/null; then break; fi
             sleep 1
           done
-          node tests/music-library-smoke.mjs
+          MUSIC_LIB_REQUIRE_MEDIA=1 node tests/music-library-smoke.mjs
       - name: Verify published GitHub Pages website
         if: github.event_name == 'push'
         env:
