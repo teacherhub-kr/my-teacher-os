@@ -39,7 +39,7 @@ async function cardCount(){return page.locator("#lessonGroups .card").count()}
 try{
  await waitForDeployedLesson();
  await go("/lessons/?smoke="+Date.now());
- await page.waitForFunction(()=>document.querySelector("#resultCount")?.textContent?.includes("등록된 독립 수업"),null,{timeout:15000});
+ await page.waitForFunction(()=>document.querySelector("#resultCount")?.textContent?.includes("전체 공개 수업"),null,{timeout:15000});
  const response=await page.request.get(origin+"/lessons/catalog.json?smoke="+Date.now(),{timeout:20000});
  check(response.ok(),"Catalog HTTP "+response.status());
  const data=await response.json();
@@ -50,7 +50,7 @@ try{
  check(new Set(ids).size===ids.length,"Duplicate lesson id in catalog");
  for(const id of mustHave)check(ids.includes(id),"Missing previously published lesson: "+id);
  await page.waitForFunction(
-   n=>document.querySelector("#resultCount")?.textContent?.includes("등록된 독립 수업 "+n+"개"),
+   n=>document.querySelector("#resultCount")?.textContent?.includes("전체 공개 수업 "+n+"개"),
    published.length,{timeout:15000}
  );
  check(await cardCount()===published.length,"Cards count mismatch: "+await cardCount()+" vs "+published.length);
