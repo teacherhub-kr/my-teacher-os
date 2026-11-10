@@ -1,0 +1,134 @@
+/* MY MUSIC CLASS | Story-first classroom presentation skin
+   Bright high-contrast editorial slides, not a continuous dark dashboard.
+   Student view only; existing HTML activity and media are untouched. */
+#music-hybrid-deck .hd-slide{
+  --story-bg:#fff6df;--story-fg:#1f2933;--story-muted:#314653;
+  --story-accent:#935200;--story-soft:#fff5de;--story-border:#9a734b5b;
+  --story-accent-text:#fff;--story-chip:#f7e2b0;
+  background:var(--story-bg);color:var(--story-fg);border-color:#2b45591c;
+  transition:background .18s ease;
+}
+#music-hybrid-deck .hd-slide[data-story-tone="sun"]{
+  --story-bg:#ffe9a7;--story-fg:#362718;--story-muted:#513b27;
+  --story-accent:#754019;--story-soft:#fff5d4;--story-border:#ab824e88;
+  --story-chip:#fff3cc;
+  background:radial-gradient(ellipse at 80% 15%,#fff9dc 0,transparent 48%),linear-gradient(125deg,#ffe6a1,#fff2c5);
+}
+#music-hybrid-deck .hd-slide[data-story-tone="sky"]{
+  --story-bg:#d9f0fe;--story-fg:#18384c;--story-muted:#305163;
+  --story-accent:#145b86;--story-soft:#edf9ff;--story-border:#3777a06b;--story-chip:#bde3f7;
+  background:linear-gradient(145deg,#d3f0ff,#effaff 69%,#c8e8fc);
+}
+#music-hybrid-deck .hd-slide[data-story-tone="mint"]{
+  --story-bg:#daf4e6;--story-fg:#153e37;--story-muted:#315c52;
+  --story-accent:#11624c;--story-soft:#ecfff4;--story-border:#41897269;--story-chip:#b9e5d0;
+  background:linear-gradient(145deg,#e7fff1,#c6eee1);
+}
+#music-hybrid-deck .hd-slide[data-story-tone="peach"]{
+  --story-bg:#ffe0d6;--story-fg:#522c36;--story-muted:#70424b;
+  --story-accent:#9b3c45;--story-soft:#fff0e9;--story-border:#b55c6470;--story-chip:#ffd0c2;
+  background:linear-gradient(145deg,#ffead9,#fbd2d1);
+}
+#music-hybrid-deck .hd-slide[data-story-tone="lavender"]{
+  --story-bg:#e8e1fa;--story-fg:#352b57;--story-muted:#504269;
+  --story-accent:#674594;--story-soft:#f7f1ff;--story-border:#8762b777;--story-chip:#ddcef8;
+  background:linear-gradient(145deg,#f4eafa,#ddd8fa);
+}
+#music-hybrid-deck .hd-slide[data-story-tone="butter"]{
+  --story-bg:#fff0c6;--story-fg:#52361c;--story-muted:#745132;
+  --story-accent:#8d4c0e;--story-soft:#fffae6;--story-border:#ad7e4777;--story-chip:#fae4af;
+  background:linear-gradient(155deg,#fff8dd,#fee9b6);
+}
+#music-hybrid-deck .hd-slide[data-story-tone="stage"]{
+  --story-bg:#173750;--story-fg:#fbfbfb;--story-muted:#e2eef4;
+  --story-accent:#a9e1ee;--story-accent-text:#17364a;
+  --story-soft:#214962;--story-border:#b0d4e777;--story-chip:#285874;
+  background:radial-gradient(ellipse at 70% -20%,#4c7894 0,transparent 57%),linear-gradient(145deg,#18354b,#0b2036);
+  border-color:#fff5;
+}
+#music-hybrid-deck .hd-slide[data-story-tone="final"]{
+  --story-bg:#d7f4da;--story-fg:#193a33;--story-muted:#31584c;
+  --story-accent:#116b51;--story-soft:#f4ffec;--story-border:#3b9c7870;--story-chip:#beedcc;
+  background:radial-gradient(circle at 89% 18%,#fff9c6,transparent 44%),linear-gradient(135deg,#d1f6dd,#f4ffe3);
+}
+#music-hybrid-deck .hd-slide:is([data-story-tone="sun"],[data-story-tone="sky"],[data-story-tone="mint"],[data-story-tone="peach"],[data-story-tone="lavender"],[data-story-tone="butter"],[data-story-tone="final"])::after{
+  border-color:color-mix(in srgb,var(--story-accent) 12%,transparent);
+}
+#music-hybrid-deck .hd-slide .hd-title{color:var(--story-fg)!important}
+#music-hybrid-deck .hd-slide .hd-prompt{color:var(--story-muted)!important}
+#music-hybrid-deck .hd-slide .hd-eyebrow{color:var(--story-accent)!important}
+#music-hybrid-deck .hd-slide .hd-index{border-color:var(--story-accent)!important}
+#music-hybrid-deck .hd-slide .hd-accent-line{background:var(--story-accent)!important}
+#music-hybrid-deck .hd-slide .hd-stage-info{color:var(--story-muted)!important;font-weight:650}
+#music-hybrid-deck .hd-slide .hd-decor{color:color-mix(in srgb,var(--story-accent) 11%,transparent)!important}
+#music-hybrid-deck .hd-slide .hd-tiles .hd-tile{
+  color:var(--story-fg);background:var(--story-soft);border:2px solid var(--story-border);box-shadow:0 5px 0 color-mix(in srgb,var(--story-accent) 13%,transparent);
+}
+#music-hybrid-deck .hd-slide .hd-action{
+  background:var(--story-soft);border:1px solid var(--story-border);box-shadow:0 3px 0 #0000000a;
+}
+#music-hybrid-deck .hd-slide .hd-action-number{color:var(--story-accent)}
+#music-hybrid-deck .hd-slide .hd-action-text{color:var(--story-fg)}
+#music-hybrid-deck .hd-slide .hd-source{color:var(--story-muted)!important}
+#music-hybrid-deck .hd-slide .hd-source a{color:var(--story-accent)!important}
+#music-hybrid-deck .hd-slide .hd-sound{border-color:var(--story-border);background:var(--story-soft)}
+#music-hybrid-deck .hd-slide .hd-sound b{color:var(--story-accent)}
+#music-hybrid-deck .hd-slide .hd-choice{
+  background:var(--story-soft);color:var(--story-fg);border-color:var(--story-border);
+}
+#music-hybrid-deck .hd-slide .hd-choice[data-selected=true]{box-shadow:inset 0 0 0 2px var(--story-accent)}
+#music-hybrid-deck .hd-slide .hd-choice.correct{background:#196342!important;color:#fff!important}
+#music-hybrid-deck .hd-slide .hd-choice.wrong{background:#803541!important;color:#fff!important}
+#music-hybrid-deck .hd-slide .hd-feedback{color:var(--story-accent)}
+#music-hybrid-deck .hd-slide .hd-beat{background:var(--story-soft);color:var(--story-fg);border-color:var(--story-border)}
+#music-hybrid-deck .hd-slide .hd-beat small{color:var(--story-muted)}
+#music-hybrid-deck .hd-slide .hd-beat[data-editable=true]:hover{border-color:var(--story-accent)}
+#music-hybrid-deck .hd-mission-badge{display:inline-flex;align-items:center;gap:8px;max-width:100%;border-radius:99px;border:2px solid var(--story-border);background:var(--story-chip);color:var(--story-fg);padding:7px 14px;font-size:clamp(13px,1.22cqw,18px);line-height:1.2;font-weight:850;align-self:flex-start}
+#music-hybrid-deck .hd-story-question{
+  color:var(--story-fg);font-weight:930;line-height:1.15;
+  font-size:clamp(28px,3.8cqw,59px);letter-spacing:-.045em;margin:3px 0;word-break:keep-all
+}
+#music-hybrid-deck .hd-student-cue{
+  display:flex;align-items:center;gap:12px;max-width:100%;background:var(--story-soft);
+  border-left:6px solid var(--story-accent);border-radius:12px;padding:12px 17px;
+  color:var(--story-fg);font-weight:800;font-size:clamp(17px,1.6cqw,24px);word-break:keep-all;
+}
+#music-hybrid-deck .hd-student-cue .cue-label{
+  display:inline-flex;flex:0 0 auto;border-radius:100px;
+  background:var(--story-accent);color:var(--story-accent-text,white);font-size:clamp(11px,.9cqw,14px);
+  font-weight:900;letter-spacing:.02em;padding:5px 9px
+}
+#music-hybrid-deck .hd-slide[data-story-tone=stage] .hd-student-cue{background:#ffffff1c}
+#music-hybrid-deck .hd-slide[data-story-tone=stage] .hd-mission-badge{color:white;background:#ffffff19}
+#music-hybrid-deck .hd-slide[data-layout="quest"] .hd-title{font-size:clamp(22px,2.25cqw,34px)!important;line-height:1.2}
+#music-hybrid-deck .hd-slide[data-layout="quest"] .hd-story-question{font-size:clamp(39px,4.6cqw,75px)}
+#music-hybrid-deck .hd-slide[data-layout="quest"] .hd-lead{justify-content:center}
+#music-hybrid-deck .hd-slide[data-layout="quest"] .hd-prompt{font-size:clamp(16px,1.5cqw,23px)}
+#music-hybrid-deck .hd-slide[data-layout="quest"] .hd-mission-badge{margin-bottom:5px}
+#music-hybrid-deck .hd-slide[data-layout="cinema"] .hd-layout{grid-template-columns:minmax(0,.77fr) minmax(0,1.23fr)}
+#music-hybrid-deck .hd-slide[data-layout="cinema"] .hd-media{border:5px solid #fff8;box-shadow:0 16px 40px #0006}
+#music-hybrid-deck .hd-slide[data-layout="photo-essay"] .hd-layout{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}
+#music-hybrid-deck .hd-slide[data-layout="photo-essay"] .hd-lead{justify-content:center}
+#music-hybrid-deck .hd-slide[data-layout="big-type"] .hd-title{font-size:clamp(40px,5.6cqw,86px)!important;letter-spacing:-.05em}
+#music-hybrid-deck .hd-slide[data-layout="cards"] .hd-side{justify-content:center}
+#music-hybrid-deck .hd-story-resolution{
+  display:flex;flex-direction:column;gap:10px;padding:20px 27px;margin:6px 0 0;
+  background:var(--story-soft);border-radius:20px;border:2px solid var(--story-border);
+  border-left:9px solid var(--story-accent);max-width:950px;
+  color:var(--story-fg);box-shadow:0 12px 32px #00000017
+}
+#music-hybrid-deck .hd-story-resolution b{color:var(--story-accent);font-size:clamp(14px,1.3cqw,19px)}
+#music-hybrid-deck .hd-story-resolution span{font-size:clamp(22px,2.3cqw,37px);line-height:1.35;font-weight:850}
+#music-hybrid-deck .hd-slide[data-kind="closing"] .hd-title{font-size:clamp(31px,5cqw,73px)!important}
+#music-hybrid-deck .hd-slide[data-kind="closing"] .hd-lead{gap:clamp(8px,1.1cqw,17px)}
+#music-hybrid-deck .hd-slide[data-kind="closing"] .hd-story-resolution{margin-top:0}
+#music-hybrid-deck .hd-hero-figure{position:relative;display:flex;flex-direction:column;overflow:hidden;margin:0;border-radius:22px;max-height:100%;min-height:180px;border:4px solid #ffffffbc;background:#d1e0df;box-shadow:0 15px 35px #0002}
+#music-hybrid-deck .hd-hero-figure img{display:block;width:100%;height:100%;min-height:180px;max-height:min(48cqw,480px);object-fit:cover;object-position:center}
+#music-hybrid-deck .hd-hero-figure figcaption{background:#173541;color:#fff;font-size:clamp(10px,.85cqw,13px);line-height:1.3;padding:7px 10px}
+#music-hybrid-deck .hd-hero-placeholder{background:linear-gradient(130deg,var(--story-soft),var(--story-chip));color:var(--story-fg);min-height:180px;display:grid;place-items:center;padding:16px;text-align:center;font-weight:800}
+#music-hybrid-deck .hd-bridge{display:block;width:100%;text-align:center;margin-top:6px;padding:12px 16px;border:2px solid var(--story-accent);border-radius:12px;background:var(--story-accent);color:var(--story-accent-text,#fff);font-size:clamp(14px,1.5cqw,22px);font-weight:850}
+#music-hybrid-deck .hd-slide[data-story-tone=stage] .hd-bridge{background:var(--story-accent);color:#17364a}
+#music-hybrid-deck .hd-beat-label{letter-spacing:.03em;font-size:clamp(12px,1cqw,15px);font-weight:900;color:var(--story-accent)}
+@media(max-width:950px){#music-hybrid-deck .hd-story-question{font-size:clamp(25px,4.5cqw,50px)}#music-hybrid-deck .hd-student-cue{padding:8px 11px;font-size:clamp(13px,1.5cqw,21px)}#music-hybrid-deck .hd-mission-badge{padding:5px 9px}#music-hybrid-deck .hd-hero-figure img{max-height:32cqw}}
+@media(max-width:760px){#music-hybrid-deck .hd-slide[data-layout="cinema"] .hd-layout,#music-hybrid-deck .hd-slide[data-layout="photo-essay"] .hd-layout{display:flex;flex-direction:column}#music-hybrid-deck .hd-slide[data-layout="quest"] .hd-story-question{font-size:clamp(34px,8vw,50px)}#music-hybrid-deck .hd-mission-badge{font-size:14px}#music-hybrid-deck .hd-student-cue{font-size:18px}#music-hybrid-deck .hd-hero-figure img{height:230px;max-height:none}#music-hybrid-deck .hd-story-resolution span{font-size:21px}#music-hybrid-deck .hd-slide[data-layout="big-type"] .hd-title{font-size:40px!important}}
+@media(prefers-reduced-motion:reduce){#music-hybrid-deck .hd-slide{transition:none}}
