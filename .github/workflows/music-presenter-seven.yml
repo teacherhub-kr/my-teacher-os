@@ -1,4 +1,4 @@
-name: Music Seven-Lesson Presentation Browser
+name: Music Seven-Lesson Hybrid Browser
 
 on:
   pull_request:
@@ -30,19 +30,19 @@ jobs:
       - name: Validate shared JavaScript and all seven links
         run: |
           set -euo pipefail
-          node --check lessons/presentation/presenter.js
-          test -f lessons/presentation/presenter.css
+          node --check lessons/hybrid-v2/engine.js\n          test -f lessons/hybrid-v2/deck.css
+          test -f lessons/hybrid-v2/deck.css
           for id in orchestra-timbre rhythm-lab dynamics-expression gayageum-observation vocal-breath-phrasing bali-gamelan-archive arirang-vocal; do
-            grep -q "presentation/presenter.css" "lessons/$id/index.html"
-            grep -q "presentation/presenter.js" "lessons/$id/index.html"
+            grep -q "hybrid-v2/deck.css" "lessons/$id/index.html"
+            grep -q "hybrid-v2/engine.js" "lessons/$id/index.html"
             grep -q "data-music-lesson=\"$id\"" "lessons/$id/index.html"
-            test -f "lessons/$id/teacher.html"
+            test -f "lessons/$id/teacher.html"\n            test -f "lessons/$id/deck.json"
           done
       - name: Install Chromium
         run: |
           npm install --no-save --package-lock=false @playwright/test@1.55.0
           npx playwright install --with-deps chromium
-      - name: Run seven-lesson desktop and mobile browser tests
+      - name: Run twenty-one eleven-slide hybrid browser tests
         run: |
           set -euo pipefail
           python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/music-presenter-seven-http.log 2>&1 &
