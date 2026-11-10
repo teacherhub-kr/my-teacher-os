@@ -23,7 +23,12 @@
       "media": {
         "youtube": "Cf-fe9N7f-k",
         "label": "국립국악원 토요명품공연 아리랑 · 기존 수업 영상"
-      }
+      },
+      "storyBeat": "아리랑 여행 시작",
+      "studentCue": "공연에서 목소리 수 세기",
+      "storyTone": "sun",
+      "layout": "quest",
+      "storyQuestion": "같은 아리랑을 불러도 우리 목소리는 왜 다르게 들릴까?"
     },
     {
       "phase": "가사의 호흡",
@@ -36,7 +41,11 @@
         "교사가 한 구절을 천천히 부릅니다.",
         "학생이 같은 흐름으로 두 번 따라 부릅니다."
       ],
-      "teacher": "편안한 음역을 사용하고 성량보다 선율 연결을 우선한다."
+      "teacher": "편안한 음역을 사용하고 성량보다 선율 연결을 우선한다.",
+      "storyBeat": "첫 구절",
+      "studentCue": "선생님 뒤에 한 구절 받기",
+      "storyTone": "peach",
+      "layout": "cards"
     },
     {
       "phase": "소리의 연결",
@@ -49,7 +58,11 @@
         "교사가 한 구절 메기면 학생이 받습니다.",
         "역할을 바꾸어 같은 구절을 다시 부릅니다."
       ],
-      "teacher": "역사적 메기고 받기 관행을 수업용 모방 활동으로 단순화했음을 안내."
+      "teacher": "역사적 메기고 받기 관행을 수업용 모방 활동으로 단순화했음을 안내.",
+      "storyBeat": "메기고 받기",
+      "studentCue": "다 같이 역할 바꿔 부르기",
+      "storyTone": "lavender",
+      "layout": "cards"
     },
     {
       "phase": "가사 네 부분",
@@ -68,7 +81,16 @@
         "둘째 구절",
         "셋째 구절",
         "넷째 구절"
-      ]
+      ],
+      "storyBeat": "가사의 길",
+      "studentCue": "가사 네 부분을 이어 부르기",
+      "storyTone": "butter",
+      "layout": "photo-essay",
+      "visual": {
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Song%20So-Hee%20performing%20Arirang.jpg?width=960",
+        "alt": "아리랑을 공연하는 국악 가수 사진",
+        "credit": "JEON HAN/Korea.net · CC BY-SA 2.0; 본 수업 영상과 별개 사진"
+      }
     },
     {
       "phase": "선율 허밍",
@@ -81,7 +103,11 @@
         "원래 가사로 한 번 노래합니다.",
         "허밍으로 다시 한 번 이어 부릅니다."
       ],
-      "teacher": "가창이 어려우면 낮은 음역 또는 말리듬으로 대체한다."
+      "teacher": "가창이 어려우면 낮은 음역 또는 말리듬으로 대체한다.",
+      "storyBeat": "허밍 여행",
+      "studentCue": "가사와 허밍 비교",
+      "storyTone": "sky",
+      "layout": "cards"
     },
     {
       "phase": "세 박의 흐름",
@@ -99,7 +125,11 @@
         "하나",
         "둘",
         "셋"
-      ]
+      ],
+      "storyBeat": "세 박의 단서",
+      "studentCue": "손뼉으로 3박 유지",
+      "storyTone": "mint",
+      "layout": "cards"
     },
     {
       "phase": "박과 노래",
@@ -112,7 +142,11 @@
         "세 박을 손으로 짚으며 노래합니다.",
         "한 동작을 줄이고 선율 표현을 다시 연습합니다."
       ],
-      "teacher": "세마치 장단은 필요시 교사의 별도 시범으로 보완한다."
+      "teacher": "세마치 장단은 필요시 교사의 별도 시범으로 보완한다.",
+      "storyBeat": "세 박 위에 노래",
+      "studentCue": "3박을 느끼며 노래하기",
+      "storyTone": "peach",
+      "layout": "big-type"
     },
     {
       "phase": "숨표 A/B",
@@ -129,7 +163,11 @@
       "terms": [
         "A · 문장 끝",
         "B · 문장 중간"
-      ]
+      ],
+      "storyBeat": "숨표 갈림길",
+      "studentCue": "A/B 숨 쉬기 위치 비교",
+      "storyTone": "lavender",
+      "layout": "cards"
     },
     {
       "phase": "우리 반 아리랑",
@@ -142,7 +180,11 @@
         "반 전체가 메기고 받으며 두 번 노래합니다.",
         "선택한 숨표를 적용해 다시 노래합니다."
       ],
-      "teacher": "개별 음악적 선택을 존중한다. 모두 같은 음색일 필요는 없다."
+      "teacher": "개별 음악적 선택을 존중한다. 모두 같은 음색일 필요는 없다.",
+      "storyBeat": "우리 반 아리랑",
+      "studentCue": "한 반이 두 방식으로 노래",
+      "storyTone": "butter",
+      "layout": "cards"
     },
     {
       "phase": "개별 실연",
@@ -155,7 +197,16 @@
         "혼자 한 구절을 부르거나 허밍합니다.",
         "숨표를 고른 이유를 말합니다."
       ],
-      "teacher": "성량·적극성·자신감은 성취 지표가 아니다."
+      "teacher": "성량·적극성·자신감은 성취 지표가 아니다.",
+      "storyBeat": "내 목소리 확인",
+      "studentCue": "각자 한 구절 표현하기",
+      "storyTone": "sky",
+      "layout": "photo-essay",
+      "visual": {
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Ahn%20Sook-sun.jpg?width=960",
+        "alt": "국악 명창 참고 사진",
+        "credit": "JEON HAN/Korea.net · CC BY-SA 2.0; 본 수업 영상과 별개 사진"
+      }
     },
     {
       "phase": "정리",
@@ -168,7 +219,22 @@
         "가장 편안한 호흡으로 한 구절을 노래합니다.",
         "선율과 박에 관한 근거를 구두로 확인합니다."
       ],
-      "teacher": "실제 공연 영상과 학교 수업용 단순 활동을 구분한다."
+      "teacher": "실제 공연 영상과 학교 수업용 단순 활동을 구분한다.",
+      "storyBeat": "여행의 마지막",
+      "studentCue": "첫 질문에 내 목소리로 답하기",
+      "storyTone": "final",
+      "layout": "payoff",
+      "storyAnswer": "노래를 연결하는 호흡과 장단, 부르는 사람의 표현이 달라서 각자의 아리랑이 만들어져요."
     }
-  ]
+  ],
+  "story": {
+    "role": "아리랑 소리 여행",
+    "mission": "같은 아리랑, 다른 목소리",
+    "hook": "같은 아리랑을 불러도 우리 목소리는 왜 다르게 들릴까?",
+    "payoff": "노래를 연결하는 호흡과 장단, 부르는 사람의 표현이 달라서 각자의 아리랑이 만들어져요.",
+    "conclusion": "세 박의 흐름을 살려 노래하고 숨표를 고른 음악적 이유를 설명한다.",
+    "symbol": "✿",
+    "palette": "peach",
+    "canvasInspired": true
+  }
 }
