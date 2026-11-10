@@ -1,0 +1,203 @@
+{
+  "schemaVersion": 2,
+  "id": "dynamics-expression",
+  "title": "셈여림 표현 실험실",
+  "theme": "dynamics",
+  "grade": "중학교 2학년",
+  "durationMinutes": 45,
+  "goal": "실제 연주를 듣고 셈여림·크레셴도·데크레셴도의 음악적 효과를 표현한다.",
+  "sourceNote": "음원·영상은 기존 수업에서 사용한 공개 자료의 재생 경로를 연결하며, 실제 학교망 재생은 교사가 점검합니다.",
+  "slides": [
+    {
+      "phase": "소리로 시작",
+      "min": 3,
+      "music": 2,
+      "type": "listen",
+      "title": "같은 멜로디, 다른 느낌",
+      "prompt": "실제 피아노 연주를 듣고 손으로 소리의 크기를 그려보세요.",
+      "tasks": [
+        "녹음 30초를 듣습니다.",
+        "소리의 강약 변화를 손높이로 표시합니다."
+      ],
+      "teacher": "웹 볼륨 조절과 연주자가 실제 표현한 셈여림을 구분한다.",
+      "media": {
+        "audio": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Waltz_in_E_minor_by_Alexander_Griboyedov.ogg",
+        "label": "그리보예도프 왈츠 · 기존 수업 원음"
+      }
+    },
+    {
+      "phase": "표현 기호",
+      "min": 4,
+      "music": 3,
+      "type": "concept",
+      "title": "p · mp · mf · f",
+      "prompt": "크기가 아니라 음악 문맥 속 표현을 읽어 봅시다.",
+      "tasks": [
+        "네 기호를 작게에서 크게 정렬합니다.",
+        "교사의 소리 시범에 맞춰 기호를 손으로 가리킵니다."
+      ],
+      "teacher": "고정 데시벨이 아니라 상대적 표현이다.",
+      "terms": [
+        "p",
+        "mp",
+        "mf",
+        "f"
+      ]
+    },
+    {
+      "phase": "실연 두 개",
+      "min": 4,
+      "music": 3,
+      "type": "compare",
+      "title": "왈츠와 녹턴의 소리",
+      "prompt": "실제 피아노 두 연주를 듣고 음악적 표현을 비교하세요.",
+      "tasks": [
+        "각 연주의 한 구간을 집중해서 듣습니다.",
+        "선율이 두드러지는 부분을 표시합니다."
+      ],
+      "teacher": "곡·편성·녹음 환경이 달라 직접 통제된 셈여림 실험이 아니다.",
+      "media": {
+        "audios": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/5/5e/Waltz_in_E_minor_by_Alexander_Griboyedov.ogg",
+            "label": "왈츠"
+          },
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/a/a7/Chopin%2C_Nocturne_op_32_no_1.ogg",
+            "label": "녹턴"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "방향 느끼기",
+      "min": 4,
+      "music": 3,
+      "type": "gesture",
+      "title": "점점 세게, 점점 여리게",
+      "prompt": "팔의 높이로 cresc.와 dim.을 표현해 봅시다.",
+      "tasks": [
+        "교사의 소리에 맞춰 팔을 서서히 들어 올립니다.",
+        "다음에는 팔을 천천히 내리며 같은 선율을 허밍합니다."
+      ],
+      "teacher": "빠르기 변화와 셈여림 변화를 혼동하지 않는다."
+    },
+    {
+      "phase": "진짜 소리 듣기",
+      "min": 4,
+      "music": 4,
+      "type": "listen",
+      "title": "악기의 울림이 달라지면?",
+      "prompt": "어쿠스틱 기타 소리의 시작과 사라짐을 들어보세요.",
+      "tasks": [
+        "기타 녹음을 반복 청음합니다.",
+        "강조해 들리는 부분과 소리가 줄어드는 부분을 말합니다."
+      ],
+      "teacher": "클립 특성을 확인하지 않고 점점 커진다고 단정하지 않는다.",
+      "media": {
+        "audio": "https://upload.wikimedia.org/wikipedia/commons/6/67/AcousticGuitarSample.ogg",
+        "label": "어쿠스틱 기타 실제 연주"
+      }
+    },
+    {
+      "phase": "청음 기호",
+      "min": 5,
+      "music": 4,
+      "type": "quiz",
+      "title": "어떤 기호가 어울릴까?",
+      "prompt": "점점 세게 표현하라는 기호는 무엇일까요?",
+      "tasks": [
+        "교사 시범을 두 번 듣고 개인별 정답을 선택합니다.",
+        "선택한 기호를 적용해 4박 동안 직접 소리로 표현합니다."
+      ],
+      "teacher": "재청음 기회를 보장한다.",
+      "choices": [
+        "p",
+        "f",
+        "cresc.",
+        "dim."
+      ],
+      "answer": 2,
+      "explain": "cresc.(크레셴도)는 점점 세게 표현한다는 뜻입니다."
+    },
+    {
+      "phase": "4구간 표현",
+      "min": 6,
+      "music": 5,
+      "type": "create",
+      "title": "네 구간의 셈여림 설계",
+      "prompt": "같은 선율에 다른 셈여림 지도를 만들어 보세요.",
+      "tasks": [
+        "2분: 네 구간에 p~f를 선택합니다.",
+        "2분: 선택한 순서대로 허밍·손짓으로 표현합니다.",
+        "2분: 한 구간을 바꿔 다시 연주합니다."
+      ],
+      "teacher": "기존 활동 모드의 4구간 편집기는 그대로 유지한다.",
+      "terms": [
+        "첫 구간",
+        "두 번째",
+        "세 번째",
+        "마지막"
+      ]
+    },
+    {
+      "phase": "A/B 실연",
+      "min": 5,
+      "music": 5,
+      "type": "compare",
+      "title": "두 가지 표현은 어떻게 다를까?",
+      "prompt": "내 설계와 친구의 설계를 같은 선율에 적용해 비교하세요.",
+      "tasks": [
+        "A안으로 한 번, B안으로 한 번 노래합니다.",
+        "어느 구간에서 느낌이 달라졌는지 근거를 말합니다."
+      ],
+      "teacher": "음량 경쟁이 아닌 흐름과 음악적 의도에 집중한다."
+    },
+    {
+      "phase": "지휘자로",
+      "min": 4,
+      "music": 3,
+      "type": "practice",
+      "title": "손짓으로 셈여림 지휘",
+      "prompt": "교사가 제시한 4박을 서로 다른 세기로 표현해 보세요.",
+      "tasks": [
+        "개인이 손짓으로 커지기·작아지기를 지휘합니다.",
+        "모두가 지휘를 보고 허밍·손뼉으로 반응합니다."
+      ],
+      "teacher": "동작 대체로 작은 카드나 손가락 표시 가능."
+    },
+    {
+      "phase": "형성평가",
+      "min": 3,
+      "music": 2,
+      "type": "quiz",
+      "title": "소리 크기와 빠르기의 차이",
+      "prompt": "데크레셴도는 무엇이 달라지는 걸까요?",
+      "tasks": [
+        "혼자 선택하고 근거를 말합니다.",
+        "다시 4박을 세며 소리를 줄여 시범합니다."
+      ],
+      "teacher": "빠르기가 느려지는 것이 아니라 소리의 세기가 줄어든다.",
+      "choices": [
+        "점점 빠르게",
+        "점점 여리게",
+        "바로 멈추기"
+      ],
+      "answer": 1,
+      "explain": "dim.(데크레셴도)은 점점 여리게 표현하는 것입니다."
+    },
+    {
+      "phase": "마무리",
+      "min": 3,
+      "music": 1,
+      "type": "closing",
+      "title": "나의 표현 선택",
+      "prompt": "내가 가장 크게 표현한 곳과 이유를 말해 봅시다.",
+      "tasks": [
+        "네 구간 지도에서 가장 강조할 부분을 가리킵니다.",
+        "청음 근거를 짧게 말하거나 손짓으로 표현합니다."
+      ],
+      "teacher": "공식 성적과 연결하지 않는 개별 형성평가."
+    }
+  ]
+}
