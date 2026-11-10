@@ -23,7 +23,12 @@
       "media": {
         "audio": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Gamelan_Anklung_Berong_Pengetjet_%281931%29.ogg",
         "label": "1931 가믈란 음반 A · Wikimedia Commons"
-      }
+      },
+      "storyBeat": "오래된 음반 A",
+      "studentCue": "A 음반 30초 듣고 손 신호",
+      "storyTone": "sun",
+      "layout": "quest",
+      "storyQuestion": "오래된 음반 두 장에서 서로 맞물리는 소리를 찾아낼 수 있을까?"
     },
     {
       "phase": "다른 기록",
@@ -40,7 +45,11 @@
       "media": {
         "audio": "https://upload.wikimedia.org/wikipedia/commons/b/be/Gamelan_Gong_Lagu_Kebiar_%281931%29.ogg",
         "label": "1931 가믈란 음반 B · Wikimedia Commons"
-      }
+      },
+      "storyBeat": "또 다른 음반 B",
+      "studentCue": "B 음반 30초 들어 비교",
+      "storyTone": "stage",
+      "layout": "cards"
     },
     {
       "phase": "소리 층",
@@ -65,6 +74,15 @@
             "label": "음반 B"
           }
         ]
+      },
+      "storyBeat": "첫 증거 비교",
+      "studentCue": "두 음반의 소리 층을 표시",
+      "storyTone": "butter",
+      "layout": "soundlab",
+      "visual": {
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Balinese%20Gamelan.jpg?width=960",
+        "alt": "현대 발리 가믈란 공연 자료 사진",
+        "credit": "Eka Purna Sumeika · CC BY-SA 4.0, 1931년 음반 현장 아님"
       }
     },
     {
@@ -84,7 +102,11 @@
         "쉿",
         "짝",
         "쉿"
-      ]
+      ],
+      "storyBeat": "첫 리듬 만들기",
+      "studentCue": "짝·쉼 반복 손뼉",
+      "storyTone": "sky",
+      "layout": "beat-grid"
     },
     {
       "phase": "두 번째 리듬",
@@ -103,7 +125,11 @@
         "쿵",
         "쉿",
         "쿵"
-      ]
+      ],
+      "storyBeat": "두 번째 리듬",
+      "studentCue": "쉼·쿵 무릎치기",
+      "storyTone": "mint",
+      "layout": "beat-grid"
     },
     {
       "phase": "맞물림",
@@ -116,7 +142,11 @@
         "짝과 두 패턴을 동시에 연주합니다.",
         "역할을 바꾸어 한 번 더 연주하고 들리는 차이를 말합니다."
       ],
-      "teacher": "소리 층과 박의 관계를 설명한다. 박 유지가 평가의 핵심이다."
+      "teacher": "소리 층과 박의 관계를 설명한다. 박 유지가 평가의 핵심이다.",
+      "storyBeat": "소리 겹치기",
+      "studentCue": "두 패턴 동시에 연주",
+      "storyTone": "peach",
+      "layout": "cards"
     },
     {
       "phase": "8박 연결",
@@ -139,7 +169,11 @@
         "쿵",
         "쉿",
         "쿵"
-      ]
+      ],
+      "storyBeat": "8박 복원",
+      "studentCue": "8박으로 두 패턴 연결",
+      "storyTone": "lavender",
+      "layout": "beat-grid"
     },
     {
       "phase": "실제 소리 다시",
@@ -164,7 +198,11 @@
             "label": "음반 B"
           }
         ]
-      }
+      },
+      "storyBeat": "원본 재검증",
+      "studentCue": "원래 음반을 다시 듣기",
+      "storyTone": "stage",
+      "layout": "soundlab"
     },
     {
       "phase": "내가 고른 소리",
@@ -182,7 +220,16 @@
         "손뼉",
         "무릎치기",
         "쉼"
-      ]
+      ],
+      "storyBeat": "나만의 실험",
+      "studentCue": "8박 나만의 배열 만들기",
+      "storyTone": "sky",
+      "layout": "photo-essay",
+      "visual": {
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Lestarikan%20budaya%20tari%20dan%20seni%20gamelan%20bali.jpg?width=960",
+        "alt": "발리 가믈란 연주와 무용 공연 참고 사진",
+        "credit": "Andika Panendra · CC BY-SA 4.0, 역사 음반의 현장 사진 아님"
+      }
     },
     {
       "phase": "실연 확인",
@@ -195,7 +242,11 @@
         "각자 연주하고 수정할 곳 하나를 찾습니다.",
         "소리의 층 또는 겹침을 근거로 설명합니다."
       ],
-      "teacher": "개인 음악적 결과를 관찰한다. 공개 발표 여부나 적극성은 채점하지 않는다."
+      "teacher": "개인 음악적 결과를 관찰한다. 공개 발표 여부나 적극성은 채점하지 않는다.",
+      "storyBeat": "소리 기록 발표",
+      "studentCue": "한 가지 음악적 근거 말하기",
+      "storyTone": "mint",
+      "layout": "big-type"
     },
     {
       "phase": "정리",
@@ -208,7 +259,22 @@
         "A/B 구별에 썼던 근거를 구두로 확인합니다.",
         "세계음악을 하나의 특징으로 일반화하지 않습니다."
       ],
-      "teacher": "외부 음원이 막히면 음원 감상 성취를 완료했다고 평가하지 않는다."
+      "teacher": "외부 음원이 막히면 음원 감상 성취를 완료했다고 평가하지 않는다.",
+      "storyBeat": "수수께끼 해결",
+      "studentCue": "두 음반을 혼동하지 않고 설명",
+      "storyTone": "final",
+      "layout": "payoff",
+      "storyAnswer": "두 기록의 타격음과 반복을 비교하고, 서로 다른 리듬이 겹치는 구조를 몸으로 확인했어요."
     }
-  ]
+  ],
+  "story": {
+    "role": "소리 고고학자",
+    "mission": "1931년 음반 속 소리를 찾아라",
+    "hook": "오래된 음반 두 장에서 서로 맞물리는 소리를 찾아낼 수 있을까?",
+    "payoff": "두 기록의 타격음과 반복을 비교하고, 서로 다른 리듬이 겹치는 구조를 몸으로 확인했어요.",
+    "conclusion": "실제 1931년 음반의 들은 구간을 근거로 소리의 반복과 겹침을 설명한다.",
+    "symbol": "✺",
+    "palette": "mint",
+    "canvasInspired": true
+  }
 }
