@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 2,
+  "id": "bali-gamelan-archive",
+  "title": "1931, 발리의 두 소리",
+  "theme": "bali",
+  "grade": "중학교 2학년",
+  "durationMinutes": 45,
+  "goal": "1931년 발리 가믈란 기록 두 개를 듣고 리듬의 반복·겹침을 8박으로 표현한다.",
+  "sourceNote": "기존 수업에 사용한 공개 자료 원본 링크를 연결합니다. 학교망·기기별 재생 및 음악적 시점은 교사가 수업 전 확인합니다.",
+  "slides": [
+    {
+      "phase": "두 기록",
+      "min": 3,
+      "music": 2,
+      "type": "listen",
+      "title": "1931년의 연주를 들어요",
+      "prompt": "실제 역사 음반 A를 듣고 소리가 겹치는 부분을 찾아보세요.",
+      "tasks": [
+        "음반 A를 시작 1분 안에 재생합니다.",
+        "반복되는 타격음을 손가락으로 표시합니다."
+      ],
+      "teacher": "1931은 음반 발행 연도이지 녹음 날짜가 확정된 것은 아니다.",
+      "media": {
+        "audio": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Gamelan_Anklung_Berong_Pengetjet_%281931%29.ogg",
+        "label": "1931 가믈란 음반 A · Wikimedia Commons"
+      }
+    },
+    {
+      "phase": "다른 기록",
+      "min": 3,
+      "music": 3,
+      "type": "listen",
+      "title": "이번에는 음반 B",
+      "prompt": "A보다 더 촘촘하게 들리는 순간이 있을까요?",
+      "tasks": [
+        "음반 B를 짧게 듣습니다.",
+        "A와 B의 공통된 타격감과 차이를 손짓으로 나타냅니다."
+      ],
+      "teacher": "소리가 촘촘한지 여부는 실제 들은 구간을 근거로 한다.",
+      "media": {
+        "audio": "https://upload.wikimedia.org/wikipedia/commons/b/be/Gamelan_Gong_Lagu_Kebiar_%281931%29.ogg",
+        "label": "1931 가믈란 음반 B · Wikimedia Commons"
+      }
+    },
+    {
+      "phase": "소리 층",
+      "min": 4,
+      "music": 3,
+      "type": "compare",
+      "title": "서로 다른 소리가 겹쳐요",
+      "prompt": "무거운 타격과 작은 반복 소리를 나누어 들어 보세요.",
+      "tasks": [
+        "A를 30초씩 두 번 들으며 소리의 층을 구별합니다.",
+        "다른 소리가 들릴 때 손을 들어 표시합니다."
+      ],
+      "teacher": "음원을 기록한 장면과 현대 공연 사진을 동일시하지 않는다.",
+      "media": {
+        "audios": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Gamelan_Anklung_Berong_Pengetjet_%281931%29.ogg",
+            "label": "음반 A"
+          },
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/b/be/Gamelan_Gong_Lagu_Kebiar_%281931%29.ogg",
+            "label": "음반 B"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "첫 번째 리듬",
+      "min": 5,
+      "music": 5,
+      "type": "pattern",
+      "title": "짝 · 쉼 · 짝 · 쉼",
+      "prompt": "4박 동안 한 손으로 소리를 만들어 보세요.",
+      "tasks": [
+        "교사가 4박 손뼉을 시범합니다.",
+        "학생이 소리를 내는 박과 쉬는 박을 반복 연주합니다."
+      ],
+      "teacher": "교실용 기본 패턴이지 역사 음원의 정확한 채보가 아니다.",
+      "pattern": [
+        "짝",
+        "쉿",
+        "짝",
+        "쉿"
+      ]
+    },
+    {
+      "phase": "두 번째 리듬",
+      "min": 5,
+      "music": 5,
+      "type": "pattern",
+      "title": "쉼 · 쿵 · 쉼 · 쿵",
+      "prompt": "서로 다른 악기 역할처럼 빈 박을 채웁니다.",
+      "tasks": [
+        "무릎치기·쉼을 네 박에 맞춰 연주합니다.",
+        "앞의 손뼉 리듬과 번갈아 쳐 봅니다."
+      ],
+      "teacher": "무릎이 불편한 학생은 책상 두드리기로 대체한다.",
+      "pattern": [
+        "쉿",
+        "쿵",
+        "쉿",
+        "쿵"
+      ]
+    },
+    {
+      "phase": "맞물림",
+      "min": 5,
+      "music": 5,
+      "type": "practice",
+      "title": "두 패턴을 함께 연주해요",
+      "prompt": "빈 박을 서로 다른 소리가 채우면?",
+      "tasks": [
+        "짝과 두 패턴을 동시에 연주합니다.",
+        "역할을 바꾸어 한 번 더 연주하고 들리는 차이를 말합니다."
+      ],
+      "teacher": "소리 층과 박의 관계를 설명한다. 박 유지가 평가의 핵심이다."
+    },
+    {
+      "phase": "8박 연결",
+      "min": 5,
+      "music": 4,
+      "type": "pattern",
+      "title": "8박으로 겹침 만들기",
+      "prompt": "4박 패턴을 두 마디로 연결합니다.",
+      "tasks": [
+        "첫 마디를 연주하고 두 번째 마디를 이어 붙입니다.",
+        "쉼 위치를 바꿔 다시 연주합니다."
+      ],
+      "teacher": "악보는 교실용 응용이며 원음과 일치하지 않아도 괜찮다.",
+      "pattern": [
+        "짝",
+        "쉿",
+        "짝",
+        "쉿",
+        "쉿",
+        "쿵",
+        "쉿",
+        "쿵"
+      ]
+    },
+    {
+      "phase": "실제 소리 다시",
+      "min": 5,
+      "music": 4,
+      "type": "listen",
+      "title": "기록으로 돌아가 듣기",
+      "prompt": "우리의 리듬과 A·B 녹음에서 들리는 것을 비교하세요.",
+      "tasks": [
+        "A와 B를 다시 각각 듣습니다.",
+        "직접 들은 반복·타격·겹침의 예를 말합니다."
+      ],
+      "teacher": "역사 녹음의 정확한 리듬 채보라고 단정하지 않는다.",
+      "media": {
+        "audios": [
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/c/c8/Gamelan_Anklung_Berong_Pengetjet_%281931%29.ogg",
+            "label": "음반 A"
+          },
+          {
+            "src": "https://upload.wikimedia.org/wikipedia/commons/b/be/Gamelan_Gong_Lagu_Kebiar_%281931%29.ogg",
+            "label": "음반 B"
+          }
+        ]
+      }
+    },
+    {
+      "phase": "내가 고른 소리",
+      "min": 4,
+      "music": 3,
+      "type": "create",
+      "title": "나만의 8박 소리 층",
+      "prompt": "한 박 이상 쉼을 넣고 소리 두 가지를 조합합니다.",
+      "tasks": [
+        "8박 안에 손뼉·무릎·쉼을 배치합니다.",
+        "만든 배열을 실제로 연주합니다."
+      ],
+      "teacher": "개별 산출물은 8박 표현과 선택한 이유. 텍스트 작성은 최소화한다.",
+      "terms": [
+        "손뼉",
+        "무릎치기",
+        "쉼"
+      ]
+    },
+    {
+      "phase": "실연 확인",
+      "min": 4,
+      "music": 3,
+      "type": "check",
+      "title": "리듬이 서로 맞물리나요?",
+      "prompt": "8박의 박을 유지한 채 내가 만든 리듬을 연주하세요.",
+      "tasks": [
+        "각자 연주하고 수정할 곳 하나를 찾습니다.",
+        "소리의 층 또는 겹침을 근거로 설명합니다."
+      ],
+      "teacher": "개인 음악적 결과를 관찰한다. 공개 발표 여부나 적극성은 채점하지 않는다."
+    },
+    {
+      "phase": "정리",
+      "min": 2,
+      "music": 1,
+      "type": "closing",
+      "title": "오래된 기록, 새로운 귀",
+      "prompt": "두 녹음의 공통점 하나와 차이 하나를 말해 봅시다.",
+      "tasks": [
+        "A/B 구별에 썼던 근거를 구두로 확인합니다.",
+        "세계음악을 하나의 특징으로 일반화하지 않습니다."
+      ],
+      "teacher": "외부 음원이 막히면 음원 감상 성취를 완료했다고 평가하지 않는다."
+    }
+  ]
+}
