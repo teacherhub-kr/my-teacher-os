@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>아리랑 · 한 화면 통합형 음악 수업 시범</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#142e3c;color:#213444;font-family:system-ui,"Malgun Gothic",sans-serif}button,a{font:inherit}button{cursor:pointer;border:0}button:focus-visible,a:focus-visible{outline:4px solid #ff9b39;outline-offset:3px}
+header{height:58px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 16px;background:#123143;color:white}header strong{font-size:17px}header .controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}header button,header a{color:#fff;text-decoration:none;background:#305567;padding:9px 12px;border-radius:9px;font-size:14px;font-weight:750}header button.primary{background:#ffe29c;color:#243d4b}
+main{height:calc(100dvh - 112px);max-width:1660px;margin:auto;min-height:520px;padding:12px}#scene{height:100%;border-radius:20px;overflow:hidden;position:relative;padding:clamp(18px,2.6vw,40px);display:flex;flex-direction:column;gap:clamp(10px,1.4vh,18px);background:var(--bg);color:var(--ink);transition:background .2s}
+#scene[data-tone=gold]{--bg:#ffedb4;--ink:#3d3223;--soft:#fff9e5;--accent:#95550e;--border:#b78a4d}
+#scene[data-tone=sky]{--bg:#d9f1ff;--ink:#173d55;--soft:#f3fbff;--accent:#1a628b;--border:#7ba9c6}
+#scene[data-tone=peach]{--bg:#ffe0d4;--ink:#512c36;--soft:#fff5f0;--accent:#a34c56;--border:#c7888d}
+#scene[data-tone=mint]{--bg:#d6f3e2;--ink:#1a4239;--soft:#f3fff8;--accent:#136c53;--border:#80b6a0}
+#scene[data-tone=purple]{--bg:#e9dffc;--ink:#352b59;--soft:#faf6ff;--accent:#6b4a9a;--border:#ac95d3}
+#scene[data-tone=night]{--bg:#193c54;--ink:#fff;--soft:#28506a;--accent:#a8e7f4;--border:#668ca0}
+#scene[data-tone=final]{--bg:#d8f4dc;--ink:#183b30;--soft:#f5ffed;--accent:#146b4e;--border:#80b99a}
+.eyebrow{font-size:clamp(12px,1.1vw,17px);font-weight:900;color:var(--accent);letter-spacing:.06em}.topline{display:flex;justify-content:space-between;gap:12px;align-items:center}.time{background:var(--soft);border:1px solid var(--border);padding:7px 12px;border-radius:99px;font-size:14px;font-weight:800}
+h1{font-size:clamp(30px,4.3vw,70px);line-height:1.12;letter-spacing:-.045em;margin:0;word-break:keep-all}p{margin:0}.sub{font-size:clamp(16px,1.55vw,24px);font-weight:600;max-width:900px}
+.content{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(12px,2vw,26px);min-height:0;flex:1}.left{display:flex;flex-direction:column;gap:13px;min-width:0;justify-content:center}.right{display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;justify-content:center}
+.action{background:var(--soft);border-left:7px solid var(--accent);padding:clamp(14px,1.5vw,24px);border-radius:16px;font-size:clamp(18px,2vw,32px);font-weight:850;line-height:1.35;word-break:keep-all}.hint{font-size:clamp(14px,1.15vw,19px);color:var(--ink);opacity:.85}
+.stage{background:var(--soft);border:2px solid var(--border);border-radius:18px;padding:clamp(12px,1.5vw,24px);display:flex;flex-direction:column;gap:14px;min-height:180px}.stage h2{margin:0;font-size:clamp(20px,2vw,30px)}.stage .large{font-size:clamp(25px,3.4vw,55px);font-weight:850;line-height:1.3}.btnrow{display:flex;gap:10px;flex-wrap:wrap}.stage button{background:var(--accent);color:var(--soft);border:2px solid var(--accent);border-radius:12px;padding:12px 16px;font-size:clamp(16px,1.4vw,21px);font-weight:850}.stage button.alt{background:var(--soft);color:var(--ink)}.stage button[aria-pressed=true]{outline:4px solid #e99e22;outline-offset:2px}.stage button:disabled{opacity:.55;cursor:not-allowed}
+.video{aspect-ratio:16/9;width:100%;max-height:45vh;background:#142c3c;border-radius:15px;overflow:hidden;position:relative}.video img{display:block;width:100%;height:100%;object-fit:cover}.video button{position:absolute;inset:0;width:100%;height:100%;background:#0008;color:white;font-size:clamp(19px,2vw,28px);border-radius:0}.video iframe{width:100%;height:100%;border:0}.source{font-size:13px;line-height:1.4}.source a{color:var(--accent)}.beat{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.beat span{display:grid;place-items:center;background:var(--soft);border:3px solid var(--border);border-radius:14px;font-size:clamp(30px,4vw,62px);font-weight:950;min-height:95px}.beat span.on{background:var(--accent);color:var(--soft)}.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}.choices button{min-height:88px}.answer{font-size:clamp(17px,1.6vw,24px);font-weight:850;min-height:30px}.reveal{background:var(--soft);border-radius:14px;padding:16px;border:2px solid var(--border);font-size:clamp(17px,1.6vw,24px);font-weight:750}
+footer{height:54px;background:#102e3e;display:flex;align-items:center;justify-content:space-between;padding:6px 16px;color:white;gap:8px}footer button{padding:9px 15px;border-radius:9px;background:#31596c;color:#fff;font-weight:850}footer .next{background:#ffe29c;color:#263c4a}footer .progress{font-size:13px;font-weight:800}.teacher{position:absolute;inset:14px 14px auto auto;z-index:4;max-width:min(460px,92%);background:#fff;color:#183a45;border:3px solid #194d62;border-radius:14px;padding:16px;box-shadow:0 12px 50px #0005}.teacher[hidden]{display:none}.teacher p{margin:8px 0}.teacher button{background:#194d62;color:white;padding:8px 12px;border-radius:8px}.screen-reader{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+@media(max-width:800px){header{height:auto;min-height:58px}header strong{font-size:14px}header button,header a{font-size:12px;padding:7px}main{height:auto;min-height:calc(100dvh - 115px);padding:7px}#scene{min-height:680px;padding:18px}.content{grid-template-columns:1fr}.left{justify-content:flex-start}.right{justify-content:flex-start}.video{max-height:none}.stage .large{font-size:28px}.stage{min-height:150px}.beat span{min-height:65px}footer{height:auto;min-height:54px}}
+@media(prefers-reduced-motion:reduce){#scene{transition:none}}
+@media print{header,footer,.teacher{display:none!important}main{height:auto}#scene{height:100vh;border:0;border-radius:0;break-after:page}}
+</style></head>
+<body><header><strong>MY MUSIC CLASS · 아리랑 통합형 시범</strong><div class="controls"><button id="notes" aria-expanded="false">교사 발문 N</button><button id="reset">처음부터</button><button id="full">전체화면</button><a href="./?mode=present">기존 수업</a></div></header>
+<main><article id="scene" data-tone="gold" aria-live="polite"><div class="topline"><span class="eyebrow" id="chapter"></span><span class="time" id="timing"></span></div><h1 id="title"></h1><p class="sub" id="sub"></p><div class="content"><div class="left"><div class="action" id="action"></div><p class="hint" id="hint"></p></div><div class="right" id="activity"></div></div><aside class="teacher" id="teacher" hidden><strong>교사용 지도 포인트</strong><p id="teacherText"></p><button id="closeNotes">닫기</button></aside></article></main>
+<footer><button id="prev">← 이전</button><span class="progress" id="progress"></span><button class="next" id="next">다음 →</button></footer>
+<script>
+"use strict";
+const scenes=[
+{tone:"gold",chapter:"01 · 호기심",minutes:3,title:"같은 아리랑인데 왜 다르게 들릴까?",sub:"정답을 먼저 배우지 말고, 소리를 먼저 들어 보세요.",action:"첫 소리를 듣고 노래하는 목소리가 몇 개쯤 들리는지 손가락으로 표시!",hint:"모두 동시에 답합니다. 한 명씩 발표시키지 않습니다.",kind:"video",teacher:"0:00~3:00. 첫 1분 안에 영상 시작. 공연의 실제 시작 지점은 학교망에서 사전 확인. 들리지 않으면 교사 한 구절 실연. 가창자 수를 정확히 맞히는 시험이 아니라 듣기의 초점을 만드는 질문입니다."},
+{tone:"sky",chapter:"02 · 첫 단서",minutes:4,title:"아리랑, 아리랑, 아라리요",sub:"말이 음악이 되는 순간을 따라가 봅시다.",action:"교사가 한 구절 부르면, 전원이 즉시 받아 부르기!",hint:"음역이 높으면 낮춰 부르거나 허밍해도 됩니다.",kind:"echo",teacher:"3:00~7:00. 교사가 정확한 선율을 교과서·국립국악원 자료로 제시. 화면의 가사는 일부 구절만 표시하며 완전한 악보를 대체하지 않습니다."},
+{tone:"peach",chapter:"03 · 소리 이어붙이기",minutes:5,title:"네 조각을 하나의 노래로",sub:"가사를 외우는 대신 선율의 연결을 귀로 찾아요.",action:"한 구절씩 따라 부르고, 네 구절을 쉬지 않고 연결하기!",hint:"화면에서 순서를 누르면 현재 연습 구절이 강조됩니다.",kind:"phrases",teacher:"7:00~12:00. 원곡의 실제 구절과 학교 교과서 악보를 확인하여 지도. 버튼은 연습 순서 표시용이며 자동 반주가 아닙니다."},
+{tone:"mint",chapter:"04 · 박의 단서",minutes:5,title:"박은 멈추지 않는다",sub:"손으로 셋을 세면서 노래해 보세요.",action:"하나·둘·셋, 세 박을 느끼며 한 구절 부르기!",hint:"이 화면은 3박 감각을 위한 입문 활동입니다. 세마치장단의 완전한 장단꼴을 뜻하지 않습니다.",kind:"beat",teacher:"12:00~17:00. 3박 시각 박자는 세마치장단의 전체 장단꼴이 아님을 명시. 교사가 실제 장구 장단을 별도로 시범하면 좋습니다."},
+{tone:"purple",chapter:"05 · 숨표 실험",minutes:7,title:"숨 쉬는 곳을 바꾸면?",sub:"같은 선율을 두 가지 방법으로 직접 불러 봅니다.",action:"A와 B를 각각 두 번 부르고, 더 자연스럽게 들리는 쪽을 선택!",hint:"B안은 비교를 위한 실험입니다. 불편한 호흡이나 숨 참기를 강요하지 않습니다.",kind:"breath",teacher:"17:00~24:00. A=문장 끝 호흡, B=문장 중간 짧은 호흡. 학생들이 직접 두 방식으로 부르고 의미 전달·프레이즈를 비교하게 합니다."},
+{tone:"night",chapter:"06 · 집중 감상",minutes:5,title:"연주자의 숨을 찾아라",sub:"이번에는 공연을 다시 들으며 우리가 연습한 것을 찾아요.",action:"노래가 이어지는 지점에서 팔로 선율의 흐름을 그리기!",hint:"공연 영상의 실제 호흡 위치는 교사가 직접 확인해 지도합니다.",kind:"video",teacher:"24:00~29:00. 공식 공연을 재생하고 학생이 호흡·프레이즈를 찾아보게 합니다. 재생이 막히면 교사 실연으로 대체하되 원곡 감상을 완료했다고 평가하지 않습니다."},
+{tone:"sky",chapter:"07 · 우리 반의 노래",minutes:9,title:"이번엔 우리가 아리랑의 주인공",sub:"노래가 시작되면 전원이 참여합니다.",action:"교사와 학생이 메기고 받기 → 함께 부르기 → 선택한 숨표로 다시 부르기!",hint:"9분은 끊지 않고 연습하는 시간입니다. 화면 전환 없이 충분히 노래하세요.",kind:"rehearsal",teacher:"29:00~38:00. 전원 가창 9분. 음역·변성기·감각 특성을 고려해 허밍, 말리듬 등 동등한 참여 대안 제공. 메기고 받기는 수업용 활동으로 사용."},
+{tone:"final",chapter:"08 · 이야기의 결말",minutes:7,title:"같은 아리랑, 나만의 표현",sub:"처음의 질문으로 돌아갑니다.",action:"가장 자연스러운 호흡으로 한 구절 부르고, 선택한 이유를 말해 보세요.",hint:"소리가 큰 학생이 아니라, 음악적 선택을 설명할 수 있는 학생이 오늘의 주인공입니다.",kind:"final",teacher:"38:00~45:00. 전원 개별 확인은 손 신호·허밍·짧은 개별 실연·선택 이유를 조합해 진행. 한 명씩 길게 발표하면 시간 부족. 가창 음량이나 적극성을 성적화하지 않음."}
+];
+const key="arirang-unified-pilot-v1";let i=0,breath="A",phrase=0,beat=0,beatTimer=null,played=false;
+try{const x=JSON.parse(sessionStorage.getItem(key)||"null");if(x){i=Math.max(0,Math.min(scenes.length-1,x.i|0));breath=x.breath==="B"?"B":"A";phrase=Math.max(0,Math.min(3,x.phrase|0));}}catch{}
+const $=id=>document.getElementById(id);
+function persist(){try{sessionStorage.setItem(key,JSON.stringify({i,breath,phrase}))}catch{}}
+function node(tag,text,cls,parent){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==null)e.textContent=text;parent.append(e);return e}
+function button(text,parent,click,cls=""){const b=node("button",text,cls,parent);b.type="button";b.addEventListener("click",click);return b}
+function stopBeat(){if(beatTimer!==null){clearInterval(beatTimer);beatTimer=null}}
+function stopMedia(){const f=$("activity").querySelector("iframe");if(f)f.src="about:blank";stopBeat()}
+function video(parent){
+ const frame=node("div",null,"video",parent);
+ const img=node("img",null,"",frame);img.src="https://i.ytimg.com/vi/Cf-fe9N7f-k/hqdefault.jpg";img.alt="국립국악원 토요명품공연 아리랑 영상 미리보기";img.loading="lazy";
+ button("▶ 공식 공연 영상 재생",frame,()=>{
+   frame.replaceChildren();const f=node("iframe",null,"",frame);
+   f.title="국립국악원 아리랑 공연";f.src="https://www.youtube-nocookie.com/embed/Cf-fe9N7f-k?autoplay=1&rel=0";
+   f.allow="accelerometer;autoplay;encrypted-media;picture-in-picture";f.referrerPolicy="strict-origin-when-cross-origin";f.allowFullscreen=true;played=true;
+ });
+ const p=node("p",null,"source",parent);
+ const a=node("a","국립국악원 공연 원본 영상",null,p);a.href="https://www.youtube.com/watch?v=Cf-fe9N7f-k";a.target="_blank";a.rel="noopener noreferrer";
+ node("span"," · 학교망 재생 차단 시 교사 시범 가창",null,p);
+}
+function activity(s,parent){
+ if(s.kind==="video"){video(parent);return}
+ const box=node("div",null,"stage",parent);
+ if(s.kind==="echo"){node("h2","한 구절 → 전원 따라 부르기",null,box);node("div","아리랑, 아리랑, 아라리요","large",box);node("p","교사가 부르면 학생이 즉시 같은 흐름으로 따라 부릅니다.",null,box)}
+ if(s.kind==="phrases"){node("h2","연습할 구절 선택",null,box);const row=node("div",null,"btnrow",box);["아리랑","아리랑","아라리요","아리랑 고개로 넘어간다"].forEach((x,n)=>{const b=button((n+1)+" · "+x,row,()=>{phrase=n;persist();render()});b.setAttribute("aria-pressed",String(phrase===n));if(phrase!==n)b.classList.add("alt")});node("p","선택한 구절을 부르고 다음 구절로 연결하세요.",null,box)}
+ if(s.kind==="beat"){node("h2","3박 시각 안내",null,box);const row=node("div",null,"beat",box);for(let j=0;j<3;j++){const sp=node("span",String(j+1),"",row);if(j===beat)sp.classList.add("on")}
+ const buttons=node("div",null,"btnrow",box);button(beatTimer===null?"▶ 박 표시 시작":"■ 박 표시 정지",buttons,()=>{if(beatTimer!==null){stopBeat();render();return}beatTimer=setInterval(()=>{beat=(beat+1)%3;row.querySelectorAll("span").forEach((x,j)=>x.classList.toggle("on",j===beat))},750);buttons.querySelector("button").textContent="■ 박 표시 정지"});node("p","소리 없는 시각 안내입니다. 실제 장단은 교사 실연과 함께합니다.",null,box)}
+ if(s.kind==="breath"){node("h2","숨표 A/B 비교 실험",null,box);const row=node("div",null,"choices",box);for(const [k,label] of [["A","A · 문장 끝에서"],["B","B · 문장 중간에서"]]){const b=button(label,row,()=>{breath=k;persist();render()});b.setAttribute("aria-pressed",String(breath===k));if(breath!==k)b.classList.add("alt")}node("p","현재 선택: "+breath+" · 두 가지를 직접 불러보고 비교하세요.",null,box)}
+ if(s.kind==="rehearsal"){node("h2","9분 연속 가창",null,box);node("div","메기기 → 받기 → 함께 부르기","large",box);node("p","이 화면을 유지하고, 충분히 연습하세요.",null,box)}
+ if(s.kind==="final"){node("h2","처음 질문에 답해 보세요",null,box);node("div","내가 선택한 호흡: "+breath,"large",box);node("p","노래하는 사람의 호흡과 표현이 달라지면 같은 아리랑도 다르게 들릴 수 있습니다.",null,box);const b=button("↻ 숨표 선택 다시 비교",box,()=>go(4),"alt");b.setAttribute("aria-label","숨표 실험 장면으로 돌아가기")}
+}
+function render(){const s=scenes[i];$("scene").dataset.tone=s.tone;$("chapter").textContent=s.chapter;$("title").textContent=s.title;$("sub").textContent=s.sub;$("action").textContent=s.action;$("hint").textContent=s.hint;$("teacherText").textContent=s.teacher;
+ let start=scenes.slice(0,i).reduce((a,x)=>a+x.minutes,0);$("timing").textContent=start+"–"+(start+s.minutes)+"분 · "+s.minutes+"분";$("progress").textContent=(i+1)+" / "+scenes.length+" 장면 · 총 45분";$("prev").disabled=i===0;$("next").disabled=i===scenes.length-1;$("activity").replaceChildren();activity(s,$("activity"));persist()}
+function go(n){if(n<0||n>=scenes.length)return;stopMedia();i=n;render()}
+$("prev").onclick=()=>go(i-1);$("next").onclick=()=>go(i+1);
+$("notes").onclick=()=>{const show=$("teacher").hidden;$("teacher").hidden=!show;$("notes").setAttribute("aria-expanded",String(show))};
+$("closeNotes").onclick=()=>{$("teacher").hidden=true;$("notes").setAttribute("aria-expanded","false")};
+$("reset").onclick=()=>{if(!confirm("시범 수업의 진행 위치와 선택을 처음부터 초기화할까요?"))return;stopMedia();sessionStorage.removeItem(key);i=0;breath="A";phrase=0;render()};
+$("full").onclick=()=>document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen?.().catch(()=>{});
+document.addEventListener("keydown",e=>{if(e.altKey||e.ctrlKey||e.metaKey||["INPUT","TEXTAREA","SELECT"].includes(document.activeElement?.tagName))return;
+if(e.key==="ArrowRight"){e.preventDefault();go(i+1)}if(e.key==="ArrowLeft"){e.preventDefault();go(i-1)}
+if(e.key.toLowerCase()==="n")$("notes").click()});
+document.addEventListener("visibilitychange",()=>{if(document.hidden)stopBeat()});
+render();
+</script></body></html>
