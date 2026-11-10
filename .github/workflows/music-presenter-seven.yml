@@ -31,7 +31,10 @@ jobs:
         run: |
           set -euo pipefail
           node --check lessons/hybrid-v2/engine.js
+          node tests/music-hybrid-story-check.mjs
           test -f lessons/hybrid-v2/deck.css
+          test -f lessons/hybrid-v2/story-theme.css
+          test -f lessons/hybrid-v2/teacher-guide.html
           for id in orchestra-timbre rhythm-lab dynamics-expression gayageum-observation vocal-breath-phrasing bali-gamelan-archive arirang-vocal; do
             grep -q "hybrid-v2/deck.css" "lessons/$id/index.html"
             grep -q "hybrid-v2/engine.js" "lessons/$id/index.html"
@@ -43,7 +46,7 @@ jobs:
         run: |
           npm install --no-save --package-lock=false @playwright/test@1.55.0
           npx playwright install --with-deps chromium
-      - name: Run twenty-one eleven-slide hybrid browser tests
+      - name: Run hybrid lesson browser and visual story tests
         run: |
           set -euo pipefail
           python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/music-presenter-seven-http.log 2>&1 &
