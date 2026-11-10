@@ -59,7 +59,6 @@
     teacherPanel=h("aside","hd-teacher",null,root);teacherPanel.hidden=true;teacherPanel.setAttribute("aria-label","교사 전용 장면별 수업 운영안");
     openButton=btn("PPT형 발표 열기","hd-floating-open",document.body,()=>show(true));openButton.id="music-hybrid-open";
     applyInitial();
-    paint();
   }
   function applyInitial(){
     const q=new URLSearchParams(location.search);
@@ -73,7 +72,7 @@
     openButton.hidden=!!present;
     root.setAttribute("aria-hidden",present?"false":"true");
     if(!present){state.teacher=false;teacherPanel.hidden=true;setRunning(false);}
-    if(present){root.querySelector(".hd-slide")?.focus?.({preventScroll:true})}
+    if(present){if(!stage.firstChild)paint();root.querySelector(".hd-slide")?.focus?.({preventScroll:true})}
     try{history.replaceState(null,"",location.pathname+(present?"?mode=present":"?mode=activity")+location.hash)}catch(_){}
     save();
   }
