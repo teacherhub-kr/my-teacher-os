@@ -23,7 +23,12 @@
       "media": {
         "youtube": "ZH89VCmz1ts",
         "label": "기존 수업의 바디퍼커션 참고 영상"
-      }
+      },
+      "storyBeat": "비트의 시작",
+      "studentCue": "20초 동안 박을 짚어요",
+      "storyTone": "sun",
+      "layout": "quest",
+      "storyQuestion": "아무 소리도 안 나는 박이 음악을 바꿀 수 있을까?"
     },
     {
       "phase": "악기 소리",
@@ -52,6 +57,15 @@
             "label": "하이햇"
           }
         ]
+      },
+      "storyBeat": "드럼 단서",
+      "studentCue": "킥·스네어 A/B 듣기",
+      "storyTone": "stage",
+      "layout": "soundlab",
+      "visual": {
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Drums%20on%20stage.jpg?width=960",
+        "alt": "공연 무대에 놓인 드럼 세트",
+        "credit": "Paul Harrison · CC BY-SA 4.0"
       }
     },
     {
@@ -71,7 +85,11 @@
         "2",
         "3",
         "4"
-      ]
+      ],
+      "storyBeat": "박의 규칙",
+      "studentCue": "4박을 느리게/빠르게",
+      "storyTone": "lavender",
+      "layout": "cards"
     },
     {
       "phase": "말리듬",
@@ -90,7 +108,11 @@
         "티티",
         "쉿",
         "타"
-      ]
+      ],
+      "storyBeat": "리듬 암호",
+      "studentCue": "타·티티·쉿을 말과 손뼉으로",
+      "storyTone": "butter",
+      "layout": "beat-grid"
     },
     {
       "phase": "리듬 감상",
@@ -107,7 +129,11 @@
       "terms": [
         "타 · 쉿 · 타 · 타",
         "쉿 · 타 · 티티 · 타"
-      ]
+      ],
+      "storyBeat": "쉼의 실험",
+      "studentCue": "쉼이 있는 곳을 손가락으로 표시",
+      "storyTone": "sky",
+      "layout": "cards"
     },
     {
       "phase": "리듬 조립",
@@ -131,7 +157,11 @@
         "티티",
         "타"
       ],
-      "editable": true
+      "editable": true,
+      "storyBeat": "첫 번째 설계",
+      "studentCue": "8박 중 쉼 하나 넣기",
+      "storyTone": "mint",
+      "layout": "beat-grid"
     },
     {
       "phase": "개별 창작",
@@ -150,7 +180,11 @@
         "초안 연주",
         "쉼 이동",
         "두 버전 비교"
-      ]
+      ],
+      "storyBeat": "두 번째 설계",
+      "studentCue": "쉼 위치를 바꾸어 두 번 연주",
+      "storyTone": "peach",
+      "layout": "big-type"
     },
     {
       "phase": "반주와 합주",
@@ -163,7 +197,11 @@
         "처음에는 무반주로 8박을 연주합니다.",
         "기존 활동 모드에서 반주를 켜고 같은 패턴을 연주합니다."
       ],
-      "teacher": "음악 활동 모드에는 실제 음원 샘플과 비트 믹서가 있다."
+      "teacher": "음악 활동 모드에는 실제 음원 샘플과 비트 믹서가 있다.",
+      "storyBeat": "비트 합성",
+      "studentCue": "반주 전/후 차이 찾기",
+      "storyTone": "lavender",
+      "layout": "cards"
     },
     {
       "phase": "몸으로 리듬",
@@ -176,7 +214,16 @@
         "4박 기본 동작을 천천히 따라 합니다.",
         "같은 리듬을 소리 두 가지로 번갈아 연주합니다."
       ],
-      "teacher": "움직임이 어려운 학생은 책상 두드리기 또는 손짓을 허용한다."
+      "teacher": "움직임이 어려운 학생은 책상 두드리기 또는 손짓을 허용한다.",
+      "storyBeat": "몸으로 도전",
+      "studentCue": "손뼉·무릎·발로 연주",
+      "storyTone": "butter",
+      "layout": "photo-essay",
+      "visual": {
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Drummer%20on%20stage.jpg?width=960",
+        "alt": "공연 중인 드럼 연주자",
+        "credit": "Agbebiyi Adekunle Tadek · CC BY-SA 4.0"
+      }
     },
     {
       "phase": "귀로 확인",
@@ -196,7 +243,11 @@
         "마디가 끝난다"
       ],
       "answer": 1,
-      "explain": "쉼표는 소리의 쉼이며 박의 흐름은 계속됩니다."
+      "explain": "쉼표는 소리의 쉼이며 박의 흐름은 계속됩니다.",
+      "storyBeat": "쉼표 재판",
+      "studentCue": "박이 없어졌나요? 전원 손 신호",
+      "storyTone": "sky",
+      "layout": "challenge"
     },
     {
       "phase": "작품 공유",
@@ -209,7 +260,22 @@
         "각자 8박을 한 번 더 연주합니다.",
         "쉼의 위치와 효과를 한 문장으로 말합니다."
       ],
-      "teacher": "발표가 부담인 학생은 교사에게 개별 실연한다."
+      "teacher": "발표가 부담인 학생은 교사에게 개별 실연한다.",
+      "storyBeat": "실험 결론",
+      "studentCue": "쉼의 효과를 내 리듬으로 설명",
+      "storyTone": "final",
+      "layout": "payoff",
+      "storyAnswer": "쉼표에서는 소리가 멈추지만 박은 계속 흘러요. 그 빈자리가 다음 소리를 더 돋보이게 할 수 있어요."
     }
-  ]
+  ],
+  "story": {
+    "role": "비트 실험실",
+    "mission": "쉼표 하나가 비트를 바꿀까?",
+    "hook": "아무 소리도 안 나는 박이 음악을 바꿀 수 있을까?",
+    "payoff": "쉼표에서는 소리가 멈추지만 박은 계속 흘러요. 그 빈자리가 다음 소리를 더 돋보이게 할 수 있어요.",
+    "conclusion": "박을 유지하며 쉼이 있는 8박 리듬을 직접 만들고 설명한다.",
+    "symbol": "✦",
+    "palette": "lemon",
+    "canvasInspired": true
+  }
 }
