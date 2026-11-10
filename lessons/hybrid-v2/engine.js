@@ -38,7 +38,7 @@
     const header=h("header","hd-top",null,root);
     const brand=h("div","",null,header);
     h("div","hd-brand","MY MUSIC CLASS · HYBRID LESSON",brand);
-    h("div","hd-meta",deck.title+" · 중학교 2학년 · 45분",brand);
+    h("div","hd-meta",(deck.story?.role||deck.title)+" · 중학교 2학년 · 45분",brand);
     const tools=h("div","hd-tools",null,header);
     btn("활동 화면","hd-btn gold",tools,()=>show(false)).dataset.hd="activity";
     btn("교사 노트 N","hd-btn",tools,()=>{state.teacher=!state.teacher;paintTeacher();}).dataset.hd="teacher";
@@ -90,7 +90,11 @@
     h("p","",teacherText(s),teacherPanel);
     h("p","","진행 순서: "+s.tasks.join(" → "),teacherPanel);
     h("p","","이 수업의 음악 활동 시간은 설계상 예상치이며, 학생별 실연·청음 여부는 실제 교실에서 관찰해야 합니다.",teacherPanel);
-    const l=h("a","", "전체 45분 교사용 지도안",teacherPanel);l.href="teacher.html";l.target="_blank";l.rel="noopener noreferrer";
+    const l=h("a","", "기존 45분 교사용 지도안",teacherPanel);l.href="teacher.html";l.target="_blank";l.rel="noopener noreferrer";
+    h("p","","핵심 질문: "+(deck.story?.hook||deck.goal),teacherPanel);
+    h("p","","전원 참여: "+(s.studentCue||"소리를 듣고 몸으로 표현하기"),teacherPanel);
+    const g=h("a","","이야기형 11장면 지도안 인쇄",teacherPanel);
+    g.href="../hybrid-v2/teacher-guide.html?lesson="+encodeURIComponent(lessonId);g.target="_blank";g.rel="noopener noreferrer";
     btn("교사 노트 닫기","hd-btn",teacherPanel,()=>{state.teacher=false;paintTeacher();});
     teacherPanel.hidden=!state.teacher;
   }
@@ -166,6 +170,36 @@
       save();paint();
     });b.disabled=!state.revealed[k]&&state.answers[k]===undefined;
   }
+  function renderVisual(parent,v){
+    if(!v||typeof v.url!=="string"||!v.alt)return false;
+    if(!v.url.startsWith("assets/")&&!v.url.startsWith("https://commons.wikimedia.org/wiki/Special:FilePath/"))return false;
+    const figure=h("figure","hd-hero-figure",null,parent);
+    const photo=h("img","",null,figure);photo.loading="lazy";photo.decoding="async";photo.alt=v.alt;
+    photo.src=v.url.startsWith("assets/")?new URL(v.url,location.href).href:v.url;
+    photo.addEventListener("error",()=>{
+      photo.remove();const fallback=h("div","hd-hero-placeholder","사진 로딩이 제한됐습니다. 원래 활동 화면의 자료를 참고하세요.",figure);
+      fallback.setAttribute("role","status");
+    },{once:true});
+    h("figcaption","",v.credit||"원본 자료실의 출처 참조",figure);return true;
+  }
+  const legacySteps={
+    "orchestra-timbre":[0,1,2,2,3,3,4,5,6,7,8],
+    "rhythm-lab":[0,1,2,3,4,5,5,6,7,8,9],
+    "dynamics-expression":[0,1,2,3,4,5,5,6,7,8,9],
+    "gayageum-observation":[0,0,1,1,1,2,2,2,3,3,3],
+    "vocal-breath-phrasing":[0,1,1,1,1,2,2,2,3,3,3],
+    "bali-gamelan-archive":[0,0,0,1,1,1,1,2,3,3,3],
+    "arirang-vocal":[0,1,1,1,1,2,2,2,3,3,3]
+  };
+  function openOriginalActivity(){
+    const n=legacySteps[lessonId]?.[state.index]??0;
+    show(false);
+    const nav=document.querySelector(lessonId==="vocal-breath-phrasing"?"#steps":
+      ["arirang-vocal","gayageum-observation"].includes(lessonId)?"#tabs":"#nav");
+    const b=nav?.querySelectorAll("button")[n];
+    if(b&&!["on","active","sel","selected"].some(c=>b.classList.contains(c)))b.click();
+    document.querySelector("#activity,#body,#lesson,#stage,#mainActivity,#content,.screen")?.scrollIntoView?.({block:"start",behavior:"auto"});
+  }
   function actionsBox(parent,s){
     const box=h("div","hd-actions",null,parent);
     (s.tasks||[]).slice(0,3).forEach((item,i)=>{
@@ -177,25 +211,42 @@
   function paint(){
     if(!deck||!stage)return;
     const s=deck.slides[state.index];
-    stage.replaceChildren();stage.dataset.kind=s.type;
+    stage.replaceChildren();stage.dataset.kind=s.type;stage.dataset.storyTone=s.storyTone||"sun";stage.dataset.layout=s.layout||"cards";
     h("div","hd-decor",s.type==="closing"?"♫":s.type==="practice"?"♪":"♬",stage);
     const layout=h("div","hd-layout",null,stage),lead=h("div","hd-lead",null,layout);
     const kicker=h("div","hd-eyebrow",null,lead);
     h("span","hd-index",String(state.index+1).padStart(2,"0"),kicker);
-    h("span","",s.phase+" · "+s.min+"분",kicker);
+    h("span","",(s.storyBeat||s.phase)+" · "+s.min+"분",kicker);
+    const mission=h("div","hd-mission-badge",null,lead);
+    h("span","",deck.story?.symbol||"♫",mission);
+    h("span","",(deck.story?.role||"오늘의 탐험")+" · "+(deck.story?.mission||deck.goal),mission);
     h("h1","hd-title",s.title,lead);
+    if(s.storyQuestion)h("p","hd-story-question",s.storyQuestion,lead);
     h("p","hd-prompt",s.prompt,lead);
+    const cue=h("div","hd-student-cue",null,lead);
+    h("span","cue-label","지금 모두",cue);
+    h("span","",s.studentCue||(s.tasks||[])[0]||"소리를 듣고 표현하세요.",cue);
+    if(s.storyAnswer){
+      const box=h("div","hd-story-resolution",null,lead);
+      h("b","", "처음 질문의 답",box);
+      h("span","",s.storyAnswer,box);
+    }
     h("div","hd-accent-line",null,lead);
     const used=deck.slides.slice(0,state.index).reduce((n,x)=>n+x.min,0);
     h("div","hd-stage-info",used+"~"+(used+s.min)+"분 · "+deck.slides.length+"장면 중 "+(state.index+1)+"번째",lead);
     const side=h("div","hd-side",null,layout);
     const hadMedia=renderMedia(side,s.media);
+    const hadVisual=!hadMedia&&!!s.visual&&renderVisual(side,s.visual);
     if(s.type==="quiz"&&s.choices)renderQuiz(side,s);
     else if(Array.isArray(s.pattern))renderPattern(side,s);
-    else if(Array.isArray(s.terms)&&s.terms.length)renderTerms(side,s.terms);
-    if(!hadMedia && !s.choices && !s.pattern && !s.terms)actionsBox(side,s);
-    else if(hadMedia){ const short=h("div","hd-source",null,side);short.textContent="오늘 할 일 · "+(s.tasks||[]).slice(0,2).join(" / "); }
-    else { const short=h("div","hd-source",null,side);short.textContent=(s.tasks||[]).slice(0,2).join(" · "); }
+    else if(!hadVisual&&Array.isArray(s.terms)&&s.terms.length)renderTerms(side,s.terms);
+    if(!hadMedia && !hadVisual && !s.choices && !s.pattern && !s.terms)actionsBox(side,s);
+    else if(hadMedia){ h("div","hd-source","감상 활동 · "+(s.tasks||[]).slice(0,1).join(" / "),side); }
+    else if(hadVisual){ h("div","hd-source","실제 연주 참고 사진 · 왼쪽 안내에 따라 음악 활동을 합니다.",side); }
+    else {h("div","hd-source",(s.tasks||[]).slice(0,1).join(" · "),side);}
+    if(["pattern","score","create","check"].includes(s.type)||s.editable){
+      btn("↗ 원래 HTML 활동 도구로 실습","hd-bridge",side,openOriginalActivity).dataset.hd="bridge";
+    }
     root.querySelector('[data-hd=prev]').disabled=state.index===0;
     root.querySelector('[data-hd=next]').disabled=state.index===deck.slides.length-1;
     const p=progress;p.replaceChildren();

@@ -23,7 +23,12 @@
       "media": {
         "audio": "assets/violin.ogg",
         "label": "바이올린 실제 연주 · 기존 자료실 음원"
-      }
+      },
+      "storyBeat": "사건 접수",
+      "studentCue": "눈을 감고 20초 들어요",
+      "storyTone": "sun",
+      "layout": "quest",
+      "storyQuestion": "눈을 감으면 악기를 알아볼 수 있을까?"
     },
     {
       "phase": "귀로 비교",
@@ -48,7 +53,11 @@
             "label": "첼로"
           }
         ]
-      }
+      },
+      "storyBeat": "첫 소리 증거",
+      "studentCue": "두 소리의 차이를 손가락으로 표시",
+      "storyTone": "peach",
+      "layout": "soundlab"
     },
     {
       "phase": "현악기",
@@ -67,7 +76,16 @@
         "비올라",
         "첼로",
         "더블베이스"
-      ]
+      ],
+      "storyBeat": "현의 비밀",
+      "studentCue": "현을 켜는 동작 5초 따라 하기",
+      "storyTone": "lavender",
+      "layout": "photo-essay",
+      "visual": {
+        "url": "assets/violin.jpg",
+        "alt": "바이올린 실제 악기 사진",
+        "credit": "기존 수업의 악기 사진·출처는 자료실에 표시"
+      }
     },
     {
       "phase": "현악 청음",
@@ -96,7 +114,11 @@
             "label": "더블베이스"
           }
         ]
-      }
+      },
+      "storyBeat": "현악 청음",
+      "studentCue": "3개 악기를 듣고 근거 한 가지 말하기",
+      "storyTone": "butter",
+      "layout": "soundlab"
     },
     {
       "phase": "목관의 원리",
@@ -121,7 +143,11 @@
             "label": "클라리넷"
           }
         ]
-      }
+      },
+      "storyBeat": "공기의 단서",
+      "studentCue": "공기와 리드 중 어느 소리일까?",
+      "storyTone": "sky",
+      "layout": "soundlab"
     },
     {
       "phase": "목관 비교",
@@ -150,7 +176,11 @@
             "label": "바순"
           }
         ]
-      }
+      },
+      "storyBeat": "리드의 비밀",
+      "studentCue": "두 음원을 한 번 더 비교",
+      "storyTone": "mint",
+      "layout": "soundlab"
     },
     {
       "phase": "금관악기",
@@ -175,7 +205,11 @@
             "label": "호른"
           }
         ]
-      }
+      },
+      "storyBeat": "입술의 떨림",
+      "studentCue": "트럼펫/호른 A·B 손 신호",
+      "storyTone": "stage",
+      "layout": "soundlab"
     },
     {
       "phase": "타악기",
@@ -200,6 +234,15 @@
             "label": "스네어드럼"
           }
         ]
+      },
+      "storyBeat": "북의 정체",
+      "studentCue": "팀파니/스네어 소리 맞히기",
+      "storyTone": "lavender",
+      "layout": "soundlab",
+      "visual": {
+        "url": "assets/timpani.jpg",
+        "alt": "팀파니 실제 악기 사진",
+        "credit": "기존 수업의 악기 사진·출처는 자료실에 표시"
       }
     },
     {
@@ -221,7 +264,11 @@
         "타악기"
       ],
       "answer": 2,
-      "explain": "금관악기는 연주자의 입술 진동으로 소리를 시작합니다."
+      "explain": "금관악기는 연주자의 입술 진동으로 소리를 시작합니다.",
+      "storyBeat": "탐정 최종시험",
+      "studentCue": "모두 먼저 고른 뒤 정답 공개",
+      "storyTone": "butter",
+      "layout": "challenge"
     },
     {
       "phase": "소리로 편성",
@@ -239,7 +286,16 @@
         "숲속의 새벽",
         "거리의 축제",
         "긴장된 순간"
-      ]
+      ],
+      "storyBeat": "내가 고른 편성",
+      "studentCue": "나만의 장면에 악기군 선택",
+      "storyTone": "sky",
+      "layout": "photo-essay",
+      "visual": {
+        "url": "assets/horn.jpg",
+        "alt": "호른 실제 악기 사진",
+        "credit": "기존 수업의 악기 사진·출처는 자료실에 표시"
+      }
     },
     {
       "phase": "정리와 확인",
@@ -252,7 +308,22 @@
         "앞서 들은 두 악기의 공통점과 차이를 한 문장으로 말합니다.",
         "교사는 음색을 음높이·음량과 구별하는지 개별 확인합니다."
       ],
-      "teacher": "개별 말하기·손 신호 대체 가능. 공식 수행평가 점수와 연결하지 않는다."
+      "teacher": "개별 말하기·손 신호 대체 가능. 공식 수행평가 점수와 연결하지 않는다.",
+      "storyBeat": "사건 해결",
+      "studentCue": "첫 질문에 음악적 근거로 답하기",
+      "storyTone": "final",
+      "layout": "payoff",
+      "storyAnswer": "정답은 소리의 높이 하나가 아니라, 소리를 만드는 방식과 울림 속에 있어요."
     }
-  ]
+  ],
+  "story": {
+    "role": "오케스트라 소리 탐정",
+    "mission": "이 악기의 정체는 무엇일까?",
+    "hook": "눈을 감으면 악기를 알아볼 수 있을까?",
+    "payoff": "정답은 소리의 높이 하나가 아니라, 소리를 만드는 방식과 울림 속에 있어요.",
+    "conclusion": "소리를 만든 원리·음역·주법을 근거로 악기군을 구별할 수 있다.",
+    "symbol": "♩",
+    "palette": "sky",
+    "canvasInspired": true
+  }
 }

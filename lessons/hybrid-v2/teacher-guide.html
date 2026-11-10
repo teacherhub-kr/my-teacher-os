@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MY MUSIC CLASS · 이야기형 45분 교사용 수업 운영안</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Malgun Gothic",sans-serif;color:#203545;background:#f4f1ea;line-height:1.5}
+*{box-sizing:border-box}body{margin:0}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#173b4e;color:white;padding:14px 20px;flex-wrap:wrap}.top strong{font-size:18px}.top button,.top a{padding:9px 14px;border:0;border-radius:9px;background:#ffe4a5;color:#263847;text-decoration:none;font-weight:800;font:inherit;cursor:pointer}main{max-width:1080px;margin:auto;background:#fff;padding:32px 36px;min-height:80vh;box-shadow:0 12px 45px #102f3d16}h1{font-size:32px;margin:5px 0}h2{font-size:21px;color:#174f58;margin:25px 0 9px}.meta{font-size:15px;color:#52636d}.mission{background:#fff3d0;border-left:6px solid #bf8235;border-radius:10px;padding:15px 19px;margin:18px 0}.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}.fact{border:1px solid #d4e5df;background:#f3faf8;border-radius:9px;padding:12px}.fact strong{display:block;font-size:22px}.fact small{font-size:13px;color:#52636d}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;vertical-align:top;padding:10px;border-bottom:1px solid #d1ddd9}th{background:#e7f4ef;color:#173d3b}td:nth-child(1){width:88px;font-variant-numeric:tabular-nums;white-space:nowrap}td:nth-child(2){width:150px}td:nth-child(4){width:32%}.story{font-weight:850;color:#174f58}.note{font-size:13px;color:#3f5156;background:#f7f9f7;border-left:3px solid #8cb6b3;padding:10px 12px}.warning{border-left:4px solid #bd8443;padding:12px;background:#fff6e7;color:#68452b;margin:15px 0}ul{margin:7px 0;padding-left:20px}li{margin-bottom:5px}.small{font-size:12px;color:#66757b}a{color:#155c67}
+@media(max-width:680px){main{padding:18px 13px}.facts{grid-template-columns:1fr}th,td{padding:7px;font-size:12px}}
+@media print{@page{size:A4;margin:12mm}body{background:#fff}.top{display:none!important}main{padding:0;box-shadow:none;max-width:100%;min-height:0}h1{font-size:23px}h2{font-size:18px;break-after:avoid}.facts{gap:6px}.fact{padding:8px}.fact strong{font-size:17px}table{font-size:9pt}th,td{padding:6px;break-inside:avoid}.mission{padding:10px;margin:10px 0}.warning{font-size:10pt}.note{font-size:9pt}}
+</style></head>
+<body><header class="top"><strong>MY MUSIC CLASS · 교사용 45분 이야기형 지도안</strong><div><button onclick="window.print()">인쇄 · PDF 저장</button> <a href="../">수업자료실</a></div></header>
+<main id="document"><h1>수업 자료를 확인하고 있습니다.</h1><p>이야기형 수업 데이터가 불러와지지 않을 때에는 기존 교사용 지도안을 이용하세요.</p></main>
+<script>
+(async()=>{
+"use strict";
+const allow=new Set(["orchestra-timbre","rhythm-lab","dynamics-expression","gayageum-observation","vocal-breath-phrasing","bali-gamelan-archive","arirang-vocal"]);
+const id=new URLSearchParams(location.search).get("lesson");
+const host=document.getElementById("document");
+const n=(tag,cls,txt,p)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(txt!==undefined)x.textContent=String(txt);p?.append(x);return x};
+function item(p,txt){return n("li","",txt,p)}
+if(!allow.has(id)){host.replaceChildren();n("h1","","지원하지 않는 수업입니다.",host);return;}
+try{
+ const r=await fetch("../"+id+"/deck.json",{cache:"no-store"});if(!r.ok)throw Error("HTTP "+r.status);
+ const d=await r.json();if(!Array.isArray(d.slides)||d.slides.reduce((a,s)=>a+s.min,0)!==45)throw Error("시간 합계 오류");
+ host.replaceChildren();n("div","meta","중학교 음악 · 2022 개정 음악과 · 1차시 45분 · 형성평가(공식 수행평가와 구분)",host);
+ n("h1","",d.title,host);n("p","meta",d.goal,host);
+ const mission=n("section","mission",null,host);
+ n("strong","",(d.story?.role||"음악 이야기")+" · "+(d.story?.mission||""),mission);
+ n("p","","도입에서 던지는 질문: "+(d.story?.hook||d.slides[0].prompt),mission);
+ n("p","","끝에 도달할 결론: "+(d.story?.payoff||d.slides.at(-1).prompt),mission);
+ const facts=n("section","facts",null,host);
+ for(const [val,key] of [[d.slides.length+"장면","발표 화면"],["45분","교실 운영"],[d.slides.reduce((a,s)=>a+s.music,0)+"분","계획상 음악 활동"]]){
+   const f=n("div","fact",null,facts);n("strong","",val,f);n("small","",key,f);
+ }
+ const h2=n("h2","","교사 진행표 · 도입 → 단서 → 실연 → 이야기의 결말",host);
+ const table=n("table","",null,host),thead=n("thead","",null,table),tr=n("tr","",null,thead);
+ for(const t of ["시간","장면 / 장르","학생 참여 · 음악 활동","교사 발문 · 주의"])n("th","",t,tr);
+ const body=n("tbody","",null,table);let t=0;
+ for(let i=0;i<d.slides.length;i++){
+   const s=d.slides[i],row=n("tr","",null,body);
+   n("td","",t+"–"+(t+s.min)+"분 ("+s.min+"분)",row);
+   const label=n("td","",null,row);n("b","story",String(i+1).padStart(2,"0")+" · "+(s.storyBeat||s.phase),label);n("div","",s.title,label);
+   const stu=n("td","",null,row);n("strong","",s.studentCue||s.prompt,stu);
+   const list=n("ul","",null,stu);for(const task of s.tasks||[])item(list,task);
+   const teacher=n("td","",null,row);
+   n("p","",s.prompt,teacher);n("p","note",s.teacher,teacher);
+   t+=s.min;
+ }
+ n("h2","","형성평가와 학습 지원",host);
+ const support=n("ul","",null,host);
+ item(support,"전원이 먼저 손 신호·허밍·손뼉으로 참여하고, 필요할 때만 대표 학생의 답을 공유합니다.");
+ item(support,"감상은 들은 소리를 근거로, 연주·창작은 개별 표현과 수정 근거로 확인합니다. 태도·큰 성량·빠른 정답은 점수화하지 않습니다.");
+ item(support,"변성기 또는 신체·감각적 어려움이 있으면 낮은 조·허밍·몸짓·카드 응답 등 동등한 대안을 제공합니다.");
+ item(support,"발표 PPT형 16:9 모드와 원래 HTML 활동 모드를 교차 활용하되, 깊이 있는 실연은 충분히 연속된 시간을 확보합니다.");
+ n("h2","","음원 및 학교망 사전 점검",host);
+ n("p","warning",d.sourceNote||"실제 음원과 공연 영상은 학교망에서 재생이 차단될 수 있으므로 사전 점검이 필요합니다.",host);
+ const backup=n("ul","",null,host);
+ item(backup,"수업 전에 첫 장면의 영상·음원과 두 번째 활동의 악보·편집기를 실제 교사용 기기에서 재생·조작합니다.");
+ item(backup,"외부 영상 차단 시 교사의 짧은 실연 시범과 원래 HTML 화면에 있는 대체 자료로 진행합니다. 실제 음원 감상을 수행하지 못했다면 감상 성취를 완료했다고 평가하지 않습니다.");
+ item(backup,"사진과 음원은 원래 수업자료실에 안내된 출처와 저작권 표시를 따릅니다. Canva 원본 디자인·음원은 복제하지 않았습니다.");
+ item(backup,"45분은 교수학습 설계 시간이며 실제 청음·연주 시간은 수업을 관찰하면서 조정합니다.");
+ const link=n("a","", "기존 교사용 상세 지도안 열기",host);link.href="../"+id+"/teacher.html";link.target="_blank";link.rel="noopener noreferrer";
+ n("p","small","본 문서는 동일한 deck.json에서 자동 구성되므로 학생용 발표 흐름과 시간표가 일치합니다.",host);
+}catch(err){host.replaceChildren();n("h1","","수업 데이터를 불러오지 못했습니다.",host);n("p","",String(err),host);const a=n("a","","기존 교사용 지도안으로 이동",host);a.href="../"+id+"/teacher.html"}
+})();
+</script></body></html>
