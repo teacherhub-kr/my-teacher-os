@@ -115,3 +115,25 @@ for(const id of ids){
     expect(errors,'JavaScript errors').toEqual([]);
   });
 }
+
+for (const id of ids){
+ test('projector readability: no slide content clipped at 1280×720 · '+id, async ({page})=>{
+   await page.setViewportSize({width:1280,height:720});
+   await page.route(/https:\/\/(?:www\.youtube|www\.youtube-nocookie|upload\.wikimedia|oramics\.github|commons\.wikimedia)\./,r=>r.abort());
+   await page.goto(base+'/lessons/'+id+'/?mode=present',{waitUntil:'domcontentloaded'});
+   const d=await(await page.request.get(base+'/lessons/'+id+'/deck.json')).json();
+   const deck=page.locator('#music-hybrid-deck');
+   for(let i=0;i<d.slides.length;i++){
+     await expect(deck.locator('.hd-title')).toHaveText(d.slides[i].title);
+     const clip=await deck.locator('.hd-slide').evaluate(el=>{
+       const stage=el.getBoundingClientRect(),layout=el.querySelector('.hd-layout');
+       return [...layout.querySelectorAll('.hd-lead,.hd-side')].filter(x=>{
+          const b=x.getBoundingClientRect();
+          return b.bottom>stage.bottom+2||b.right>stage.right+2||b.left<stage.left-2;
+       }).map(x=>({className:x.className,bottom:Math.round(x.getBoundingClientRect().bottom),stageBottom:Math.round(stage.bottom)}));
+     });
+     expect(clip,id+' slide '+(i+1)+' ('+d.slides[i].title+') clipped').toEqual([]);
+     if(i<d.slides.length-1)await deck.locator('[data-hd=next]').click();
+   }
+ });
+}
