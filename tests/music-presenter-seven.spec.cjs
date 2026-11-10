@@ -82,3 +82,36 @@ for (const id of ids){
     });
   });
 }
+
+for(const id of ids){
+  test('storytelling + bright scenes + printable teacher guide · '+id, async ({page})=>{
+    await page.setViewportSize({width:1366,height:768});
+    await page.route(/https:\/\/(?:www\.youtube|www\.youtube-nocookie|upload\.wikimedia|oramics\.github|commons\.wikimedia)\./,r=>r.abort());
+    const errors=[];page.on('pageerror',e=>errors.push(e.message));
+    await page.goto(base+'/lessons/'+id+'/?mode=present',{waitUntil:'domcontentloaded'});
+    const data=await(await page.request.get(base+'/lessons/'+id+'/deck.json')).json();
+    const deck=page.locator('#music-hybrid-deck');
+    await expect(deck.locator('.hd-mission-badge')).toContainText(data.story.role);
+    await expect(deck.locator('.hd-story-question')).toHaveText(data.story.hook);
+    await expect(deck.locator('.hd-student-cue')).toBeVisible();
+    await expect(deck.locator('.hd-slide')).toHaveAttribute('data-story-tone','sun');
+    await expect(deck.locator('.hd-slide')).toHaveAttribute('data-layout','quest');
+    const tones=new Set(data.slides.map(s=>s.storyTone));expect(tones.size).toBeGreaterThanOrEqual(4);
+    const imageIdx=data.slides.findIndex(s=>s.visual&&!s.media);
+    expect(imageIdx).toBeGreaterThan(0);
+    await deck.locator('.hd-progress-step').nth(imageIdx).click();
+    await expect(deck.locator('.hd-hero-figure')).toBeVisible();
+    await expect(deck.locator('.hd-hero-figure figcaption')).not.toBeEmpty();
+    await expect(deck.locator('.hd-student-cue')).toContainText(data.slides[imageIdx].studentCue);
+    await deck.locator('.hd-progress-step').last().click();
+    await expect(deck.locator('.hd-story-resolution')).toContainText(data.story.payoff);
+    await deck.locator('.hd-progress-step').nth(1).click();
+    await page.keyboard.press('n');
+    await expect(deck.locator('.hd-teacher a').filter({hasText:'이야기형'})).toBeVisible();
+    await page.goto(base+'/lessons/hybrid-v2/teacher-guide.html?lesson='+id,{waitUntil:'domcontentloaded'});
+    await expect(page.locator('table tbody tr')).toHaveCount(11);
+    await expect(page.locator('.mission')).toContainText(data.story.hook);
+    await expect(page.locator('.mission')).toContainText(data.story.payoff);
+    expect(errors,'JavaScript errors').toEqual([]);
+  });
+}
