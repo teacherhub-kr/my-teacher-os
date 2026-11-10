@@ -23,7 +23,12 @@
       "media": {
         "youtube": "TYE11oVhbmI",
         "label": "기존 수업에 연결된 베토벤 제9번 주제 연주"
-      }
+      },
+      "storyBeat": "선율 여행 출발",
+      "studentCue": "공연을 듣고 팔로 프레이즈 그리기",
+      "storyTone": "sun",
+      "layout": "quest",
+      "storyQuestion": "같은 여덟 마디인데 숨 쉬는 곳만 바꾸면 달라질까?"
     },
     {
       "phase": "악보로 확인",
@@ -42,7 +47,16 @@
         "3~4마디",
         "5~6마디",
         "7~8마디"
-      ]
+      ],
+      "storyBeat": "8마디 지도",
+      "studentCue": "악보 8마디를 손으로 추적",
+      "storyTone": "mint",
+      "layout": "photo-essay",
+      "visual": {
+        "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Beethoven%201820.jpg?width=960",
+        "alt": "베토벤 초상화, 1820",
+        "credit": "Joseph Karl Stieler · Public Domain"
+      }
     },
     {
       "phase": "앞 네 마디",
@@ -55,7 +69,11 @@
         "교사가 한 마디 부르고 학생이 따라 부릅니다.",
         "네 마디를 쉬지 않고 두 번 연결해 봅니다."
       ],
-      "teacher": "학생 음역에 맞게 낮게 조옮김·허밍을 허용한다."
+      "teacher": "학생 음역에 맞게 낮게 조옮김·허밍을 허용한다.",
+      "storyBeat": "앞의 네 마디",
+      "studentCue": "교사 한 마디→학생 한 마디",
+      "storyTone": "peach",
+      "layout": "cards"
     },
     {
       "phase": "뒤 네 마디",
@@ -68,7 +86,11 @@
         "교사가 한 마디씩 소리를 들려줍니다.",
         "5~8마디를 2회 반복하여 안정적으로 연결합니다."
       ],
-      "teacher": "리듬과 긴 음의 박을 임의로 바꾸지 않는다."
+      "teacher": "리듬과 긴 음의 박을 임의로 바꾸지 않는다.",
+      "storyBeat": "뒤의 네 마디",
+      "studentCue": "뒤 네 마디를 두 번 부르기",
+      "storyTone": "lavender",
+      "layout": "big-type"
     },
     {
       "phase": "전체 8마디",
@@ -81,7 +103,11 @@
         "처음에는 편한 속도로 8마디를 허밍합니다.",
         "이후 교사의 지휘를 보며 이어 부릅니다."
       ],
-      "teacher": "숨을 참아야 좋은 연주라는 인상을 주지 않는다."
+      "teacher": "숨을 참아야 좋은 연주라는 인상을 주지 않는다.",
+      "storyBeat": "선율 전체",
+      "studentCue": "8마디 전체를 허밍하기",
+      "storyTone": "butter",
+      "layout": "cards"
     },
     {
       "phase": "숨표 선택",
@@ -98,7 +124,11 @@
       "terms": [
         "A · 4마디 뒤",
         "B · 2마디 뒤"
-      ]
+      ],
+      "storyBeat": "숨표 A/B",
+      "studentCue": "A/B 두 번씩 부르며 비교",
+      "storyTone": "sky",
+      "layout": "cards"
     },
     {
       "phase": "프레이즈",
@@ -111,7 +141,11 @@
         "A안의 긴 선율을 큰 곡선으로 그립니다.",
         "B안의 나뉜 선율을 짧은 곡선으로 표현하고 각각 노래합니다."
       ],
-      "teacher": "동작과 가창을 함께 할 때 박자·호흡 중 무엇을 평가하는지 명확히 한다."
+      "teacher": "동작과 가창을 함께 할 때 박자·호흡 중 무엇을 평가하는지 명확히 한다.",
+      "storyBeat": "선율의 곡선",
+      "studentCue": "팔로 긴·짧은 프레이즈 표현",
+      "storyTone": "mint",
+      "layout": "big-type"
     },
     {
       "phase": "개인 연습",
@@ -129,7 +163,11 @@
         "숨표 선택",
         "8마디 가창",
         "한 부분 수정"
-      ]
+      ],
+      "storyBeat": "나의 선택",
+      "studentCue": "편안한 숨표 고른 뒤 실연",
+      "storyTone": "peach",
+      "layout": "cards"
     },
     {
       "phase": "학급 지휘",
@@ -142,7 +180,11 @@
         "첫 번째는 A안으로 노래합니다.",
         "두 번째는 B안으로 노래한 후 프레이즈 느낌을 말합니다."
       ],
-      "teacher": "변성기 학생에게 낮은 조·허밍·계이름 말리듬 허용."
+      "teacher": "변성기 학생에게 낮은 조·허밍·계이름 말리듬 허용.",
+      "storyBeat": "같이 부르기",
+      "studentCue": "학급 가창으로 차이를 확인",
+      "storyTone": "lavender",
+      "layout": "cards"
     },
     {
       "phase": "개별 표현",
@@ -155,7 +197,11 @@
         "개별 실연 또는 허밍을 확인합니다.",
         "숨표를 선택한 근거를 음악적으로 말합니다."
       ],
-      "teacher": "성량·고음·태도·성격으로 채점하지 않는다."
+      "teacher": "성량·고음·태도·성격으로 채점하지 않는다.",
+      "storyBeat": "혼자 확인",
+      "studentCue": "각자 한 구절·근거 말하기",
+      "storyTone": "butter",
+      "layout": "big-type"
     },
     {
       "phase": "정리",
@@ -168,7 +214,22 @@
         "다시 4마디만 부르며 문장 끝을 느낍니다.",
         "학생이 자기에게 알맞은 숨표를 표현합니다."
       ],
-      "teacher": "2분 이내 구두로 마무리하고 공식 수행평가와 구분한다."
+      "teacher": "2분 이내 구두로 마무리하고 공식 수행평가와 구분한다.",
+      "storyBeat": "여행의 결말",
+      "studentCue": "첫 질문에 직접 부르며 답하기",
+      "storyTone": "final",
+      "layout": "payoff",
+      "storyAnswer": "숨표 위치가 달라지면 같은 선율도 다른 음악적 문장처럼 들릴 수 있어요."
     }
-  ]
+  ],
+  "story": {
+    "role": "숨표 탐험대",
+    "mission": "노래의 숨길을 찾아라",
+    "hook": "같은 여덟 마디인데 숨 쉬는 곳만 바꾸면 달라질까?",
+    "payoff": "숨표 위치가 달라지면 같은 선율도 다른 음악적 문장처럼 들릴 수 있어요.",
+    "conclusion": "8마디 선율을 표현하며 자신에게 맞는 호흡을 선택하고 설명한다.",
+    "symbol": "♫",
+    "palette": "lavender",
+    "canvasInspired": true
+  }
 }
