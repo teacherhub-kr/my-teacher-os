@@ -128,6 +128,7 @@ for (const id of ids){
      const clip=await deck.locator('.hd-slide').evaluate(el=>{
        const stage=el.getBoundingClientRect(),layout=el.querySelector('.hd-layout');
        return [...layout.querySelectorAll('.hd-lead,.hd-side')].filter(x=>{
+          if(getComputedStyle(x).display==='none'||x.getClientRects().length===0)return false;
           const b=x.getBoundingClientRect();
           return b.bottom>stage.bottom+2||b.right>stage.right+2||b.left<stage.left-2;
        }).map(x=>({className:x.className,bottom:Math.round(x.getBoundingClientRect().bottom),stageBottom:Math.round(stage.bottom)}));
