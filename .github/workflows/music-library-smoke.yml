@@ -38,6 +38,30 @@ jobs:
             sleep 1
           done
           node tests/music-library-smoke.mjs
+      - name: Verify published Arirang unified pilot
+        if: github.event_name == 'push'
+        run: |
+          node --input-type=module <<'NODE'
+          const url = 'https://teacherhub-kr.github.io/my-teacher-os/lessons/arirang-vocal/unified-pilot.html';
+          let lastError;
+          for (let attempt = 1; attempt <= 12; attempt++) {
+            try {
+              const response = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(12000) });
+              if (!response.ok) throw new Error('HTTP ' + response.status);
+              const html = await response.text();
+              for (const marker of ['MY MUSIC CLASS', 'const scenes=[', '아리랑', 'id="activity"', 'id="next"']) {
+                if (!html.includes(marker)) throw new Error('Missing pilot marker: ' + marker);
+              }
+              console.log('Published Arirang unified pilot verified:', url);
+              process.exit(0);
+            } catch (error) {
+              lastError = error;
+              console.log('Attempt ' + attempt + '/12:', error.message);
+              if (attempt < 12) await new Promise(resolve => setTimeout(resolve, 10000));
+            }
+          }
+          throw lastError;
+          NODE
       - name: Verify published GitHub Pages website
         if: github.event_name == 'push'
         env:
