@@ -6,6 +6,7 @@ on:
     paths:
       - 'lessons/**'
       - 'tests/music-presenter-seven.spec.cjs'
+      - 'tests/arirang-unified-pilot.spec.cjs'
       - '.github/workflows/music-presenter-seven.yml'
   push:
     branches: [main]
@@ -56,4 +57,4 @@ jobs:
             if curl -fsS http://127.0.0.1:4173/lessons/catalog.json >/dev/null; then break; fi
             sleep 1
           done
-          npx playwright test tests/music-presenter-seven.spec.cjs --reporter=line --workers=1
+          npx playwright test tests/music-presenter-seven.spec.cjs tests/arirang-unified-pilot.spec.cjs --reporter=line --workers=1
