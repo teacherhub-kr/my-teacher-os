@@ -30,13 +30,14 @@ jobs:
       - name: Validate shared JavaScript and all seven links
         run: |
           set -euo pipefail
-          node --check lessons/hybrid-v2/engine.js\n          test -f lessons/hybrid-v2/deck.css
+          node --check lessons/hybrid-v2/engine.js
           test -f lessons/hybrid-v2/deck.css
           for id in orchestra-timbre rhythm-lab dynamics-expression gayageum-observation vocal-breath-phrasing bali-gamelan-archive arirang-vocal; do
             grep -q "hybrid-v2/deck.css" "lessons/$id/index.html"
             grep -q "hybrid-v2/engine.js" "lessons/$id/index.html"
             grep -q "data-music-lesson=\"$id\"" "lessons/$id/index.html"
-            test -f "lessons/$id/teacher.html"\n            test -f "lessons/$id/deck.json"
+            test -f "lessons/$id/teacher.html"
+            test -f "lessons/$id/deck.json"
           done
       - name: Install Chromium
         run: |
