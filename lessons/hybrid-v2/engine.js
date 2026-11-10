@@ -73,7 +73,7 @@
     openButton.hidden=!!present;
     root.setAttribute("aria-hidden",present?"false":"true");
     if(!present){state.teacher=false;teacherPanel.hidden=true;setRunning(false);}
-    if(present){paint();root.querySelector(".hd-slide")?.focus?.({preventScroll:true})}
+    if(present){root.querySelector(".hd-slide")?.focus?.({preventScroll:true})}
     try{history.replaceState(null,"",location.pathname+(present?"?mode=present":"?mode=activity")+location.hash)}catch(_){}
     save();
   }
