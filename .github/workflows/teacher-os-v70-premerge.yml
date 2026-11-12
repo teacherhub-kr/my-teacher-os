@@ -46,4 +46,4 @@ jobs:
             if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
             sleep 1
           done
-          npx playwright test tests/current-public-browser.spec.cjs tests/student-evidence-public-browser.spec.cjs tests/today-v70-browser.spec.cjs tests/today-v71-browser.spec.cjs --reporter=line --workers=1
+          npx playwright test tests/current-public-browser.spec.cjs tests/student-evidence-public-browser.spec.cjs tests/today-v70-browser.spec.cjs tests/today-v71-browser.spec.cjs tests/owner-private-v72-browser.spec.cjs --reporter=line --workers=1 --max-failures=1
