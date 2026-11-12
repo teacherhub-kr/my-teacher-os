@@ -958,7 +958,7 @@ function ready(){
  var schedule=make('section','panel th72-schedule');schedule.id='th72Schedule';schedule.innerHTML='<h2>▣ 오늘의 수업 일정</h2><p>교시·학급 정보는 공개 시간표에서 출처 확인 후 표시합니다. 이 Google 원본 집계에서 수업 시간을 임의 계산하지 않습니다.</p><a class="refresh" href="https://teacherhub-kr.github.io/my-teacher-os/?mode=tools" target="_blank" rel="noopener noreferrer">출처 표시된 시간표 확인 ↗</a>';
  right.appendChild(schedule);
  var notices=make('section','panel th72-notices');notices.id='th72Notices';notices.innerHTML='<h2>△ 확인해야 할 알림</h2><p>학생 태도를 추정하지 않고 수행평가 원본에 있는 확인 대상 학급만 표시합니다.</p>';
- var attention=qs('#attentionList');if(attention)notices.appendChild(attention);right.appendChild(notices);
+ var attention=qs('#attentionList');if(attention){notices.appendChild(attention);if(!attention.children.length)attention.appendChild(make('li','attention-empty','원본 집계 확인 필요 · 실제 조회 완료 전에는 알림이 없다고 단정하지 않습니다.'));}right.appendChild(notices);
  var records=qs('#studentsPanel'),recordPanel=qs('#recordPanel');if(records)records.classList.add('th72-private-detail');if(recordPanel)recordPanel.classList.add('th72-private-detail');
  var alert=qs('#status');if(alert)alert.setAttribute('aria-live','polite');
 }
