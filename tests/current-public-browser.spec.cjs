@@ -19,6 +19,9 @@ test('public tools boot and route between the five current workspaces', async ({
   await page.locator('#nav button[data-os66-category="assessment"]').click();
   await expect(page.locator('#assessment')).toHaveClass(/active/, {timeout: 10000});
   await expect(page.locator('#os66Tabs')).toBeVisible();
+  // v71 relocates the original settings control inside an accessible profile menu.
+  await expect(page.locator('body')).toHaveClass(/teacher71-mode/);
+  await page.locator('#th71Profile summary').click();
   await expect(page.locator('#os66SettingsButton')).toBeVisible();
 });
 
