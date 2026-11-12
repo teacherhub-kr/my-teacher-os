@@ -1,0 +1,48 @@
+name: Teacher OS v70 pre-merge test gate
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  premerge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify original regressions and v70
+        run: |
+          set -euo pipefail
+          node tests/core-tests.js
+          node tests/live-loader-assets.test.js
+          node tests/owner-entry-v58.test.js
+          node tests/teacher-activity-home-v61.test.js
+          node tests/private-teacher-home-v62.test.js
+          node tests/seteuk-room-v67.test.js
+          node tests/integrated-workspace-v63.test.js
+          node tests/unified-design-v64.test.js
+          node tests/focused-workflow-v65.test.js
+          node tests/workflow-v66.test.js
+          node --check teacher-today-v70.js
+          node tests/today-v70.test.js
+          for f in $(find tests -maxdepth 1 -name 'v*-tests.js' | sort -V); do
+            node "$f"
+          done
+          (cd local_bridge && python3 test_bridge.py && python3 test_neis_adapter.py && python3 test_kedufine_adapter.py && python3 test_pairing_v44.py && python3 test_watchdog_v45.py && python3 test_privacy_v46.py)
+      - name: Install pinned Playwright Chromium
+        run: |
+          npm install --no-save --package-lock=false @playwright/test@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Check original public browser tests and v70
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/teacher-os-smoke.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" || true' EXIT
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
+            sleep 1
+          done
+          npx playwright test tests/current-public-browser.spec.cjs tests/student-evidence-public-browser.spec.cjs tests/today-v70-browser.spec.cjs --reporter=line --workers=1
