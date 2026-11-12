@@ -1,0 +1,154 @@
+/* MY TEACHER OS v70 — today-first timetable, calmer header, aligned navigation.
+   Additive overrides only; every rule is scoped to body.teacher70-mode so removing
+   this file restores the previous look. */
+
+/* ---------- header: one row, no build/debug chips, no duplicate brand ---------- */
+body.teacher70-mode #v17Chip,
+body.teacher70-mode #premiumTopChip,
+body.teacher70-mode #t49SetupBanner,
+body.teacher70-mode .t51-profile-name,
+body.teacher70-mode .t51-separator{display:none!important}
+@media (min-width:1100px){
+  body.teacher70-mode.teacher51-mode.premium-ui .top{flex-wrap:nowrap!important;height:auto!important;min-height:64px!important;gap:10px!important;padding:10px 20px!important}
+  body.teacher70-mode.teacher51-mode.premium-ui .top .t51-original-title{flex:0 0 auto!important;min-width:0}
+  body.teacher70-mode.teacher51-mode.premium-ui #teacherGlobalSearch{flex:1 1 200px!important;min-width:140px!important;max-width:420px!important;width:auto!important}
+  body.teacher70-mode.teacher51-mode.premium-ui .top-actions{flex:0 0 auto!important;flex-wrap:nowrap!important;gap:6px!important;margin:0!important}
+  body.teacher70-mode.teacher51-mode.premium-ui .top-actions > *{white-space:nowrap!important}
+  body.teacher70-mode.teacher51-mode.premium-ui .t51-profile{flex:0 0 auto!important;flex-wrap:nowrap!important;gap:6px!important;margin:0!important;width:auto!important}
+}
+@media (max-width:1280px) and (min-width:1100px){
+  body.teacher70-mode.teacher51-mode.premium-ui #teacherGlobalSearch kbd{display:none!important}
+}
+
+/* ---------- sidebar: icon and label sit together, left aligned ---------- */
+@media (min-width:761px){
+  body.teacher70-mode #nav .os66-category{justify-content:flex-start!important;align-items:center!important;gap:12px!important;text-align:left!important}
+  body.teacher70-mode #nav .os66-category-icon{flex:0 0 26px!important;width:26px!important;height:26px!important;display:inline-grid!important;place-items:center!important;line-height:1!important;text-align:center!important}
+  body.teacher70-mode #nav .os66-category-name{flex:1 1 auto!important;width:auto!important;text-align:left!important}
+}
+
+/* ---------- report button: compact, never covers form fields ---------- */
+body.teacher70-mode .feedback-fab26{width:44px;height:44px;padding:0!important;justify-content:center;gap:0;overflow:hidden;opacity:.9}
+body.teacher70-mode .feedback-fab26 b{display:none}
+body.teacher70-mode .feedback-fab26:hover,body.teacher70-mode .feedback-fab26:focus-visible{width:auto;padding:0 14px!important;gap:8px;opacity:1}
+body.teacher70-mode .feedback-fab26:hover b,body.teacher70-mode .feedback-fab26:focus-visible b{display:inline}
+@media (max-width:760px){body.teacher70-mode .feedback-fab26{width:40px;height:40px;right:10px;bottom:calc(90px + env(safe-area-inset-bottom,0px))}}
+
+/* ---------- home ---------- */
+body.teacher70-mode .os65-privacy-note{max-width:300px;word-break:keep-all;text-wrap:balance}
+body.teacher70-mode #os65Home,body.teacher70-mode #tt70,body.teacher70-mode #tt70Dlg{word-break:keep-all}
+body.teacher70-mode.t70-first-run #os65Home .os65-quick,
+body.teacher70-mode.t70-first-run #os65Home .os65-focus-grid,
+body.teacher70-mode.t70-first-run #os65Home .os65-secondary{display:none!important}
+body.teacher70-mode #os66Setup{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px 18px;padding:20px 22px}
+body.teacher70-mode #os66Setup[hidden]{display:none!important}
+body.teacher70-mode #os66Setup .t70-setup-copy b{font-size:17px;color:var(--os-navy,#102b60)}
+body.teacher70-mode #os66Setup .t70-setup-copy p{margin:4px 0 0}
+body.teacher70-mode #os66Setup .t70-steps{grid-column:1/-1;grid-row:2;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+body.teacher70-mode #os66Setup .t70-steps li{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;padding:10px 12px;border:1px solid var(--os-line,#e5ebf7);border-radius:12px;background:#fff;font-weight:700;color:var(--os-ink,#20385f);font-size:14px}
+body.teacher70-mode #os66Setup .t70-steps li span{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--os-blue-soft,#edf4ff);color:var(--os-primary,#2468f3);font-size:12px}
+body.teacher70-mode #os66Setup .t70-steps li small{flex-basis:100%;font-weight:500;color:var(--os-muted,#7184a4);font-size:12px;padding-left:30px}
+body.teacher70-mode #os66Setup .t70-steps li.t70-step-now{border-color:var(--os-primary,#2468f3);box-shadow:0 0 0 3px #2468f314}
+body.teacher70-mode #os66Setup .t70-steps li.t70-step-now span{background:var(--os-primary,#2468f3);color:#fff}
+body.teacher70-mode #os66Setup [data-os66-start]{grid-column:2;grid-row:1}
+
+.t70-today{margin:14px 0 0;padding:16px 18px;border:1px solid var(--os-line,#e5ebf7);border-radius:var(--radius,18px);background:#fff}
+.t70-today[hidden]{display:none!important}
+.t70-today-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.t70-today-head h3{margin:0;font-size:16px;color:var(--os-navy,#102b60)}
+.t70-today-head .t70-link{margin-left:auto}
+.t70-link{border:0;background:none;color:var(--os-primary,#2468f3);font-weight:700;font-size:13px;cursor:pointer;padding:6px 2px}
+.t70-link:focus-visible,.t70-cell:focus-visible,.t70-week-nav button:focus-visible{outline:3px solid #2468f355;outline-offset:2px}
+.t70-today-list{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
+.t70-lesson{display:flex;align-items:baseline;gap:8px;padding:9px 12px;border-radius:12px;background:var(--os-soft,#f4f8ff);border:1px solid var(--os-line,#e5ebf7);font-size:14px;color:var(--os-ink,#20385f)}
+.t70-lesson b{font-size:13px;color:var(--os-primary-dark,#1652bc)}
+.t70-lesson small{font-size:11px;color:#9a4b0f;font-weight:700}
+.t70-lesson.t70-edited{background:#fff7ed;border-color:#fdba74}
+.t70-empty{margin:10px 0 0;color:var(--os-muted,#7184a4);font-size:14px}
+
+/* source badges shared by home and timetable */
+.t70-source{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700;line-height:1.4}
+.t70-source::before{content:'';width:7px;height:7px;border-radius:50%;background:currentColor;flex:0 0 7px}
+.t70-ok{background:#ecfdf3;color:#137a45}
+.t70-warn{background:#fff7e6;color:#94560b}
+.t70-info{background:var(--os-blue-soft,#edf4ff);color:var(--os-primary-dark,#1652bc)}
+.t70-empty.t70-source{background:#f1f3f7;color:#5d6b82}
+
+/* ---------- timetable view: one grid instead of three ---------- */
+body.teacher70-mode #timetable > .premium-today-card,
+body.teacher70-mode #timetable > .notice,
+body.teacher70-mode #timetable > article.timetable-wrap,
+body.teacher70-mode #liveWeekPanel > .live-head,
+body.teacher70-mode #liveWeekPanel > .timetable-wrap{display:none!important}
+body.teacher70-mode #timetable > .section-intro .simple48-section-copy{display:none!important}
+body.teacher70-mode #timetable.timetable-auto-only > .section-intro::after{content:'컴시간 기본 · 바뀐 수업은 교사가 수정'!important}
+body.teacher70-mode #liveWeekPanel{padding-top:4px}
+
+.t70-card{margin-top:16px}
+.t70-card-head{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:12px}
+.t70-card-head h3{margin:4px 0 0;font-size:20px;color:var(--os-navy,#102b60)}
+.t70-help{margin:6px 0 0;color:var(--os-muted,#7184a4);font-size:13px;line-height:1.55}
+.t70-week-nav{display:flex;gap:6px}
+.t70-week-nav button{min-height:40px;min-width:44px;padding:0 12px;border:1px solid var(--os-line,#e5ebf7);border-radius:10px;background:#fff;font-weight:700;color:var(--os-ink,#20385f);cursor:pointer}
+.t70-source-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:14px 0 10px}
+.t70-note{font-size:12px;color:#94560b}
+.t70-grid-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.t70-grid{width:100%;min-width:520px;border-collapse:separate;border-spacing:4px;table-layout:fixed}
+.t70-grid th{font-size:12px;color:var(--os-muted,#7184a4);font-weight:700;padding:4px}
+.t70-grid thead th b{display:block;font-size:14px;color:var(--os-ink,#20385f)}
+.t70-grid thead th small{font-size:11px}
+.t70-grid th.t70-period{width:44px;font-size:14px;color:var(--os-ink,#20385f)}
+.t70-grid thead th:first-child{width:44px}
+.t70-grid td{padding:0;vertical-align:stretch}
+.t70-grid thead th.t70-today-col{color:var(--os-primary,#2468f3)}
+.t70-grid thead th.t70-today-col b{color:var(--os-primary,#2468f3)}
+.t70-cell{width:100%;min-height:52px;height:100%;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:6px 8px;border:1px solid var(--os-line,#e5ebf7);border-radius:10px;background:#fff;text-align:left;cursor:pointer;font:inherit;color:var(--os-ink,#20385f)}
+.t70-cell:hover{border-color:#9db8ef;background:var(--os-soft,#f4f8ff)}
+td.t70-today-col .t70-cell{background:#f6f9ff;border-color:#cfdcf7}
+.t70-cell-label{font-weight:700;font-size:14px;line-height:1.3;overflow-wrap:anywhere}
+.t70-cell.t70-free{background:#fbfcfe}
+.t70-cell-empty{font-size:12px;color:#9a4b0f}
+.t70-cell.t70-edited{background:#fff7ed!important;border-color:#fb923c!important}
+.t70-cell-tag{font-size:11px;font-weight:700;color:#9a4b0f}
+
+.t70-dialog{border:0;border-radius:18px;padding:0;width:min(440px,calc(100vw - 32px));box-shadow:0 24px 60px #0f234a33}
+.t70-dialog::backdrop{background:#0f1b3366}
+.t70-dialog-body{padding:20px 20px 16px;display:grid;gap:12px}
+.t70-dialog-head{display:flex;justify-content:space-between;gap:12px}
+.t70-dialog-head h2{margin:4px 0 0;font-size:20px;color:var(--os-navy,#102b60)}
+.t70-x{border:0;background:none;font-size:24px;line-height:1;cursor:pointer;color:var(--os-muted,#7184a4);width:40px;height:40px}
+.t70-field{display:grid;gap:6px;font-weight:700;font-size:13px;color:var(--os-ink,#20385f)}
+.t70-field input{min-height:44px;padding:0 12px;border:1px solid #cfd9ea;border-radius:10px;font:inherit;font-size:16px}
+.t70-dialog-actions{display:flex;flex-wrap:wrap;gap:8px}
+.t70-dialog-actions .btn{min-height:44px}
+.t70-dialog-actions [hidden]{display:none!important}
+.t70-error{margin:0;color:var(--os-danger,#bc4661);font-size:13px;min-height:1em}
+
+/* ---------- student records: no empty bar when no role is chosen ---------- */
+body.teacher70-mode #studentRoleSummary:empty{display:none!important}
+
+/* ---------- phones ---------- */
+@media (max-width:760px){
+  body.teacher70-mode.teacher51-mode.premium-ui .top{flex-wrap:nowrap!important;gap:6px!important;padding:8px 10px!important;min-height:0!important}
+  body.teacher70-mode.teacher51-mode.premium-ui #teacherGlobalSearch{flex:0 0 40px!important;width:40px!important;min-width:40px!important;height:40px!important;padding:0!important;justify-content:center!important}
+  body.teacher70-mode.teacher51-mode.premium-ui #teacherGlobalSearch .search-placeholder,
+  body.teacher70-mode.teacher51-mode.premium-ui #teacherGlobalSearch kbd{display:none!important}
+  body.teacher70-mode.teacher51-mode.premium-ui .top-actions{flex:1 1 auto!important;min-width:0!important;flex-wrap:nowrap!important;overflow-x:auto!important;scrollbar-width:none;gap:6px!important;margin:0!important;padding:2px 0!important}
+  body.teacher70-mode.teacher51-mode.premium-ui .top-actions::-webkit-scrollbar{display:none}
+  body.teacher70-mode.teacher51-mode.premium-ui .top-actions > *{flex:0 0 auto!important;white-space:nowrap!important;min-height:40px!important;order:5}
+  body.teacher70-mode.teacher51-mode.premium-ui .top-actions #yearSelect{order:1}
+  body.teacher70-mode.teacher51-mode.premium-ui .top-actions #os66SettingsButton{order:2}
+  body.teacher70-mode.teacher51-mode.premium-ui .top-actions #editYear{order:3}
+  body.teacher70-mode.teacher51-mode.premium-ui .top-actions #newYear{order:4}
+  body.teacher70-mode #os66Setup{grid-template-columns:1fr}
+  body.teacher70-mode #os66Setup .t70-steps{grid-template-columns:1fr;grid-row:auto}
+  body.teacher70-mode #os66Setup [data-os66-start]{grid-column:1;grid-row:auto;min-height:48px}
+  .t70-today-head .t70-link{margin-left:0}
+  .t70-grid{min-width:0;border-spacing:2px}
+  .t70-grid thead th:first-child,.t70-grid th.t70-period{width:22px;font-size:12px;padding:2px}
+  .t70-grid thead th b{font-size:13px}
+  .t70-grid thead th small{font-size:10px}
+  .t70-cell{min-height:46px;padding:4px 3px;border-radius:8px;text-align:center;align-items:center}
+  .t70-cell-label{font-size:12px;line-height:1.25}
+  .t70-cell-tag{font-size:10px}
+}

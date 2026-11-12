@@ -33,6 +33,6 @@ jobs:
           grep -q '자동 페어링 완료 · 토큰 재입력 불필요' app-v47.js
           grep -q 'NEIS 인증키 설정 완료' app-v47.js
           grep -q 'setup-health-core-v47.js?v=47.0-zero-config' app-v44.js
-          grep -q 'app-v47.js?v=47.0-zero-config' app-v44.js
+          grep -q 'app-v47.js?v=47.1-paired-probe' app-v44.js
           grep -q '127.0.0.1' desktop-core-v36.js
           ! grep -Eq 'localStorage\.setItem\([^,]+,[^)]*(password|secret)' app-v47.js

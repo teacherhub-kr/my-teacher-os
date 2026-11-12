@@ -25,5 +25,5 @@
 
 (function loadV47(){
   if(document.getElementById('teacherSetupHealthCore47')||document.getElementById('teacherSetupApp47'))return;
-  const core=document.createElement('script');core.id='teacherSetupHealthCore47';core.src='setup-health-core-v47.js?v=47.0-zero-config';core.onload=()=>{const app=document.createElement('script');app.id='teacherSetupApp47';app.src='app-v47.js?v=47.0-zero-config';document.body.appendChild(app)};document.body.appendChild(core);
+  const core=document.createElement('script');core.id='teacherSetupHealthCore47';core.src='setup-health-core-v47.js?v=47.0-zero-config';core.onload=()=>{const app=document.createElement('script');app.id='teacherSetupApp47';app.src='app-v47.js?v=47.1-paired-probe';document.body.appendChild(app)};document.body.appendChild(core);
 })();
