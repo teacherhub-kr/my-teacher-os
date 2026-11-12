@@ -27,7 +27,8 @@ for(const size of sizes){
   await expect(page.locator('#recordPanel')).toHaveCount(1);
   await expect(page.locator('#loadStudents')).toHaveCount(1);
   await expect(page.locator('#makeRecord')).toHaveCount(1);
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  const overflow = await page.evaluate(() => ({width:innerWidth, scrollWidth:document.documentElement.scrollWidth, nodes:[...document.querySelectorAll('body *')].filter(n => { const r=n.getBoundingClientRect(); const st=getComputedStyle(n);return st.display!=='none' && r.width>0 && r.right>innerWidth+2; }).slice(0,12).map(n=>({tag:n.tagName,id:n.id,className:String(n.className).slice(0,80),right:Math.round(n.getBoundingClientRect().right),width:Math.round(n.getBoundingClientRect().width)}))}));
+  expect(overflow.scrollWidth,JSON.stringify(overflow)).toBeLessThanOrEqual(overflow.width);
   expect(errors).toEqual([]);
  });
 }
