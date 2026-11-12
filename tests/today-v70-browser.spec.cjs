@@ -104,6 +104,8 @@ test('phone: compact header, no sideways scroll, report button clear of the bott
   await expect(page.locator('#os70Today .t70-lesson')).toHaveCount(2, {timeout: 10000});
   expect((await page.locator('.top').boundingBox()).height).toBeLessThanOrEqual(72);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await expect(page.locator('body')).toHaveClass(/teacher71-mode/);
+  await page.locator('#th71Profile summary').click();
   await expect(page.locator('#os66SettingsButton')).toBeVisible();
   const fab = await page.locator('#feedbackFab26').boundingBox();
   const nav = await page.locator('aside.side').boundingBox();
