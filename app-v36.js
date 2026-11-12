@@ -42,5 +42,9 @@
   function schedule(){if(timer)clearTimeout(timer);const s=settings();if(!s.autoSync||!D.validToken(s.token))return;timer=setTimeout(()=>syncNow(false),Math.max(1,Number(s.minutes)||2)*60*1000)}
   const prev=globalThis.render;if(typeof prev==='function')globalThis.render=function(){const r=prev.apply(this,arguments);setTimeout(()=>{ensureUI();renderSnapshot(lastSnapshot)},0);return r};
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')syncNow(false)});window.addEventListener('online',()=>syncNow(false));
-  setTimeout(async()=>{ensureUI();try{await health();if(D.validToken(settings().token))syncNow(false);else setStatus('Desktop Bridge 페어링 필요','warn')}catch{setStatus('Desktop Bridge 실행 필요','warn')}schedule()},700);
+  setTimeout(async()=>{ensureUI();
+    // Probe 127.0.0.1 only after this browser was paired. An unpaired public page must not
+    // contact the teacher's computer on every visit (console errors / local-network prompts).
+    if(!D.validToken(settings().token)){setStatus('Desktop Bridge 미사용 · 설치 후 연결 확인을 누르세요','warn');return}
+    try{await health();syncNow(false)}catch{setStatus('Desktop Bridge 실행 필요','warn')}schedule()},700);
 })();

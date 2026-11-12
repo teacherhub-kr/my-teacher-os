@@ -28,7 +28,7 @@ assert.match(privatePortal, /var LINK_KEY="myTeacherOS\.music56\.ownerOnlyWebApp
 assert(privatePortal.includes('window.open(target,"_blank","noopener,noreferrer")'), "Protected app stays on Google's origin");
 assert.match(workflow, /s\.dataset\.teacher56View='seteuk'/, 'Existing contextual private navigation remains available');
 assert.doesNotMatch(home, /getStudentDetail|sheets\.googleapis\.com|IMPORTRANGE|studentCache/, 'Public home must not request private student data');
-for (const marker of ['teacher-focused-v65.js?v=65.1-private-shortcut','teacher-focused-v65.css?v=65.1-private-shortcut','app-v05.js?v=46.1-safe-year-carry']) {
+for (const marker of ['teacher-focused-v65.js?v=65.1-private-shortcut','teacher-focused-v65.css?v=65.1-private-shortcut','app-v05.js?v=46.2-first-run-guard']) {
   assert(loader.includes(marker), 'Browser must refresh changed asset: ' + marker);
 }
 assert.match(stylesheet, /os65-private-card:focus-visible/, 'Main shortcut must remain keyboard accessible');
