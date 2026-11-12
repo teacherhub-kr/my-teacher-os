@@ -99,6 +99,7 @@ jobs:
           node --check teacher-workflow-v66.js
           node tests/workflow-v66.test.js
           node --check teacher-today-v70.js
+          node --check teacher-home-v71.js
           node tests/today-v70.test.js
           for f in $(find tests -maxdepth 1 -name 'v*-tests.js' | sort -V); do
             echo "== $f =="
@@ -163,7 +164,7 @@ jobs:
             if curl -fsS http://127.0.0.1:4173/ >/dev/null; then break; fi
             sleep 1
           done
-          npx playwright test tests/current-public-browser.spec.cjs tests/student-evidence-public-browser.spec.cjs tests/today-v70-browser.spec.cjs --reporter=line --workers=1
+          npx playwright test tests/current-public-browser.spec.cjs tests/student-evidence-public-browser.spec.cjs tests/today-v70-browser.spec.cjs tests/today-v71-browser.spec.cjs --reporter=line --workers=1
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
