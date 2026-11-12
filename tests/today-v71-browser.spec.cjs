@@ -32,11 +32,13 @@ for(const size of sizes){
    await expect(page.locator('#os70Today')).toHaveCount(1);
    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
    expect(await page.locator('body').innerText()).not.toMatch(/홍길동|김철수|박영희|202601\d{3}/);
-   if(size.width===1440) {
+   if(scenario==='first-run') {
+     await expect(page.locator('#os66Setup')).toBeVisible();
+     await expect(page.locator('#os65Home .os65-quick')).toBeHidden();
+   } else if(size.width===1440) {
      const y=(await page.locator('#os65Home .os65-quick').boundingBox()).y;
      expect(y).toBeLessThan(900);
    }
-   if(scenario==='first-run')await expect(page.locator('#os66Setup')).toBeVisible();
    await page.locator('#th71Profile summary').click();
    await expect(page.locator('#yearSelect')).toBeVisible();
    await expect(page.locator('#newYear')).toBeVisible();
