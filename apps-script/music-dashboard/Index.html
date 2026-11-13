@@ -977,7 +977,8 @@ async function readPublicSchedule(){
   else list.appendChild(make('li','th72-time-empty',sameWeek?
    '공개 자료에서 오늘 배정된 음악 수업이 확인되지 않습니다.':'해당 요일의 이전 수집본 수업이 없습니다.'));
   var week=schedule.weekStart.slice(5,7)+'/'+schedule.weekStart.slice(8,10)+' 주 기준';
-  var health=status&&status.status==='success'?'수집 정상':'수집 오류·상태 확인 필요';
+  // sync-comcigan.yml writes {"status":"ok"} on success and {"status":"error"} on failure.
+  var health=status&&status.status==='ok'?'수집 정상':'수집 오류·상태 확인 필요';
   notice.textContent=week+(sameWeek?'':' · 변경 확인 필요')+
    ' · '+health+' · 수집 '+dateStamp(schedule.fetchedAt);
  }catch(err){

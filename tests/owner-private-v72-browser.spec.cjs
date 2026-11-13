@@ -16,14 +16,14 @@ async function fakeGoogle(page){
  });
 }
 
-async function publicScheduleStub(page,fail=false){
+async function publicScheduleStub(page,fail=false,statusBody={status:'error',category:'collector',detail:'collector-init'}){
  const origin='https://teacherhub-kr.github.io/my-teacher-os/live/';
  const headers={'access-control-allow-origin':'*'};
  await page.route(origin+'comcigan.json',route=>fail?route.abort():route.fulfill({status:200,contentType:'application/json',headers,body:JSON.stringify({
   version:2,weekStart:'2026-11-02',fetchedAt:'2026-11-02T11:12:01.903Z',
   slots:[{date:'2026-11-06',day:'금',period:2,target:'2-3',subject:'음악'},{date:'2026-11-06',day:'금',period:5,target:'2-2',subject:'음악'}]
  })}));
- await page.route(origin+'comcigan-status.json',route=>fail?route.abort():route.fulfill({status:200,contentType:'application/json',headers,body:JSON.stringify({status:'error',category:'collector',detail:'collector-init'})}));
+ await page.route(origin+'comcigan-status.json',route=>fail?route.abort():route.fulfill({status:200,contentType:'application/json',headers,body:JSON.stringify(statusBody)}));
 }
 
 for(const size of sizes){
@@ -95,4 +95,16 @@ test('public timetable fetch failure keeps owner-only page working and shows the
  await expect(page.locator('#th72Schedule a[href*="mode=tools"]')).toBeVisible();
  await expect(page.locator('#results tr')).toHaveCount(9);
  await expect(page.locator('#status')).not.toHaveClass(/error/);
+});
+
+test('public timetable: the success value written by sync-comcigan.yml ("ok") is shown as healthy',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});
+ await page.clock.setFixedTime(new Date('2026-11-06T01:00:00Z'));
+ await fakeGoogle(page);
+ await publicScheduleStub(page,false,{status:'ok',category:'ok',detail:'ok',verification:'teacher-class-match'});
+ await page.goto('/apps-script/music-dashboard/Index.html');
+ await expect(page.locator('#th72ScheduleStatus')).toContainText('수집 정상');
+ await expect(page.locator('#th72ScheduleStatus')).not.toContainText('수집 오류');
+ const workflow=require('node:fs').readFileSync(require('node:path').join(__dirname,'..','.github','workflows','sync-comcigan.yml'),'utf8');
+ expect(workflow).toContain('{"status":"ok"');
 });
