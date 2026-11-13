@@ -40,7 +40,17 @@ for(const marker of ['id="assessmentSummary"','id="attentionList"','id="recordPa
   assert(ui.includes(marker),'Missing owner-only UI marker '+marker);
 }
 assert(!ui.includes('localStorage')&&!ui.includes('sessionStorage'),'No persistence of student observations or drafts');
-assert(!/fetch\(|XMLHttpRequest|postMessage/.test(ui),'Owner-only notes cannot be sent to external destinations');
+// Exactly two credential-free GET reads of class-only public timetable JSON are allowed.
+// Do not relax protection against arbitrary endpoints or private student-record transfer.
+assert(!/XMLHttpRequest|postMessage/.test(ui),'Owner-only notes cannot be sent via legacy transport');
+assert(ui.includes("var PUBLIC_TIMETABLE='https://teacherhub-kr.github.io/my-teacher-os/live/';"),
+  'Public timetable source must be a fixed official project path');
+const publicReads=Array.from(ui.matchAll(/\bfetch\(([^)]*)\)/g),m=>m[1].trim());
+assert.equal(publicReads.length,2,'No other outgoing fetch is allowed in the owner-only page');
+assert.deepEqual(publicReads.sort(),[
+ "PUBLIC_TIMETABLE+'comcigan-status.json',{cache:'no-store',credentials:'omit'}",
+ "PUBLIC_TIMETABLE+'comcigan.json',{cache:'no-store',credentials:'omit'}"
+].sort(),'Only credential-free public timetable GETs are allowed');
 const publicHome=fs.readFileSync(path.join(root,'teacher-dashboard-v49.js'),'utf8');
 assert(!publicHome.includes('getStudentDetail'),'Public home must not read private student sources');
 assert(!publicHome.includes('getDashboardData'),'Public home cannot proxy authenticated summaries');
