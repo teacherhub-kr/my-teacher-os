@@ -178,7 +178,14 @@ assert(!/<a[^>]+href="#/.test(ui),'base target=_top: in-page links must be butto
 
 // 7. Privacy: no storage, network, or sending essay text to the server.
 assert(!ui.includes('localStorage')&&!ui.includes('sessionStorage')&&!ui.includes('indexedDB'),'No persistence');
-assert(!/fetch\(|XMLHttpRequest|postMessage|sendBeacon/.test(ui),'No external transmission');
+// Preserve the prohibition on record/essay exfiltration; allow only fixed public class timetable reads.
+assert(!/XMLHttpRequest|postMessage|sendBeacon/.test(ui),'No private draft network transmission');
+assert(ui.includes("var PUBLIC_TIMETABLE='https://teacherhub-kr.github.io/my-teacher-os/live/';"),'Only class-level public JSON source is allowed');
+const approvedReads=Array.from(ui.matchAll(/\bfetch\(([^)]*)\)/g),m=>m[1].trim());
+assert.deepEqual(approvedReads.sort(),[
+ "PUBLIC_TIMETABLE+'comcigan-status.json',{cache:'no-store',credentials:'omit'}",
+ "PUBLIC_TIMETABLE+'comcigan.json',{cache:'no-store',credentials:'omit'}"
+].sort(),'No outgoing fetch except credential-free public class timetable reads');
 const serverFns=new Set((ui.match(/\.(getDashboardData|getStudentDetail)\(/g)||[]).map(x=>x.slice(1,-1)));
 assert.deepEqual([...serverFns].sort(),['getDashboardData','getStudentDetail'],'Only existing read-only server calls');
 assert(!/withUserObject|recordSource[^\n]*google\.script/.test(ui),'Essay text never goes to Apps Script');
