@@ -89,7 +89,10 @@ test('class aggregate: per-class, per-round unscored counts and totals, never st
   await expect(page.locator('#th71ProgressList tbody tr').nth(2)).toContainText('긴급');
   // total = grade 2: 9 (3rd round) + 3 (2nd round, 2-2) ; grade 3: 6 x 2 = 12 → 24
   await expect(page.locator('#os65Home .os65-quick-card').nth(1)).toContainText('24');
-  await expect(page.locator('#th71AlertList')).toContainText('총 24명이 미채점');
+  await expect(page.locator('#th71AlertList')).toContainText('미채점 기록 24건 (학생 수 아님)');
+  await expect(page.locator('#os65Home .os65-quick-card').nth(1)).toContainText('건');
+  await expect(page.locator('#th71ProgressList tbody tr').first()).toContainText('미채점 0명');
+  await expect(page.locator('#th71ProgressList')).not.toContainText('완료');
   await expect(page.locator('#th71RecentBody')).toContainText('미채점 3명');
   await page.locator('[data-th71-grade="3"]').click();
   await expect(page.locator('#th71ProgressList tbody tr')).toHaveCount(6);

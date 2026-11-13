@@ -282,7 +282,7 @@ function renderProgress(){
    var tr=el('tr'),th=el('th','th71-class');th.appendChild(el('b','',classLabel(c.id)));
    if(c.alertType==='긴급')th.appendChild(pill('긴급','red'));
    tr.appendChild(th);
-   c.missing.forEach(function(n,i){var td=el('td');td.appendChild(n===0?pill('완료','green'):pill('미채점 '+n+'명','blue'));td.setAttribute('aria-label',(i+1)+'차 '+(n===0?'미채점 없음':'미채점 '+n+'명'));tr.appendChild(td)});
+   c.missing.forEach(function(n,i){var td=el('td');td.appendChild(n===0?pill('미채점 0명','green'):pill('미채점 '+n+'명','blue'));td.setAttribute('aria-label',(i+1)+'차 '+(n===0?'미채점 없음':'미채점 '+n+'명'));tr.appendChild(td)});
    tbody.appendChild(tr);
   });
  }else{
@@ -300,7 +300,7 @@ function renderProgress(){
   if(foot)foot.classList.remove('th71-stale');
  }else{
   var age=summaryAge(s);
-  setText(foot,stamp(s.importedAt||s.savedAt)+' '+s.source+' 기준'+(age>STALE_MS?' · 하루 이상 지난 집계입니다. 수행평가 메뉴에서 다시 읽어 주세요.':'')+' · 학생 이름·점수는 표시하지 않습니다.');
+  setText(foot,stamp(s.importedAt||s.savedAt)+' '+s.source+' 기준'+(age>STALE_MS?' · 하루 이상 지난 집계입니다. 수행평가 메뉴에서 다시 읽어 주세요.':'')+' · 미채점 0명은 실시·성적 확정을 뜻하지 않습니다. 학생 이름·점수는 표시하지 않습니다.');
   if(foot)foot.classList.toggle('th71-stale',age>STALE_MS);
   if(!rows.length)dest.appendChild(el('p','th71-empty',activeGrade+'학년 집계 학급이 없습니다.'));
  }
@@ -340,7 +340,7 @@ function renderRecent(){
   var due=isoDate(a.due)?a.due:'',d=due&&t?dayDiff(t,due):null;
   var round=roundOf(a.name),grade=gradeFromTarget(a.target),missing=null;
   if(s&&round&&grade){var cs=s.classes.filter(function(c){return c.grade===grade});if(cs.length)missing=cs.reduce(function(sum,c){return sum+c.missing[round-1]},0)}
-  return {name:String(a.name).slice(0,40),target:String(a.target||'').slice(0,20),due:due,d:d,missing:missing,weight:String(a.weight||'').slice(0,10)};
+  return {name:String(a.name).slice(0,40),target:String(a.target||'').slice(0,20),due:due,d:d,missing:missing,round:round,weight:String(a.weight||'').slice(0,10)};
  }).sort(function(a,b){var ka=a.d==null?9999:(a.d>=0?a.d:1000-a.d),kb=b.d==null?9999:(b.d>=0?b.d:1000-b.d);return ka-kb}).slice(0,4);
  if(!changed('recent',[list,s&&s.importedAt]))return;
  dest.replaceChildren();
@@ -355,14 +355,14 @@ function renderRecent(){
  list.forEach(function(a){
   var tr=el('tr');tr.appendChild(el('th','th71-assess-name',a.name));tr.appendChild(el('td','',a.target||'—'));tr.appendChild(el('td','',a.due?md(a.due):'—'));
   var st=el('td');
-  if(a.missing===0)st.appendChild(pill('채점 완료','green'));
+  if(a.missing===0)st.appendChild(pill('미채점 0명','green'));
   else if(a.missing>0)st.appendChild(pill('미채점 '+a.missing+'명','red'));
   else if(a.d!=null&&a.d>=0&&a.d<=7)st.appendChild(pill('마감 D-'+a.d,'amber'));
   else if(a.d!=null&&a.d>7)st.appendChild(pill('예정','blue'));
   else if(a.d!=null&&a.d<0)st.appendChild(pill('마감 지남','gray'));
   else st.appendChild(pill('일정 미입력','gray'));
   tr.appendChild(st);
-  var note=a.missing!=null?'반별 집계 기준':(a.weight?'반영 '+a.weight:'');tr.appendChild(el('td','th71-muted',note||'—'));
+  var note=a.missing!=null?a.round+'차 · 반별 집계 기준':(a.weight?'반영 '+a.weight:'');tr.appendChild(el('td','th71-muted',note||'—'));
   tbody.appendChild(tr);
  });
  table.appendChild(tbody);var wrap=el('div','th71-table-wrap');wrap.appendChild(table);dest.appendChild(wrap);
@@ -385,7 +385,7 @@ function renderAlerts(){
  if(!changed('alerts',[!!y,tasks,due,events,tot,timeWarn&&res.kind,s&&s.importedAt]))return count;
  dest.replaceChildren();
  if(!y){dest.appendChild(alertRow('help','학년도 설정 필요','학년도를 만들면 실제 등록된 정보로 알림을 보여 줍니다.','—','gray'));return 0}
- if(tot&&tot.total)dest.appendChild(alertRow('file','미채점 수행평가',tot.classesWithMissing+'개 반, 총 '+tot.total+'명이 미채점 상태입니다.',tot.total,'red'));
+ if(tot&&tot.total)dest.appendChild(alertRow('file','미채점 수행평가',tot.classesWithMissing+'개 반 · 1~4차 미채점 기록 '+tot.total+'건 (학생 수 아님)',tot.total,'red'));
  if(tot&&tot.urgent)dest.appendChild(alertRow('warn','긴급 표시 학급','원본 집계에서 긴급으로 표시된 반입니다.',tot.urgent,'red'));
  if(!s)dest.appendChild(alertRow('chart','수행평가 집계 연결 필요','연결하면 반별 미채점 인원을 알려 드립니다.','—','gray'));
  if(timeWarn)dest.appendChild(alertRow('calendar','시간표 변경 확인 필요',res.kind==='none'?'시간표 자료가 없습니다.':'최신 컴시간 수집이 확인되지 않았습니다.',1,'amber'));
@@ -405,7 +405,7 @@ function renderKpis(alertCount){
   else{var periods=res.slots.map(function(x){return x.period}).filter(function(p,i,a){return a.indexOf(p)===i});
    setKpi(0,String(res.slots.length),'개',(periods.length?periods.join('·')+'교시':'오늘 수업 없음')+(res.kind==='pattern'||res.kind==='synced'?' · 변경 확인':''))}
  }else setKpi(0,'—','','시간표 확인 중');
- if(s){var tot=summaryTotals(s);setKpi(1,String(tot.total),'명',tot.classesWithMissing+'개 반 · '+stamp(s.importedAt||s.savedAt)+' 기준')}
+ if(s){var tot=summaryTotals(s);setKpi(1,String(tot.total),'건','1~4차 합산 기록 · '+tot.classesWithMissing+'개 반 · '+stamp(s.importedAt||s.savedAt))}
  else setKpi(1,'—','','수행평가 집계 연결 필요');
  setKpi(2,String(alertCount||0),'건',alertCount?'확인할 알림':'확인할 알림 없음');
  var memos=Array.isArray(y.studentRecords)?y.studentRecords.length:0;
