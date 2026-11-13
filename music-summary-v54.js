@@ -131,5 +131,7 @@ function tick(){
 }
 setTimeout(tick,300);setTimeout(tick,1600);setTimeout(tick,4600);setInterval(tick,3000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)tick()});
-globalThis.TeacherOSMusic54={render,status,forget:clear};
+// Read-only copy of the class-level aggregate for the home screen (no student-level fields exist in it).
+function summary(){if(!snapshot||!Array.isArray(snapshot.classes))return null;return {classes:snapshot.classes.map(c=>({id:c.id,grade:c.grade,missing:c.missing.slice(),alertType:c.alertType})),importedAt:snapshot.importedAt||"",source}}
+globalThis.TeacherOSMusic54={render,status,forget:clear,summary};
 })();

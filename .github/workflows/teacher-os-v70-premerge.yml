@@ -27,6 +27,7 @@ jobs:
           node tests/workflow-v66.test.js
           node --check teacher-today-v70.js
           node --check teacher-home-v71.js
+          node tests/home-v71.test.js
           node tests/today-v70.test.js
           for f in $(find tests -maxdepth 1 -name 'v*-tests.js' | sort -V); do
             node "$f"
