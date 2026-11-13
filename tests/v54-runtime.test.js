@@ -4,7 +4,7 @@ const app=fs.readFileSync(path.join(root,"music-summary-v54.js"),"utf8");
 const css=fs.readFileSync(path.join(root,"music-summary-v54.css"),"utf8");
 const idx=fs.readFileSync(path.join(root,"index.html"),"utf8");
 const core=fs.readFileSync(path.join(root,"music-summary-core-v54.js"),"utf8");
-assert(idx.includes("music-summary-v54.js?v=55.0-csv"));
+assert(idx.includes("music-summary-v54.js?v=55.1-home-summary"));
 assert(idx.includes("music-summary-core-v54.js?v=55.0-csv"));
 assert(idx.includes("music-summary-v54.css?v=54.0-music"));
 assert(!idx.includes("https://accounts.google.com/gsi/client"),"separate Google Cloud OAuth is no longer part of the default UI");

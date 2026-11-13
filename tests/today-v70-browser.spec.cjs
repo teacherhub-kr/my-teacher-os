@@ -59,7 +59,7 @@ test('collector failing: last collected week is shown with its source, edited fo
   await expect(page.locator('#os70Today')).toContainText('11월 2일 주 컴시간 기준');
   await expect(page.locator('#os70Today .t70-lesson')).toHaveCount(2);
 
-  await page.locator('#os70Today [data-os66-view="timetable"]').click();
+  await page.locator('[data-os66-view="timetable"]:visible').first().click();
   await expect(page.locator('#timetable')).toHaveClass(/active/);
   await expect(page.locator('#tt70Heading')).toContainText('11월 9일 ~ 11월 13일');
   await expect(page.locator('#liveTimetableTable')).toBeHidden();
