@@ -27,6 +27,7 @@ export function createTask({id,domain,summary,sourceRef=""},at){
 export function advance(original,event){
   need(original&&original.version===2&&STATES.includes(original.status),"invalid task snapshot");
   need(event&&typeof event.type==="string"&&validAt(event.at),"event type and ISO timestamp required");
+  need(Date.parse(event.at)>=Date.parse(original.history.at(-1)?.at||""),"event timestamps must be monotonic");
   const t=copy(original),kind=event.type,at=event.at;
   need(t.status!=="completed","completed task is immutable");
   if(kind==="PLAN"){
@@ -84,6 +85,7 @@ export function advance(original,event){
       "evidence must originate outside model assertion");
     need(Date.parse(p.checkedAt)>=Date.parse(t.execution.startedAt),
       "stale evidence cannot complete execution");
+    need(Date.parse(p.checkedAt)<=Date.parse(at),"future-dated evidence cannot complete execution");
     t.evidence=[{outcome:"pass",ref:p.ref,sourceLevel:p.sourceLevel,
       origin:p.origin,checkedAt:p.checkedAt,verifier:event.verifier}];
     t.status="completed";
