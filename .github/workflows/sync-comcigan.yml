@@ -17,6 +17,8 @@ on:
       - 'scripts/comcigan-class-probe.mjs'
       - 'tests/comcigan-class-probe.test.mjs'
       - 'tests/comcigan-failure.test.mjs'
+      - 'scripts/comcigan-dual-promote.mjs'
+      - 'tests/comcigan-dual-promote.test.mjs'
       - '.github/workflows/sync-comcigan.yml'
   schedule:
     - cron: '10 23 * * 0-4' # 08:10 KST Monday-Friday (prior UTC day)
@@ -36,7 +38,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: comcigan-sync-${{ github.event_name }}-${{ github.ref }}
+  group: comcigan-sync-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -66,6 +68,8 @@ jobs:
           node --check scripts/comcigan-deadline.mjs
           node --check scripts/comcigan-crosscheck.mjs
           node --check scripts/comcigan-class-probe.mjs
+          node --check scripts/comcigan-dual-promote.mjs
+          node --test tests/comcigan-dual-promote.test.mjs
           node --test tests/comcigan-failure.test.mjs
           node --test tests/comcigan-runtime-diag.test.mjs
           node --test tests/comcigan-teacher-contract.test.mjs
@@ -177,9 +181,52 @@ jobs:
           fi
           exit "$code"
 
+      - name: Prepare independent fallback Python
+        if: steps.fetch.outcome != 'success'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Verify two current-week sources and promote only if both agree
+        if: steps.fetch.outcome != 'success'
+        id: fallback
+        continue-on-error: true
+        shell: bash
+        run: |
+          npm install --no-save --ignore-scripts --package-lock=false parse-comcigan@1.6.0 > /tmp/comcigan-fallback-deps.log 2>&1
+          python -m pip install --disable-pip-version-check --no-input 'git+https://github.com/hegelty/pycomcigan.git@6fc801068e3793d17bc3523082e7afbcf05d2d92' > /tmp/comcigan-fallback-pip.log 2>&1
+          key=$(openssl rand -hex 32)
+          echo "::add-mask::$key"
+          export COMCIGAN_SHADOW_KEY="$key"
+          set +e
+          python -m scripts.comcigan_shadow_compare_py > /tmp/comcigan-fallback-py.log 2>&1
+          python_rc=$?
+          set -e
+          python_state=$(grep -E '^PY_DUAL_STATUS=(prepared|wrong-week|identity-invalid|scope-mismatch|invalid-data|period-conflict|unavailable)$' /tmp/comcigan-fallback-py.log | tail -n 1 | cut -d= -f2 || true)
+          case "$python_state" in prepared|wrong-week|identity-invalid|scope-mismatch|invalid-data|period-conflict|unavailable) ;; *) python_state=unavailable ;; esac
+          echo "Sanitized independent timetable input: $python_state"
+          if [ "$python_rc" -ne 0 ] || [ "$python_state" != "prepared" ]; then exit 1; fi
+          set +e
+          node scripts/comcigan-shadow-compare-js.mjs > /tmp/comcigan-fallback-js.log 2>&1
+          js_rc=$?
+          set -e
+          js_state=$(grep -E '^DUAL_SOURCE_STATUS=(verified|source-mismatch|invalid-candidate|school-mismatch|unavailable)$' /tmp/comcigan-fallback-js.log | tail -n 1 | cut -d= -f2 || true)
+          case "$js_state" in verified|source-mismatch|invalid-candidate|school-mismatch|unavailable) ;; *) js_state=unavailable ;; esac
+          echo "Sanitized independent timetable comparison: $js_state"
+          if [ "$js_rc" -ne 0 ] || [ "$js_state" != "verified" ]; then exit 1; fi
+          set +e
+          node scripts/comcigan-dual-promote.mjs > /tmp/comcigan-fallback-promote.log 2>&1
+          promote_rc=$?
+          set -e
+          promoted=$(grep -E '^DUAL_PROMOTION=(ok|invalid-preview|wrong-week|stale-preview|identity-mismatch|invalid-existing|error)$' /tmp/comcigan-fallback-promote.log | tail -n 1 | cut -d= -f2 || true)
+          case "$promoted" in ok|invalid-preview|wrong-week|stale-preview|identity-mismatch|invalid-existing|error) ;; *) promoted=error ;; esac
+          echo "Sanitized protected timetable publication gate: $promoted"
+          if [ "$promote_rc" -ne 0 ] || [ "$promoted" != "ok" ]; then exit 1; fi
+
       - name: Record sanitized collector health
         env:
           FETCH_OUTCOME: ${{ steps.fetch.outcome }}
+          FALLBACK_OUTCOME: ${{ steps.fallback.outcome }}
           FETCH_CATEGORY: ${{ steps.fetch.outputs.category }}
           FETCH_DETAIL: ${{ steps.fetch.outputs.detail }}
           FETCH_FAILURE_KINDS: ${{ steps.fetch.outputs.failure_kinds }}
@@ -187,6 +234,8 @@ jobs:
           mkdir -p live
           if [ "$FETCH_OUTCOME" = "success" ] && [ -f live/comcigan.json ]; then
             printf '%s\n' '{"status":"ok","category":"ok","detail":"ok","verification":"teacher-class-match"}' > live/comcigan-status.json
+          elif [ "$FALLBACK_OUTCOME" = "success" ] && [ -f live/comcigan.json ]; then
+            printf '%s\n' '{"status":"ok","category":"ok","detail":"ok","verification":"independent-class-match"}' > live/comcigan-status.json
           else
             printf '%s\n' "{\"status\":\"error\",\"category\":\"${FETCH_CATEGORY:-runtime}\",\"detail\":\"${FETCH_DETAIL:-runtime}\",\"failureKinds\":\"${FETCH_FAILURE_KINDS:-unclassified}\"}" > live/comcigan-status.json
           fi
@@ -214,5 +263,5 @@ jobs:
         run: gh workflow run deploy.yml --ref main
 
       - name: Fail workflow when collection failed
-        if: steps.fetch.outcome != 'success'
+        if: steps.fetch.outcome != 'success' && steps.fallback.outcome != 'success'
         run: exit 1
