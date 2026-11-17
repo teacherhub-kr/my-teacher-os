@@ -1,3 +1,4 @@
+import * as fsBuiltin from 'node:fs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { probeClassReader, classifyMusicTeacherCoverage } from '../scripts/comcigan-class-probe.mjs';
@@ -41,4 +42,13 @@ test('matches teacher prefix only with 15 individually validated music classes',
   assert.equal(classifyMusicTeacherCoverage(book,'가나*'),'ambiguous');
   assert.equal(classifyMusicTeacherCoverage({2:{}},'가나*'),'none');
   assert.equal(classifyMusicTeacherCoverage(book,'가나다'),'invalid-identity');
+});
+
+// The read-only independent class probe must run even before teacher initialization succeeds.
+test('teacher initialization failure independently probes class reader without publishing data',()=>{
+  const fs=fsBuiltin;
+  const text=fs.readFileSync(new URL('../scripts/sync-comcigan.mjs',import.meta.url),'utf8');
+  assert.match(text,/if \(code === 'collector-init' \|\| code === 'collector-fetch'\)/);
+  assert.match(text,/probeClassReader\(Reader, SCHOOL_CODE, 12000, TEACHER_NAME\)/);
+  assert.match(text,/console\.error\('TEACHER_OS_CLASS_PROBE=' \+ result\)/);
 });
