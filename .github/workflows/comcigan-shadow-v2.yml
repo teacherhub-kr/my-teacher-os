@@ -63,5 +63,13 @@ jobs:
             *) value=unavailable ;;
           esac
           echo "Sanitized fifteen-class coverage outcome: $value"
+          counts=$(sed -n 's/^SHADOW_MATCH_DISTRIBUTION=\([0-9,]*\)$/\1/p' /tmp/comcigan-shadow-coverage.log | tail -n 1)
+          case "$counts" in
+            *[!0-9,]*|'') counts=unavailable ;;
+          esac
+          school=$(sed -n 's/^SHADOW_SCHOOL_CODE=\([a-z-]*\)$/\1/p' /tmp/comcigan-shadow-coverage.log | tail -n 1)
+          case "$school" in match|mismatch|unconfirmed|unsupported|lookup-error) ;; *) school=unconfirmed ;; esac
+          echo "Sanitized class count distribution (zero,one,multiple): $counts"
+          echo "Sanitized school code identity check: $school"
           echo 'Period verification: NOT VERIFIED; publishing remains BLOCKED'
           test "$rc" -eq 0
