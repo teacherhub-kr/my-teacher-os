@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - 'scripts/comcigan-shadow-v2.mjs'
+      - 'scripts/comcigan_shadow_compare_py.py'
+      - 'scripts/comcigan-shadow-compare-js.mjs'
+      - 'tests/test_comcigan_shadow_compare_py.py'
+      - 'tests/comcigan-shadow-compare-js.test.mjs'
       - 'scripts/comcigan-shadow-coverage.mjs'
       - 'scripts/comcigan_py_shadow.py'
       - 'tests/test_comcigan_py_shadow.py'
@@ -123,3 +127,51 @@ jobs:
           echo "Sanitized teacher period conflict: $conflict"
           echo 'Publication: blocked; upstream data not saved or logged'
           test "$rc" -eq 0
+
+  dual-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline verified comparison tests
+        run: |
+          python -m unittest discover -s tests -p 'test_comcigan_shadow_compare_py.py'
+          node --check scripts/comcigan-shadow-compare-js.mjs
+          node --test tests/comcigan-shadow-compare-js.test.mjs
+      - name: Install pinned independent parsers with no npm scripts
+        run: |
+          npm install --no-save --ignore-scripts --package-lock=false parse-comcigan@1.6.0
+          python -m pip install --disable-pip-version-check --no-input 'git+https://github.com/hegelty/pycomcigan.git@6fc801068e3793d17bc3523082e7afbcf05d2d92'
+      - name: Generate ephemeral HMAC key for protected on-runner comparison
+        run: echo "COMCIGAN_SHADOW_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+      - name: Produce sanitized current-week candidate without publishing
+        id: python
+        shell: bash
+        run: |
+          python scripts/comcigan_shadow_compare_py.py > /tmp/comcigan-dual-py.log 2>&1
+          state=$(grep -E '^PY_DUAL_STATUS=(prepared|wrong-week|identity-invalid|scope-mismatch|invalid-data|period-conflict|unavailable)$' /tmp/comcigan-dual-py.log | tail -n 1 | cut -d= -f2 || true)
+          if [ -z "$state" ]; then state=unavailable; fi
+          echo "Sanitized authenticated parser stage: $state"
+          echo "stage=$state" >> "$GITHUB_OUTPUT"
+      - name: Verify against second parser with HMAC only (no publish)
+        if: steps.python.outputs.stage == 'prepared'
+        shell: bash
+        run: |
+          node scripts/comcigan-shadow-compare-js.mjs > /tmp/comcigan-dual-js.log 2>&1
+          state=$(grep -E '^DUAL_SOURCE_STATUS=(verified|source-mismatch|invalid-candidate|school-mismatch|unavailable)$' /tmp/comcigan-dual-js.log | tail -n 1 | cut -d= -f2 || true)
+          if [ -z "$state" ]; then state=unavailable; fi
+          amount=$(grep -E '^DUAL_SOURCE_SLOT_COUNT=[0-9]+$' /tmp/comcigan-dual-js.log | tail -n 1 | cut -d= -f2 || true)
+          if [ -z "$amount" ]; then amount=unavailable; fi
+          echo "Sanitized independent cross-view result: $state"
+          echo "Sanitized verified lesson count: $amount"
+          echo 'Publication: blocked. Only ephemeral, sanitized temp files used.'
