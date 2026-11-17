@@ -153,12 +153,16 @@ jobs:
           npm install --no-save --ignore-scripts --package-lock=false parse-comcigan@1.6.0
           python -m pip install --disable-pip-version-check --no-input 'git+https://github.com/hegelty/pycomcigan.git@6fc801068e3793d17bc3523082e7afbcf05d2d92'
       - name: Generate ephemeral HMAC key for protected on-runner comparison
-        run: echo "COMCIGAN_SHADOW_KEY=$(openssl rand -hex 32)" >> "$GITHUB_ENV"
+        shell: bash
+        run: |
+          key=$(openssl rand -hex 32)
+          echo "::add-mask::$key"
+          echo "COMCIGAN_SHADOW_KEY=$key" >> "$GITHUB_ENV"
       - name: Produce sanitized current-week candidate without publishing
         id: python
         shell: bash
         run: |
-          python scripts/comcigan_shadow_compare_py.py > /tmp/comcigan-dual-py.log 2>&1
+          python -m scripts.comcigan_shadow_compare_py > /tmp/comcigan-dual-py.log 2>&1
           state=$(grep -E '^PY_DUAL_STATUS=(prepared|wrong-week|identity-invalid|scope-mismatch|invalid-data|period-conflict|unavailable)$' /tmp/comcigan-dual-py.log | tail -n 1 | cut -d= -f2 || true)
           if [ -z "$state" ]; then state=unavailable; fi
           echo "Sanitized authenticated parser stage: $state"
