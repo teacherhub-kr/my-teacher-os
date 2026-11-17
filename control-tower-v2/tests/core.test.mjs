@@ -77,3 +77,11 @@ test("the public summary excludes goals, source references and approval",()=>{
   assert.equal(p.sourceRef,undefined);
   assert.equal(p.approval,undefined);
 });
+test("backdated transitions and future evidence are rejected",()=>{
+  assert.throws(()=>advance(plan(),{type:"START",at:t0,kind:"read",executor:"worker"}));
+  let x=advance(plan(),{type:"START",at:t2,kind:"read",executor:"worker"});
+  x=advance(x,{type:"REPORT_RESULT",at:t3,resultRef:"https://example.org/result"});
+  assert.throws(()=>advance(x,{type:"VERIFY",at:t4,verifier:"audit",proof:{
+    outcome:"pass",ref:"https://example.org/result",checkedAt:"2026-11-17T03:10:00Z",
+    sourceLevel:"L0",origin:"external-tool"}}));
+});
