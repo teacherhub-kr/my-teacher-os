@@ -1,0 +1,46 @@
+name: Comcigan modern parser shadow-only audit
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/comcigan-shadow-v2.mjs'
+      - 'tests/comcigan-shadow-v2.test.mjs'
+      - '.github/workflows/comcigan-shadow-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Offline regression only
+        run: |
+          node --check scripts/comcigan-shadow-v2.mjs
+          node --test tests/comcigan-shadow-v2.test.mjs
+      - name: Install isolated pinned parser without lifecycle scripts
+        run: npm install --no-save --ignore-scripts --package-lock=false parse-comcigan@1.6.0
+      - name: Live read-only class sample, sanitized output only
+        shell: bash
+        run: |
+          set +e
+          node scripts/comcigan-shadow-v2.mjs > /tmp/comcigan-shadow-v2.log 2>&1
+          rc=$?
+          set -e
+          value=$(sed -n 's/^SHADOW_V2=\([a-z-]*\)$/\1/p' /tmp/comcigan-shadow-v2.log | tail -n 1)
+          case "$value" in
+            both-readable|invalid-shape|empty|not-supported|unavailable|timeout|first-read-failed|second-read-failed|config-unavailable) ;;
+            *) value=unavailable ;;
+          esac
+          echo "Sanitized alternative parser outcome: $value"
+          echo 'Publication status: blocked (no modifications to timetable or Google data)'
+          test "$rc" -eq 0
+          # This PR intentionally does not declare a successful timetable sync.
