@@ -17,6 +17,8 @@ on:
       - 'scripts/comcigan-class-probe.mjs'
       - 'tests/comcigan-class-probe.test.mjs'
       - 'tests/comcigan-failure.test.mjs'
+      - 'scripts/comcigan-dual-promote.mjs'
+      - 'tests/comcigan-dual-promote.test.mjs'
       - '.github/workflows/sync-comcigan.yml'
   schedule:
     - cron: '10 23 * * 0-4' # 08:10 KST Monday-Friday (prior UTC day)
@@ -36,7 +38,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: comcigan-sync-${{ github.event_name }}-${{ github.ref }}
+  group: comcigan-sync-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
@@ -66,6 +68,8 @@ jobs:
           node --check scripts/comcigan-deadline.mjs
           node --check scripts/comcigan-crosscheck.mjs
           node --check scripts/comcigan-class-probe.mjs
+          node --check scripts/comcigan-dual-promote.mjs
+          node --test tests/comcigan-dual-promote.test.mjs
           node --test tests/comcigan-failure.test.mjs
           node --test tests/comcigan-runtime-diag.test.mjs
           node --test tests/comcigan-teacher-contract.test.mjs
@@ -180,6 +184,7 @@ jobs:
       - name: Record sanitized collector health
         env:
           FETCH_OUTCOME: ${{ steps.fetch.outcome }}
+          FALLBACK_OUTCOME: ${{ steps.fallback.outcome }}
           FETCH_CATEGORY: ${{ steps.fetch.outputs.category }}
           FETCH_DETAIL: ${{ steps.fetch.outputs.detail }}
           FETCH_FAILURE_KINDS: ${{ steps.fetch.outputs.failure_kinds }}
@@ -187,6 +192,8 @@ jobs:
           mkdir -p live
           if [ "$FETCH_OUTCOME" = "success" ] && [ -f live/comcigan.json ]; then
             printf '%s\n' '{"status":"ok","category":"ok","detail":"ok","verification":"teacher-class-match"}' > live/comcigan-status.json
+          elif [ "$FALLBACK_OUTCOME" = "success" ] && [ -f live/comcigan.json ]; then
+            printf '%s\n' '{"status":"ok","category":"ok","detail":"ok","verification":"independent-class-match"}' > live/comcigan-status.json
           else
             printf '%s\n' "{\"status\":\"error\",\"category\":\"${FETCH_CATEGORY:-runtime}\",\"detail\":\"${FETCH_DETAIL:-runtime}\",\"failureKinds\":\"${FETCH_FAILURE_KINDS:-unclassified}\"}" > live/comcigan-status.json
           fi
@@ -214,5 +221,5 @@ jobs:
         run: gh workflow run deploy.yml --ref main
 
       - name: Fail workflow when collection failed
-        if: steps.fetch.outcome != 'success'
+        if: steps.fetch.outcome != 'success' && steps.fallback.outcome != 'success'
         run: exit 1
