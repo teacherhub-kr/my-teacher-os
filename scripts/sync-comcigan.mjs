@@ -26,7 +26,9 @@ async function retryCollector(code,fn){
   }
   console.error('TEACHER_OS_FAILURE_KINDS='+[...new Set(causes)].join(','));
   console.error('TEACHER_OS_FAILURE_ORIGINS='+[...new Set(safeOrigins)].join(','));
-  if (code === 'collector-fetch') {
+  // Also probe the independent class reader when the teacher client fails at init.
+  // Only a fixed diagnostic status is logged; keep last-known-good timetable unchanged.
+  if (code === 'collector-init' || code === 'collector-fetch') {
     const Reader = mod?.Comcigan || mod?.default?.Comcigan;
     const result = await probeClassReader(Reader, SCHOOL_CODE, 12000, TEACHER_NAME);
     console.error('TEACHER_OS_CLASS_PROBE=' + result);
