@@ -174,6 +174,19 @@ body.th72-private :is(button,input,select,textarea,a,summary):focus-visible{outl
 @media(max-width:1100px){body.th72-private .th72-columns{grid-template-columns:minmax(0,1fr)!important;width:100%;min-width:0}body.th72-private .th72-left,body.th72-private .th72-right,body.th72-private .th72-columns .panel{min-width:0;width:100%}body.th72-private .th72-columns .scroll{max-width:100%;overflow-x:auto}}
 @media(max-width:1100px){body.th72-private .th72-side{width:230px}body.th72-private .wrap{margin-left:230px;padding:0 16px 36px}body.th72-private .th72-columns{grid-template-columns:1fr}body.th72-private .th72-topbar{margin:0 -16px}body.th72-private .cards{gap:10px}body.th72-private .cards .card{padding:13px}}
 @media(max-width:740px){body.th72-private .wrap{margin:0!important;padding:0 12px 98px!important}body.th72-private .th72-side{position:fixed;top:auto;bottom:0;left:0;right:0;width:100%;height:auto;overflow:visible;padding:4px 6px calc(5px + env(safe-area-inset-bottom));border-right:0;border-top:1px solid #e8ecf3;background:#fff}body.th72-private .th72-brand,body.th72-private .th72-side-help{display:none}body.th72-private .th72-side-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px}body.th72-private .th72-side-link{min-height:62px;justify-content:center;text-align:center;padding:8px 2px;font-size:9px;white-space:normal}body.th72-private .th72-topbar{height:65px;margin:0 -12px;padding:0 13px}body.th72-private .th72-search-hint{font-size:11px;padding:10px}body.th72-private .th72-top-bell{display:none}body.th72-private .th72-top-profile{font-size:11px}body.th72-private .wrap>header{min-height:190px;padding:18px 4px}body.th72-private .wrap>header h1{font-size:29px}body.th72-private .wrap>header .symbol{display:none}body.th72-private .cards{grid-template-columns:repeat(2,minmax(0,1fr))}body.th72-private .cards .card{min-height:132px}body.th72-private .cards .card strong{font-size:22px}body.th72-private .th72-legacy-grid{grid-template-columns:1fr}body.th72-private .th72-columns .panel{padding:15px}}
+
+/* v72 A1: contain both grid tracks and wrap source-backed assessment cards. */
+body.th72-private .th72-left,body.th72-private .th72-right{grid-template-columns:minmax(0,1fr)!important;min-width:0}
+body.th72-private .th72-columns .panel{min-width:0;max-width:100%;box-sizing:border-box}
+body.th72-private #assessmentSummary{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))!important;min-width:0}
+body.th72-private .th72-columns .scroll{max-width:100%;min-width:0;overflow-x:auto}
+/* v72 A3: public, class-only timetable projection; this box does not show student records. */
+body.th72-private #th72ScheduleList{list-style:none;margin:12px 0;padding:0;display:grid;gap:8px}
+body.th72-private #th72ScheduleList li{display:flex;flex-wrap:wrap;align-items:center;gap:10px;min-width:0;border:1px solid #e6ecf5;background:#f8fbff;padding:10px 11px;border-radius:11px;font-size:12px;color:#314b70}
+body.th72-private #th72ScheduleList li strong{font-size:13px;color:#245ac2}
+body.th72-private #th72ScheduleList .th72-time-empty{background:#fff8ed;color:#815e27}
+body.th72-private #th72ScheduleStatus{padding:8px 11px;background:#fff4e5;border-radius:9px;color:#885c1a;font-weight:750}
+body.th72-private #th72ScheduleNote{font-size:11px;color:#687e9c;line-height:1.7}
 </style>
 </head><body>
 <main class="wrap">
@@ -920,14 +933,60 @@ body.th72-private :is(button,input,select,textarea,a,summary):focus-visible{outl
 })();
 </script>
 <script id="teacherPrivateV72Script">
-/* MY TEACHER OS v72 private Apps Script home: DOM-only layout enhancement.
-   No Google requests, storage, or student record copies are introduced here. */
+/* MY TEACHER OS v72 private Apps Script home. Existing authenticated Google handlers preserved.
+   Reads only public, class-level timetable data; no student record copies or new Google calls. */
 (function(){
 'use strict';
 var d=document;var qs=function(s){return d.querySelector(s)};
 function make(tag,cls,text){var n=d.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n}
 function jump(id){var n=d.getElementById(id);if(n)n.scrollIntoView({behavior:'smooth',block:'start'})}
 function addButton(nav,label,target){var b=make('button','th72-side-link',label);b.type='button';b.dataset.th72Target=target;b.addEventListener('click',function(){jump(target)});nav.appendChild(b);return b}
+
+var PUBLIC_TIMETABLE='https://teacherhub-kr.github.io/my-teacher-os/live/';
+function dateKst(){return new Date(Date.now()+9*3600000).toISOString().slice(0,10)}
+function mondayIso(iso){var x=new Date(iso+'T00:00:00Z');var offset=(x.getUTCDay()+6)%7;x.setUTCDate(x.getUTCDate()-offset);return x.toISOString().slice(0,10)}
+function readDate(iso){return /^\d{4}-\d{2}-\d{2}$/.test(String(iso||''))}
+function dayOf(iso){return ['일','월','화','수','목','금','토'][new Date(iso+'T12:00:00Z').getUTCDay()]}
+function dateStamp(value){
+ var d=new Date(value);return Number.isFinite(d.getTime())?
+  new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).format(d):'수집 시각 미확인';
+}
+function addScheduleRow(parent,period,target,old){
+ var row=make('li');if(old)row.className='th72-time-empty';
+ row.append(make('strong','',period+'교시'),make('span','',target+' 음악'));parent.appendChild(row);
+}
+async function readPublicSchedule(){
+ var notice=qs('#th72ScheduleStatus'),list=qs('#th72ScheduleList');if(!notice||!list)return;
+ try{
+  // Public class timetable only. Never request Google gradebook or credentials.
+  var pair=await Promise.all([
+   fetch(PUBLIC_TIMETABLE+'comcigan.json',{cache:'no-store',credentials:'omit'}),
+   fetch(PUBLIC_TIMETABLE+'comcigan-status.json',{cache:'no-store',credentials:'omit'})
+  ]);
+  if(!pair[0].ok||!pair[1].ok)throw new Error('공개 시간표를 읽지 못함');
+  var schedule=await pair[0].json(),status=await pair[1].json();
+  if(!schedule||!readDate(schedule.weekStart)||!Array.isArray(schedule.slots))throw new Error('시간표 구조 오류');
+  var now=dateKst(),sameWeek=mondayIso(now)===schedule.weekStart,weekday=dayOf(now);
+  var rows=schedule.slots.filter(function(x){
+   return x&&Number.isInteger(x.period)&&x.period>=1&&x.period<=12&&
+    /^[23]-[1-9]$/.test(String(x.target||''))&&
+    (sameWeek?x.date===now:x.day===weekday);
+  }).sort(function(a,b){return a.period-b.period||a.target.localeCompare(b.target)});
+  list.replaceChildren();
+  if(rows.length){rows.forEach(function(x){addScheduleRow(list,x.period,String(x.target),!sameWeek)})}
+  else list.appendChild(make('li','th72-time-empty',sameWeek?
+   '공개 자료에서 오늘 배정된 음악 수업이 확인되지 않습니다.':'해당 요일의 이전 수집본 수업이 없습니다.'));
+  var week=schedule.weekStart.slice(5,7)+'/'+schedule.weekStart.slice(8,10)+' 주 기준';
+  // sync-comcigan.yml writes {"status":"ok"} on success and {"status":"error"} on failure.
+  var health=status&&status.status==='ok'?'수집 정상':'수집 오류·상태 확인 필요';
+  notice.textContent=week+(sameWeek?'':' · 변경 확인 필요')+
+   ' · '+health+' · 수집 '+dateStamp(schedule.fetchedAt);
+ }catch(err){
+  list.replaceChildren();
+  list.appendChild(make('li','th72-time-empty','공개 컴시간 자료에 접근하지 못했습니다. 아래 링크에서 확인하세요.'));
+  notice.textContent='공개 시간표 연결 실패 · 수집 상태·수업 일정 미확인';
+ }
+}
 function ready(){
  var wrap=qs('main.wrap'),original=qs('.jump-nav'),cards=qs('.cards'),action=qs('#actionPanel');
  if(!wrap||!original||!cards||!action||d.body.classList.contains('th72-private'))return;
@@ -945,23 +1004,23 @@ function ready(){
  var header=wrap.querySelector(':scope > header');if(header){header.id='th72PrivateHero';var eyebrow=header.querySelector('.eyebrow');if(eyebrow)eyebrow.textContent='좋은 수업, 더 나은 기록';var title=header.querySelector('h1');if(title)title.innerHTML='오늘, 음악수업과 평가를<br><span>한눈에</span> 관리합니다.';var intro=header.querySelector('.lede');if(intro)intro.textContent='수행평가 원본 집계와 교과세특 작성실을 이 Google 본인 전용 화면에서 확인합니다.'}
  var bar=make('div','th72-topbar');bar.innerHTML='<div class="th72-search-hint" role="note">⌕  교사 전용 수행평가 · 생활기록부</div><div class="th72-top-profile"><span class="th72-top-bell" aria-hidden="true">♪</span><span class="th72-top-avatar" aria-hidden="true">교</span><span>음악과 교사<small>Google 본인 전용</small></span></div>';
  wrap.insertBefore(bar,wrap.firstChild);
- var nodes=Array.from(cards.children);if(nodes.length===4){
-  var stats=make('details','th72-legacy-stats');stats.id='th72LegacyStats';stats.innerHTML='<summary>추가 원본 집계 (대상 학급 · 긴급 분류)</summary>';
-  var area=make('div','th72-legacy-grid');area.append(nodes[0],nodes[3]);stats.appendChild(area);cards.insertAdjacentElement('afterend',stats);
-  var today=make('a','card th72-new-card th72-today');today.href='https://teacherhub-kr.github.io/my-teacher-os/?mode=tools';today.target='_blank';today.rel='noopener noreferrer';today.innerHTML='<small>오늘 수업</small><strong>연결 필요</strong><span>공개 시간표에서 출처와 교사 수정 여부 확인 ↗</span>';
-  var seteuk=make('button','card th72-new-card th72-seteuk');seteuk.type='button';seteuk.innerHTML='<small>교과세특</small><strong>작성실 열기</strong><span>교사 관찰 근거로 초안 작성 ↗</span>';seteuk.addEventListener('click',function(){jump('recordPanel')});
-  cards.insertBefore(today,cards.firstChild);cards.appendChild(seteuk);
- }
+ // Keep the four existing source-backed Google cards in their original visible order.
  var grades=qs('.toolbar .tabs');if(grades)grades.setAttribute('aria-label','평가 원본 학년 선택');
  var group=make('div','th72-columns');group.id='th72Columns';var left=make('div','th72-left'),right=make('div','th72-right');
  action.insertAdjacentElement('beforebegin',group);group.append(left,right);left.appendChild(action);
  var tableHead=qs('#tableHeading'),table=tableHead&&tableHead.closest('.panel');if(table)left.appendChild(table);
- var schedule=make('section','panel th72-schedule');schedule.id='th72Schedule';schedule.innerHTML='<h2>▣ 오늘의 수업 일정</h2><p>교시·학급 정보는 공개 시간표에서 출처 확인 후 표시합니다. 이 Google 원본 집계에서 수업 시간을 임의 계산하지 않습니다.</p><a class="refresh" href="https://teacherhub-kr.github.io/my-teacher-os/?mode=tools" target="_blank" rel="noopener noreferrer">출처 표시된 시간표 확인 ↗</a>';
+ var schedule=make('section','panel th72-schedule');schedule.id='th72Schedule';
+ schedule.innerHTML='<h2>▣ 오늘의 수업 일정</h2>'+
+  '<p id="th72ScheduleStatus" role="status" aria-live="polite">공개 컴시간 수집 결과 확인 중</p>'+
+  '<ul id="th72ScheduleList" aria-label="공개 컴시간 기준 음악 수업"></ul>'+
+  '<p id="th72ScheduleNote">출처: 공개 컴시간 자료 · 공개 사이트에서 교사가 그날만 수정한 수업은 이 교사 전용 화면에 반영되지 않습니다.</p>'+
+  '<a class="refresh" href="https://teacherhub-kr.github.io/my-teacher-os/?mode=tools" target="_blank" rel="noopener noreferrer">공개 시간표에서 원본·교사 수정 확인 ↗</a>';
  right.appendChild(schedule);
  var notices=make('section','panel th72-notices');notices.id='th72Notices';notices.innerHTML='<h2>△ 확인해야 할 알림</h2><p>학생 태도를 추정하지 않고 수행평가 원본에 있는 확인 대상 학급만 표시합니다.</p>';
  var attention=qs('#attentionList');if(attention){notices.appendChild(attention);if(!attention.children.length)attention.appendChild(make('li','attention-empty','원본 집계 확인 필요 · 실제 조회 완료 전에는 알림이 없다고 단정하지 않습니다.'));}right.appendChild(notices);
  var records=qs('#studentsPanel'),recordPanel=qs('#recordPanel');if(records)records.classList.add('th72-private-detail');if(recordPanel)recordPanel.classList.add('th72-private-detail');
  var alert=qs('#status');if(alert)alert.setAttribute('aria-live','polite');
+ readPublicSchedule();
 }
 if(d.readyState==='loading')d.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
 })();
