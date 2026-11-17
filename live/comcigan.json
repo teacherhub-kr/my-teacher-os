@@ -1,81 +1,51 @@
 {
   "version": 2,
-  "weekStart": "2026-11-02",
-  "fetchedAt": "2026-11-02T11:12:01.903Z",
+  "weekStart": "2026-11-16",
+  "fetchedAt": "2026-11-17T10:31:23.414Z",
   "configFingerprint": "f0b6a383a481f03e54aee73a5c6190a60082f6e4ceda197a2a2c3c3576e6ac1b",
   "slots": [
     {
-      "date": "2026-11-02",
-      "day": "월",
-      "period": 1,
-      "target": "3-7",
-      "subject": "음악",
-      "label": "3-7 음악",
-      "changed": false,
-      "source": "컴시간 자동동기화"
-    },
-    {
-      "date": "2026-11-02",
+      "date": "2026-11-16",
       "day": "월",
       "period": 2,
-      "target": "3-5",
+      "target": "2-6",
       "subject": "음악",
-      "label": "3-5 음악",
-      "changed": false,
+      "label": "2-6 음악",
+      "changed": true,
       "source": "컴시간 자동동기화"
     },
     {
-      "date": "2026-11-02",
+      "date": "2026-11-16",
+      "day": "월",
+      "period": 3,
+      "target": "2-3",
+      "subject": "음악",
+      "label": "2-3 음악",
+      "changed": true,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-11-16",
       "day": "월",
       "period": 4,
-      "target": "3-8",
-      "subject": "음악",
-      "label": "3-8 음악",
-      "changed": false,
-      "source": "컴시간 자동동기화"
-    },
-    {
-      "date": "2026-11-03",
-      "day": "화",
-      "period": 1,
-      "target": "3-4",
-      "subject": "음악",
-      "label": "3-4 음악",
-      "changed": false,
-      "source": "컴시간 자동동기화"
-    },
-    {
-      "date": "2026-11-03",
-      "day": "화",
-      "period": 4,
-      "target": "3-6",
-      "subject": "음악",
-      "label": "3-6 음악",
-      "changed": false,
-      "source": "컴시간 자동동기화"
-    },
-    {
-      "date": "2026-11-03",
-      "day": "화",
-      "period": 7,
-      "target": "3-9",
-      "subject": "음악",
-      "label": "3-9 음악",
-      "changed": false,
-      "source": "컴시간 자동동기화"
-    },
-    {
-      "date": "2026-11-04",
-      "day": "수",
-      "period": 2,
       "target": "2-8",
       "subject": "음악",
       "label": "2-8 음악",
-      "changed": false,
+      "changed": true,
       "source": "컴시간 자동동기화"
     },
     {
-      "date": "2026-11-04",
+      "date": "2026-11-17",
+      "day": "화",
+      "period": 5,
+      "target": "2-2",
+      "subject": "음악",
+      "label": "2-2 음악",
+      "changed": true,
+      "source": "컴시간 자동동기화"
+    },
+    {
+      "date": "2026-11-18",
       "day": "수",
       "period": 3,
       "target": "2-1",
@@ -85,73 +55,33 @@
       "source": "컴시간 자동동기화"
     },
     {
-      "date": "2026-11-05",
-      "day": "목",
-      "period": 3,
-      "target": "2-5",
+      "date": "2026-11-20",
+      "day": "금",
+      "period": 1,
+      "target": "3-8",
       "subject": "음악",
-      "label": "2-5 음악",
-      "changed": false,
+      "label": "3-8 음악",
+      "changed": true,
       "source": "컴시간 자동동기화"
     },
     {
-      "date": "2026-11-05",
-      "day": "목",
-      "period": 4,
-      "target": "2-7",
-      "subject": "음악",
-      "label": "2-7 음악",
-      "changed": false,
-      "source": "컴시간 자동동기화"
-    },
-    {
-      "date": "2026-11-05",
-      "day": "목",
-      "period": 6,
-      "target": "2-4",
-      "subject": "음악",
-      "label": "2-4 음악",
-      "changed": false,
-      "source": "컴시간 자동동기화"
-    },
-    {
-      "date": "2026-11-05",
-      "day": "목",
-      "period": 7,
-      "target": "2-9",
-      "subject": "음악",
-      "label": "2-9 음악",
-      "changed": false,
-      "source": "컴시간 자동동기화"
-    },
-    {
-      "date": "2026-11-06",
+      "date": "2026-11-20",
       "day": "금",
       "period": 2,
-      "target": "2-6",
+      "target": "2-8",
       "subject": "음악",
-      "label": "2-6 음악",
-      "changed": false,
+      "label": "2-8 음악",
+      "changed": true,
       "source": "컴시간 자동동기화"
     },
     {
-      "date": "2026-11-06",
+      "date": "2026-11-20",
       "day": "금",
       "period": 3,
-      "target": "2-3",
+      "target": "2-1",
       "subject": "음악",
-      "label": "2-3 음악",
-      "changed": false,
-      "source": "컴시간 자동동기화"
-    },
-    {
-      "date": "2026-11-06",
-      "day": "금",
-      "period": 5,
-      "target": "2-2",
-      "subject": "음악",
-      "label": "2-2 음악",
-      "changed": false,
+      "label": "2-1 음악",
+      "changed": true,
       "source": "컴시간 자동동기화"
     }
   ]

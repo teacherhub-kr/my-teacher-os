@@ -1,1 +1,1 @@
-{"status":"error","category":"collector","detail":"collector-init","failureKinds":"exception-error"}
+{"status":"ok","category":"ok","detail":"ok","verification":"independent-class-match"}
