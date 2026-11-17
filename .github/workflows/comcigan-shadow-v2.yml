@@ -115,14 +115,10 @@ jobs:
             if [ -z "$aggregate" ]; then aggregate=unavailable; fi
             echo "Sanitized $kind distribution: $aggregate"
           done
-          identity=$(grep -E '^PY_SHADOW_IDENTITY=(unique|duplicate|missing|unknown)          echo 'Publication: blocked; upstream data not saved or logged'
-          test "$rc" -eq 0
- /tmp/comcigan-py-shadow.log | tail -n 1 | cut -d= -f2 || true)
+          identity=$(grep -E '^PY_SHADOW_IDENTITY=(unique|duplicate|missing|unknown)$' /tmp/comcigan-py-shadow.log | tail -n 1 | cut -d= -f2 || true)
           if [ -z "$identity" ]; then identity=unknown; fi
           echo "Sanitized teacher mask uniqueness: $identity"
-          conflict=$(grep -E '^PY_SHADOW_PERIOD_CONFLICT=(yes|no)          echo 'Publication: blocked; upstream data not saved or logged'
-          test "$rc" -eq 0
- /tmp/comcigan-py-shadow.log | tail -n 1 | cut -d= -f2 || true)
+          conflict=$(grep -E '^PY_SHADOW_PERIOD_CONFLICT=(yes|no)$' /tmp/comcigan-py-shadow.log | tail -n 1 | cut -d= -f2 || true)
           if [ -z "$conflict" ]; then conflict=unknown; fi
           echo "Sanitized teacher period conflict: $conflict"
           echo 'Publication: blocked; upstream data not saved or logged'
