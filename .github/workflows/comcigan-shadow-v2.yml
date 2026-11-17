@@ -1,0 +1,181 @@
+name: Comcigan modern parser shadow-only audit
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/comcigan-shadow-v2.mjs'
+      - 'scripts/comcigan_shadow_compare_py.py'
+      - 'scripts/comcigan-shadow-compare-js.mjs'
+      - 'tests/test_comcigan_shadow_compare_py.py'
+      - 'tests/comcigan-shadow-compare-js.test.mjs'
+      - 'scripts/comcigan-shadow-coverage.mjs'
+      - 'scripts/comcigan_py_shadow.py'
+      - 'tests/test_comcigan_py_shadow.py'
+      - 'tests/comcigan-shadow-coverage.test.mjs'
+      - 'tests/comcigan-shadow-v2.test.mjs'
+      - '.github/workflows/comcigan-shadow-v2.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shadow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Offline regression only
+        run: |
+          node --check scripts/comcigan-shadow-v2.mjs
+          node --test tests/comcigan-shadow-v2.test.mjs
+      - name: Install isolated pinned parser without lifecycle scripts
+        run: npm install --no-save --ignore-scripts --package-lock=false parse-comcigan@1.6.0
+      - name: Live read-only class sample, sanitized output only
+        shell: bash
+        run: |
+          set +e
+          node scripts/comcigan-shadow-v2.mjs > /tmp/comcigan-shadow-v2.log 2>&1
+          rc=$?
+          set -e
+          value=$(sed -n 's/^SHADOW_V2=\([a-z-]*\)$/\1/p' /tmp/comcigan-shadow-v2.log | tail -n 1)
+          case "$value" in
+            both-readable|invalid-shape|empty|not-supported|unavailable|timeout|first-read-failed|second-read-failed|config-unavailable) ;;
+            *) value=unavailable ;;
+          esac
+          echo "Sanitized alternative parser outcome: $value"
+          echo 'Publication status: blocked (no modifications to timetable or Google data)'
+          test "$rc" -eq 0
+          # This PR intentionally does not declare a successful timetable sync.
+      - name: Validate 15-class teacher-prefix coverage offline
+        run: |
+          node --check scripts/comcigan-shadow-coverage.mjs
+          node --test tests/comcigan-shadow-coverage.test.mjs
+      - name: Live fifteen-class coverage without writing any data
+        shell: bash
+        run: |
+          set +e
+          node scripts/comcigan-shadow-coverage.mjs > /tmp/comcigan-shadow-coverage.log 2>&1
+          rc=$?
+          set -e
+          value=$(sed -n 's/^SHADOW_COVERAGE=\([a-z0-9-]*\)$/\1/p' /tmp/comcigan-shadow-coverage.log | tail -n 1)
+          case "$value" in
+            coverage-15|config-invalid|library-error|timeout|reader-error|data-error|missing-class|ambiguous-class|unavailable) ;;
+            *) value=unavailable ;;
+          esac
+          echo "Sanitized fifteen-class coverage outcome: $value"
+          counts=$(sed -n 's/^SHADOW_MATCH_DISTRIBUTION=\([0-9,]*\)$/\1/p' /tmp/comcigan-shadow-coverage.log | tail -n 1)
+          case "$counts" in
+            *[!0-9,]*|'') counts=unavailable ;;
+          esac
+          school=$(sed -n 's/^SHADOW_SCHOOL_CODE=\([a-z-]*\)$/\1/p' /tmp/comcigan-shadow-coverage.log | tail -n 1)
+          case "$school" in match|mismatch|unconfirmed|unsupported|lookup-error) ;; *) school=unconfirmed ;; esac
+          echo "Sanitized class count distribution (zero,one,multiple): $counts"
+          echo "Sanitized school code identity check: $school"
+          echo 'Period verification: NOT VERIFIED; publishing remains BLOCKED'
+          test "$rc" -eq 0
+
+  shadow-python:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Read-only offline Python format and regression tests
+        run: |
+          python -m py_compile scripts/comcigan_py_shadow.py
+          python -m unittest discover -s tests -p 'test_comcigan_py_shadow.py'
+      - name: Install pinned post-enc5 parser
+        run: python -m pip install --disable-pip-version-check --no-input 'git+https://github.com/hegelty/pycomcigan.git@6fc801068e3793d17bc3523082e7afbcf05d2d92'
+      - name: Current-week, fifteen-class period-aware shadow ONLY
+        shell: bash
+        run: |
+          set +e
+          python scripts/comcigan_py_shadow.py > /tmp/comcigan-py-shadow.log 2>&1
+          rc=$?
+          set -e
+          value=$(sed -n 's/^PY_SHADOW_STATUS=\([a-z0-9-]*\)$/\1/p' /tmp/comcigan-py-shadow.log | tail -n 1)
+          case "$value" in
+            coverage-15|wrong-week|missing-class|ambiguous-class|period-conflict|invalid-shape|lookup-failed|config-invalid|unavailable) ;;
+            *) value=unavailable ;;
+          esac
+          counts=$(sed -n 's/^PY_SHADOW_DISTRIBUTION=\([0-9,]*\)$/\1/p' /tmp/comcigan-py-shadow.log | tail -n 1)
+          case "$counts" in *[!0-9,]*|'') counts=unavailable ;; esac
+          echo "Sanitized period-aware parser status: $value"
+          echo "Sanitized class counts (zero,one,multiple): $counts"
+          for kind in CURRENT ORIGINAL ANYMUSIC; do
+            aggregate=$(grep -E "^PY_SHADOW_${kind}_COUNTS=[0-9,]+$" /tmp/comcigan-py-shadow.log | tail -n 1 | cut -d= -f2 || true)
+            if [ -z "$aggregate" ]; then aggregate=unavailable; fi
+            echo "Sanitized $kind distribution: $aggregate"
+          done
+          identity=$(grep -E '^PY_SHADOW_IDENTITY=(unique|duplicate|missing|unknown)$' /tmp/comcigan-py-shadow.log | tail -n 1 | cut -d= -f2 || true)
+          if [ -z "$identity" ]; then identity=unknown; fi
+          echo "Sanitized teacher mask uniqueness: $identity"
+          conflict=$(grep -E '^PY_SHADOW_PERIOD_CONFLICT=(yes|no)$' /tmp/comcigan-py-shadow.log | tail -n 1 | cut -d= -f2 || true)
+          if [ -z "$conflict" ]; then conflict=unknown; fi
+          echo "Sanitized teacher period conflict: $conflict"
+          echo 'Publication: blocked; upstream data not saved or logged'
+          test "$rc" -eq 0
+
+  dual-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline verified comparison tests
+        run: |
+          python -m unittest discover -s tests -p 'test_comcigan_shadow_compare_py.py'
+          node --check scripts/comcigan-shadow-compare-js.mjs
+          node --test tests/comcigan-shadow-compare-js.test.mjs
+      - name: Install pinned independent parsers with no npm scripts
+        run: |
+          npm install --no-save --ignore-scripts --package-lock=false parse-comcigan@1.6.0
+          python -m pip install --disable-pip-version-check --no-input 'git+https://github.com/hegelty/pycomcigan.git@6fc801068e3793d17bc3523082e7afbcf05d2d92'
+      - name: Generate ephemeral HMAC key for protected on-runner comparison
+        shell: bash
+        run: |
+          key=$(openssl rand -hex 32)
+          echo "::add-mask::$key"
+          echo "COMCIGAN_SHADOW_KEY=$key" >> "$GITHUB_ENV"
+      - name: Produce sanitized current-week candidate without publishing
+        id: python
+        shell: bash
+        run: |
+          python -m scripts.comcigan_shadow_compare_py > /tmp/comcigan-dual-py.log 2>&1
+          state=$(grep -E '^PY_DUAL_STATUS=(prepared|wrong-week|identity-invalid|scope-mismatch|invalid-data|period-conflict|unavailable)$' /tmp/comcigan-dual-py.log | tail -n 1 | cut -d= -f2 || true)
+          if [ -z "$state" ]; then state=unavailable; fi
+          echo "Sanitized authenticated parser stage: $state"
+          echo "stage=$state" >> "$GITHUB_OUTPUT"
+      - name: Verify against second parser with HMAC only (no publish)
+        if: steps.python.outputs.stage == 'prepared'
+        shell: bash
+        run: |
+          node scripts/comcigan-shadow-compare-js.mjs > /tmp/comcigan-dual-js.log 2>&1
+          state=$(grep -E '^DUAL_SOURCE_STATUS=(verified|source-mismatch|invalid-candidate|school-mismatch|unavailable)$' /tmp/comcigan-dual-js.log | tail -n 1 | cut -d= -f2 || true)
+          if [ -z "$state" ]; then state=unavailable; fi
+          amount=$(grep -E '^DUAL_SOURCE_SLOT_COUNT=[0-9]+$' /tmp/comcigan-dual-js.log | tail -n 1 | cut -d= -f2 || true)
+          if [ -z "$amount" ]; then amount=unavailable; fi
+          echo "Sanitized independent cross-view result: $state"
+          echo "Sanitized verified lesson count: $amount"
+          echo 'Publication: blocked. Only ephemeral, sanitized temp files used.'
