@@ -58,28 +58,81 @@ def inspect_schedule(schedule, masked_teacher, current_monday):
     except (KeyError, IndexError, AttributeError, ValueError, TypeError):
         return "invalid-shape", None
 
-def run():
-    status, counts = "unavailable", None
+
+def summarize_original_and_changes(schedule, masked_teacher):
+    identity=normalized(masked_teacher)
+    if len(identity)!=2:
+        return None
+    current=[0,0,0]
+    original=[0,0,0]
+    anymusic=[0,0,0]
+    period_seen=set()
+    conflict=False
     try:
-        config = json.loads(Path("comcigan-config.json").read_text(encoding="utf-8"))
-        code = int(config.get("schoolCode") or 0)
-        teacher = str(config.get("teacherName") or "")
-        if not config.get("enabled") or code <= 0 or len(normalized(teacher)) != 2:
-            status = "config-invalid"
+        for grade, room in EXPECTED:
+            curr=orig=music=0
+            for day in range(1,6):
+                for entry in schedule.timetable[grade][room][day]:
+                    if not isinstance(entry.subject,str) or not isinstance(entry.teacher,str):
+                        return None
+                    if "음악" in entry.subject:
+                        music+=1
+                    if normalized(entry.teacher)==identity and "음악" in entry.subject:
+                        curr+=1
+                        slot=(day,entry.period)
+                        if slot in period_seen:
+                            conflict=True
+                        period_seen.add(slot)
+                    before=entry.original if getattr(entry,"replaced",False) else entry
+                    if before and isinstance(before.subject,str) and isinstance(before.teacher,str) and normalized(before.teacher)==identity and "음악" in before.subject:
+                        orig+=1
+            current[0 if curr==0 else 1 if curr==1 else 2]+=1
+            original[0 if orig==0 else 1 if orig==1 else 2]+=1
+            anymusic[0 if music==0 else 1 if music==1 else 2]+=1
+        return tuple(current),tuple(original),tuple(anymusic),conflict
+    except (KeyError,IndexError,AttributeError,TypeError):
+        return None
+
+def run():
+    status, counts, provenance, identity_state = "unavailable", None, None, "unknown"
+    try:
+        config=json.loads(Path("comcigan-config.json").read_text(encoding="utf-8"))
+        code=int(config.get("schoolCode") or 0)
+        teacher=str(config.get("teacherName") or "")
+        if not config.get("enabled") or code<=0 or len(normalized(teacher))!=2:
+            status="config-invalid"
         else:
             from pycomcigan import TimeTable
-            # The bound school code disambiguates same-name schools. Current week=0.
-            schedule = TimeTable("와부중학교", school_code=code, week_num=0)
-            now = datetime.now(ZoneInfo("Asia/Seoul")).date()
-            monday = now - timedelta(days=now.weekday())
-            status, counts = inspect_schedule(schedule, teacher, monday)
+            identity=normalized(teacher)
+            class AuditedTimeTable(TimeTable):
+                def _initialize_from_data(self, data, local_code, school_name, school_code, comcigan_codes):
+                    try:
+                        names=data["자료"+comcigan_codes[2]]
+                        matched=sum(normalized(self._format_teacher_name(n))==identity for n in names)
+                        self.match_state="unique" if matched==1 else "missing" if matched==0 else "duplicate"
+                    except (KeyError,IndexError,TypeError):
+                        self.match_state="unknown"
+                    return super()._initialize_from_data(data,local_code,school_name,school_code,comcigan_codes)
+            schedule=AuditedTimeTable("와부중학교",school_code=code,week_num=0)
+            identity_state=getattr(schedule,"match_state","unknown")
+            today=datetime.now(ZoneInfo("Asia/Seoul")).date()
+            monday=today-timedelta(days=today.weekday())
+            status,counts=inspect_schedule(schedule,teacher,monday)
+            if status!="wrong-week":
+                provenance=summarize_original_and_changes(schedule,teacher)
     except Exception:
-        status = "lookup-failed"
+        status="lookup-failed"
     if status not in ALLOWED:
-        status = "unavailable"
-    print("PY_SHADOW_STATUS=" + status)
-    if counts and sum(counts) == 15 and all(isinstance(x, int) and 0 <= x <= 15 for x in counts):
-        print("PY_SHADOW_DISTRIBUTION=" + ",".join(str(x) for x in counts))
+        status="unavailable"
+    print("PY_SHADOW_STATUS="+status)
+    if counts and sum(counts)==15:
+        print("PY_SHADOW_DISTRIBUTION="+",".join(str(x) for x in counts))
+    if provenance:
+        for label,values in zip(("CURRENT","ORIGINAL","ANYMUSIC"),provenance[:3]):
+            if sum(values)==15:
+                print("PY_SHADOW_"+label+"_COUNTS="+",".join(str(x) for x in values))
+        print("PY_SHADOW_PERIOD_CONFLICT="+("yes" if provenance[3] else "no"))
+    print("PY_SHADOW_IDENTITY="+(identity_state if identity_state in {"unique","missing","duplicate","unknown"} else "unknown"))
     print("PY_SHADOW_PUBLICATION=blocked")
 
 if __name__ == "__main__":

@@ -48,5 +48,18 @@ class ShadowTests(unittest.TestCase):
         self.assertNotIn("가나",code)
         self.assertNotIn("와부",code)
 
+    def test_original_vs_current_replacements(self):
+        from scripts.comcigan_py_shadow import summarize_original_and_changes
+        data=fake_schedule()
+        lesson=data.timetable[2][1][1][0]
+        lesson.replaced=True
+        lesson.original=NS(period=1,teacher="가나*",subject="음악")
+        lesson.teacher="다라*"
+        lesson.subject="수학"
+        result=summarize_original_and_changes(data,"가나*")
+        self.assertEqual(result[0],(1,14,0))
+        self.assertEqual(result[1],(0,15,0))
+        self.assertEqual(result[3],False)
+
 if __name__ == "__main__":
     unittest.main()
