@@ -1,0 +1,28 @@
+name: Control Tower v2 contract guard
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'control-tower-v2/**'
+      - '.github/workflows/control-tower-v2-guard.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'control-tower-v2/**'
+      - '.github/workflows/control-tower-v2-guard.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax and isolated behavior tests
+        run: |
+          node --check control-tower-v2/core.mjs
+          node --test control-tower-v2/tests/*.test.mjs
