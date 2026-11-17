@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'scripts/comcigan-shadow-v2.mjs'
+      - 'scripts/comcigan-shadow-coverage.mjs'
+      - 'tests/comcigan-shadow-coverage.test.mjs'
       - 'tests/comcigan-shadow-v2.test.mjs'
       - '.github/workflows/comcigan-shadow-v2.yml'
   workflow_dispatch:
@@ -44,3 +46,22 @@ jobs:
           echo 'Publication status: blocked (no modifications to timetable or Google data)'
           test "$rc" -eq 0
           # This PR intentionally does not declare a successful timetable sync.
+      - name: Validate 15-class teacher-prefix coverage offline
+        run: |
+          node --check scripts/comcigan-shadow-coverage.mjs
+          node --test tests/comcigan-shadow-coverage.test.mjs
+      - name: Live fifteen-class coverage without writing any data
+        shell: bash
+        run: |
+          set +e
+          node scripts/comcigan-shadow-coverage.mjs > /tmp/comcigan-shadow-coverage.log 2>&1
+          rc=$?
+          set -e
+          value=$(sed -n 's/^SHADOW_COVERAGE=\([a-z0-9-]*\)$/\1/p' /tmp/comcigan-shadow-coverage.log | tail -n 1)
+          case "$value" in
+            coverage-15|config-invalid|library-error|timeout|reader-error|data-error|missing-class|ambiguous-class|unavailable) ;;
+            *) value=unavailable ;;
+          esac
+          echo "Sanitized fifteen-class coverage outcome: $value"
+          echo 'Period verification: NOT VERIFIED; publishing remains BLOCKED'
+          test "$rc" -eq 0
